@@ -623,7 +623,8 @@ fa_gsea_list=lapply(de_list,function(contrast){
   input_entrezid <- AnnotationDbi::select(ann.org, gsea_input$gene_id, 'ENSEMBL', columns = c('ENTREZID', 'SYMBOL'))
   input_entrezid <- inner_join(gsea_input, input_entrezid, by=c("gene_id"="ENSEMBL")) %>%
     filter(!is.na(ENTREZID)) %>% 
-    distinct(ENTREZID, .keep_all=TRUE)
+    distinct(ENTREZID, .keep_all=TRUE) %>% 
+    arrange(desc(lfc))
   
   tb = run_fgsea_v2(input_entrezid, all_in_life)
   tb %>%  filter(padj<0.05)
