@@ -18,16 +18,29 @@ params:
     ## Combatseq and ruv can both be false or ONLY ONE can be true
   # numerator: tumor
   # denominator: normal
+  # column is the factor of interest in your data that you are trying to evaluate
+  # For example, this might be "condition" or "treatment"
   column: "sample_type"
+  # This is a list of contrasts that you would like to evaluate
+  # The syntax for each item in the list is: c("column_name", "treatment_name", "control_name")
   contrasts: !r list(c("sample_type", "tumor", "normal"),c("sample_type", "normal", "tumor"))
+  # These next two subset lines are useful if you would like to subset your data in someway before you run the analysis
+  # The column of data in you would like to subset, perhaps: "cell_type" or "batch"
   subset_column: null
+  # Then, which values for that subset_column would you like to keep, like "macrophages" or "batch_2"
   subset_value: null
+  # Reference genome used
   genome: hg38
+  # If you would like to run RUV, set to TRUE, otherwise FALSE
   ruv: false
+  # If you would like to run ComBatseq, set to TRUE, otherwise FALSE
   combatseq: false
+  # Path to the params.R file
   # params_file: ../00_params/params.R 
   params_file: ../00_params/params-example.R
+  # Path to the information.R file
   project_file: ../information.R
+  # Path to the directory with the functions
   functions_file: ../00_libs
 ---
 
