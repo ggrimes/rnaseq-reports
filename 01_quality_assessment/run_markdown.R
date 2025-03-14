@@ -4,10 +4,11 @@ library(rmarkdown)
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 # example running with test data
 rmarkdown::render("QC.Rmd",
-                  output_dir = ".",
-                  clean = TRUE,
-                  output_format = "html_document",
-                  params = list(
-                    params_file = 'params_qc_nf-core-testdata.R',
-                    project_file = '../information.R')
-                  )
+  output_dir = ".",
+  clean = TRUE,
+  output_format = "html_document",
+  params = list(
+    params_file = "params_qc_nf-core-testdata.R",
+    project_file = "../information.R"
+  )
+)

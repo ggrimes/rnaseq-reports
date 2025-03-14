@@ -50,11 +50,11 @@ library(rstudioapi)
 setwd(fs::path_dir(getSourceEditorContext()$path))
 # NOTE: This code will check version, this is our recommendation, it may work on other versions
 # Requires R version 4
-stopifnot(R.version$major>= 4)
+stopifnot(R.version$major >= 4)
 # If the minor version number is less than .3.1, send a warning that we recommend R version 4.3.1 or higher
-if (compareVersion(R.version$minor,"3.1")<0) warning("We recommend >= R4.3.1") 
+if (compareVersion(R.version$minor, "3.1") < 0) warning("We recommend >= R4.3.1")
 # Requires BiocManager version 3.18 or later
-stopifnot(compareVersion(as.character(BiocManager::version()), "3.18")>=0)
+stopifnot(compareVersion(as.character(BiocManager::version()), "3.18") >= 0)
 ```
 
 This code is in this ![](https://img.shields.io/badge/status-stable-green) revision.
@@ -66,7 +66,7 @@ source(params$params_file)
 # 2. Set up project file (already done from QC probably)
 source(params$project_file)
 # 3. Load custom functions to load data from coldata/metrics/counts
-map(list.files(params$functions_file,pattern = "*.R$",full.names = T), source) %>% invisible()
+map(list.files(params$functions_file, pattern = "*.R$", full.names = T), source) %>% invisible()
 
 # Assign the genome parameter to the object genome
 # IMPORTANT set these values if you are not using the parameters in the header (lines 23-44)
@@ -96,7 +96,7 @@ run_ruv <- params$ruv
 run_combatseq <- params$combatseq
 # If the run_ruv object and/or run_combatseq is TRUE, set the run_rmv boolean to TRUE, otherwise set run_rmv boolean to FALSE
 run_rmv <- run_ruv | run_combatseq
-# Assign the value of column to factor_of_interest, this will allow you to change factor_of_interest throughout the Rmd if needed, while maintaining the value of column 
+# Assign the value of column to factor_of_interest, this will allow you to change factor_of_interest throughout the Rmd if needed, while maintaining the value of column
 factor_of_interest <- column
 ```
 
@@ -159,12 +159,12 @@ opts_chunk[["set"]](
   cache = FALSE, # When the cache is turned on, knitr will skip the execution of this code chunk if it has been executed before and nothing in the code chunk has changed since then. For a cached code chunk, its output and objects will be automatically loaded from the previous run, as if the chunk were executed again.
   cache.lazy = FALSE, # Whether to only load cached objects when needed
   dev = c("png", "pdf"), # Specifies the graphical devices to use figures
-  error = TRUE, # Whether to stop rendering on an error 
+  error = TRUE, # Whether to stop rendering on an error
   highlight = TRUE, # Whether to enable syntax highlighting for the code in the chunk
-  message = FALSE, # Whether to preserve messages emitted by message() in the final output 
+  message = FALSE, # Whether to preserve messages emitted by message() in the final output
   prompt = FALSE, # Whether an R prompt (>) is displayed at the beginning of each line of R input code in rendered documents
   tidy = FALSE, # Whether or not R code in a chunk is formatted automatically before rendering, similar to the R package, styler
-  warning = FALSE, # Whether to preserve warnings in the output 
+  warning = FALSE, # Whether to preserve warnings in the output
   echo = T, # Whether to include R source code in the final knitted document
   fig.height = 4) # Sets the default height of plot figures generated in inches
 
@@ -187,7 +187,7 @@ sanitize_datatable <- function(df, ...) {
 # This code will load from nf-core folder
 # NOTE make sure to set numerator and denominator
 # Use the load_coldata function from the sourced load_data.R within the 00_params directory, to subset the colodata_fn dataframe that was pointed to when sourcing params.R within the 00_params directory
-# The factors for this subsetting were set in thr params section of the YAML code chunk. 
+# The factors for this subsetting were set in thr params section of the YAML code chunk.
 # The default subsetting is none since subset_column and subset_value are both set to null initially
 # The column object here is given to ensure that the column of interest exists in the loaded dataframe
 coldata <- load_coldata(
@@ -298,7 +298,7 @@ Dispersion estimates are a key part of the DESEQ2 analysis. DESEQ2 uses data fro
 
 ```{r set group, eval=FALSE, echo=FALSE}
 ## Example of creating a group covariate
-#meta$group <- paste0(meta$sex, "_", meta$age, "_", meta$treatment)
+# meta$group <- paste0(meta$sex, "_", meta$age, "_", meta$treatment)
 
 # Re-assign the factor of interest in case it has change
 # You can modify this to test for different factors of interest with:
@@ -309,17 +309,17 @@ factor_of_interest <- column
 
 ```{r PCA}
 # Run PCA on the normalized counts
-pca <- degPCA(norm_matrix, 
+pca <- degPCA(norm_matrix,
   metadata = metrics, # Using the metrics object as our metadata
   condition = factor_of_interest, # Specifying the condition as our factor_of_interest from the above code chunk
   name = "sample", # Column from metadata to use to label the points in the PCA plot
-  data = TRUE # Include the data 
+  data = TRUE # Include the data
 )
 
 pca$plot + # Create plot
   ggtitle(paste0("All samples", "\nPCA using ", nrow(vsd_before), " genes")) + # Add title to plot
-  theme(plot.title=element_text(hjust=0.5)) + # Center title on plot
-  geom_mark_ellipse(aes(color = .data[[column]])) +  # Create ellipses on plot
+  theme(plot.title = element_text(hjust = 0.5)) + # Center title on plot
+  geom_mark_ellipse(aes(color = .data[[column]])) + # Create ellipses on plot
   scale_color_grafify("kelly") # Set color parameter for plot
 ```
 
@@ -336,7 +336,7 @@ vare.disa <- vegdist(t(assay(vsd_before)))
 
 # Evaluate the homogeneity of dispersion within the groups
 mod <- betadisper(vare.disa, group = metrics[[factor_of_interest]])
-# Test the homogeniety of dispersion between groups  with ANOVA. 
+# Test the homogeniety of dispersion between groups  with ANOVA.
 # ANOVA tests is there is overall significant variation in variance between groups.
 anova(mod)
 # Test the homogeniety of dispersion between groups  with a permutation test
@@ -354,7 +354,8 @@ Here, we are using `DEGreport::degCovariates()` to explore potential correlation
 
 ```{r covariates, fig.height = 6, fig.width = 10}
 # Visualize covariates for the PCs
-degCovariates(counts = norm_matrix, # Normalized counts matrix
+degCovariates(
+  counts = norm_matrix, # Normalized counts matrix
   metadata = metrics # Metadata to overlay as covariates
 )
 ```
@@ -373,7 +374,7 @@ stopifnot(all(colnames(counts) == rownames(coldata)))
 # Create the DDS object for DESeq2 and assign it to the object dds_to_use
 dds_to_use <- DESeqDataSetFromMatrix(
   countData = counts, # Provide the raw counts data
-  colData = coldata,  # Provide the metadata
+  colData = coldata, # Provide the metadata
   design = formula # Provide the design formula
 )
 
@@ -400,9 +401,9 @@ Removing unwanted variation from RNA-seq analysis is essential to ensure that th
 ### Assessing unknown factors
 
 ```{r, results='asis'}
-if (run_ruv){
+if (run_ruv) {
   cat("When performing differential expression analysis, it is important to ensure that any detected differences are truly a result of the experimental comparison being made and not any additional variability in the data.")
-}else{
+} else {
   cat("There is no need to assess unknown factor for this study.")
 }
 ```
@@ -416,26 +417,28 @@ library(RUVSeq)
 design <- coldata[[column]]
 diffs <- makeGroups(design)
 dat <- norm_matrix
-# by default is running one variable, 
+# by default is running one variable,
 # change K parameter to other number to find more unknown covariates
-ruvset <- RUVs(dat, cIdx=rownames(dat), k=1, diffs, isLog = T, round = F)
+ruvset <- RUVs(dat, cIdx = rownames(dat), k = 1, diffs, isLog = T, round = F)
 vars <- ruvset$W
 new_cdata <- cbind(coldata, vars)
-formula <- as.formula(paste0("~ ", 
-                          paste0(
-                            colnames(new_cdata)[grepl("W", colnames(new_cdata))], 
-                            collapse = " + "
-                          ), " + ", column)
-)
-norm_matrix=ruvset$normalizedCounts # NOTE use this for visualization
-pca2 <- degPCA(norm_matrix, new_cdata, 
-       condition = column) + ggtitle('After RUV')
+formula <- as.formula(paste0(
+  "~ ",
+  paste0(
+    colnames(new_cdata)[grepl("W", colnames(new_cdata))],
+    collapse = " + "
+  ), " + ", column
+))
+norm_matrix <- ruvset$normalizedCounts # NOTE use this for visualization
+pca2 <- degPCA(norm_matrix, new_cdata,
+  condition = column
+) + ggtitle("After RUV")
 pca2 + scale_color_grafify("kelly")
 ```
 
 ```{r after_RUV, eval=run_ruv}
 dds_to_use <- DESeqDataSetFromMatrix(counts, new_cdata, design = formula)
-vsd_to_use<- vst(dds_to_use, blind=FALSE)
+vsd_to_use <- vst(dds_to_use, blind = FALSE)
 ```
 
 ### Remove Batch Effects
@@ -444,9 +447,8 @@ vsd_to_use<- vst(dds_to_use, blind=FALSE)
 # NOTE Combatseq (part of the SVA package) - corrected count, removing the effects while retaining the structure of the data. Used in a scenario where you know what covariate/batch is. Do not add know-removed known covariates to DESeq2 formula. Also, don’t attempt to remove biological effect (e.g. donor), this is not conceptually valid; best for technical variation.
 library(sva)
 
-cat("Here we apply Combat-seq (https://github.com/zhangyuqing/ComBat-seq) to try to remove batch effects so we can better tease out the effects of interest. 
+cat("Here we apply Combat-seq (https://github.com/zhangyuqing/ComBat-seq) to try to remove batch effects so we can better tease out the effects of interest.
 Combat-seq uses a negative binomial regression to model batch effects, providing adjusted data by mapping the original data to an expected distribution if there were no batch effects. The adjusted data preserves the integer nature of counts, so that it is compatible with the assumptions of state-of-the-art differential expression software (e.g. edgeR, DESeq2, which specifically request untransformed count data).")
-
 ```
 
 ```{r, eval=!run_combatseq, results='asis', echo=run_combatseq}
@@ -459,28 +461,28 @@ cat("There is no need to remove known factors like batch effect in this study.")
 # Set your batch effect variable here this is the variable that combatseq will try to remove
 
 ## Column name of your batch variable
-to_remove = "batch"
+to_remove <- "batch"
 
 ## Column name of of your variable(s) of interest
-to_keep = "sample_type"
+to_keep <- "sample_type"
 
 coldata[[to_remove]] <- as.factor(coldata[[to_remove]])
 coldata[[to_keep]] <- as.factor(coldata[[to_keep]])
 
-batch = coldata[[to_remove]]
-treatment = coldata[[to_keep]]
+batch <- coldata[[to_remove]]
+treatment <- coldata[[to_keep]]
 
 ## If you have multiple variables of interest you will need to cbind them into one variable
 
-#treatment1 = metrics[[to_keep]]
-#treatment2 = metrics[[to_keep]]
-#treatment3 = metrics[[to_keep]]
+# treatment1 = metrics[[to_keep]]
+# treatment2 = metrics[[to_keep]]
+# treatment3 = metrics[[to_keep]]
 
 # imp = cbind(as.numeric(as.character(treatment1)),as.numeric(as.character(treatment2)), as.numeric(as.character(treatment3)))
 ```
 
 ```{r do_combatseq, eval=run_combatseq}
-adjusted_counts <- ComBat_seq(as.matrix(counts), batch=batch, group = treatment)
+adjusted_counts <- ComBat_seq(as.matrix(counts), batch = batch, group = treatment)
 
 # NOTE For multiple variables of interest
 # adjusted_counts <- ComBat_seq(as.matrix(counts2), batch=batch, covar_mod = imp)
@@ -489,12 +491,13 @@ adjusted_counts <- ComBat_seq(as.matrix(counts), batch=batch, group = treatment)
 ```{r after_combatseq, eval=run_combatseq}
 # NOTE: Make sure the formula doens't contain the covariates used in combatseq above
 dds_to_use <- DESeqDataSetFromMatrix(adjusted_counts, coldata, design = formula)
-vsd_combat<- vst(dds_to_use, blind=FALSE)
+vsd_combat <- vst(dds_to_use, blind = FALSE)
 
-norm_matrix = assay(vsd_combat)
+norm_matrix <- assay(vsd_combat)
 
-pca_combat <- degPCA(norm_matrix, coldata, 
-       condition = column) + ggtitle('After Combatseq')
+pca_combat <- degPCA(norm_matrix, coldata,
+  condition = column
+) + ggtitle("After Combatseq")
 pca_combat + scale_color_grafify("kelly")
 ```
 
@@ -523,32 +526,39 @@ The LRT is useful for testing multiple terms at once, for example testing 3 or m
 
 # NOTE We recommend LRT for time series
 # resultsNames(de) # check the order is right
-names_to_use=lapply(contrasts, function(contrast){coef = paste0(contrast[1], "_", contrast[2], "_vs_", contrast[3])})
-names(contrasts)=names_to_use
-de_list=lapply(contrasts, function(contrast){
-  resLFC = results(de, contrast=contrast)
-  coef = paste0(contrast[1], "_", contrast[2], "_vs_", contrast[3])
+names_to_use <- lapply(contrasts, function(contrast) {
+  coef <- paste0(contrast[1], "_", contrast[2], "_vs_", contrast[3])
+})
+names(contrasts) <- names_to_use
+de_list <- lapply(contrasts, function(contrast) {
+  resLFC <- results(de, contrast = contrast)
+  coef <- paste0(contrast[1], "_", contrast[2], "_vs_", contrast[3])
   # resLFCS <- lfcShrink(de, coef=coef, type="apeglm")
-  resLFCS <- lfcShrink(de, contrast=contrast, type="ash")
-  
+  resLFCS <- lfcShrink(de, contrast = contrast, type = "ash")
+
   res <- as.data.frame(resLFCS) %>%
-    rownames_to_column('gene_id') %>%
-    left_join(rdata, by = 'gene_id') %>% 
+    rownames_to_column("gene_id") %>%
+    left_join(rdata, by = "gene_id") %>%
     relocate(gene_name) %>%
     dplyr::rename(lfc = log2FoldChange) %>%
     mutate(pi = abs(lfc) * -log10(padj)) %>%
     arrange(-pi)
-  
+
   ## Filter out genes that have no expression or were filtered out by DESEQ2
-  res <- res[res$baseMean>0,] %>%
-    drop_na(padj) %>% drop_na(pvalue)
-  
-  res_sig <- res %>% filter(padj < 0.05) %>%
+  res <- res[res$baseMean > 0, ] %>%
+    drop_na(padj) %>%
+    drop_na(pvalue)
+
+  res_sig <- res %>%
+    filter(padj < 0.05) %>%
     arrange(padj) %>%
     mutate(gene_name = ifelse(is.na(gene_name),
-                              gene_id, gene_name))
-  results=list(lfc=resLFC, lfcs=resLFCS,
-               all=res, sig=res_sig)
+      gene_id, gene_name
+    ))
+  results <- list(
+    lfc = resLFC, lfcs = resLFCS,
+    all = res, sig = res_sig
+  )
   return(results)
 })
 
@@ -566,11 +576,11 @@ This plot can help to:
 - Visualize data dispersion: The distribution of points along the A-axis gives a sense of the spread of expression levels and any patterns or anomalies in the dataset.
 
 ```{r after_lfc_shrink, results='asis', message=F, warning=F}
-for (contrast in names(de_list)){
+for (contrast in names(de_list)) {
   cat("### ", contrast, "\n\n")
-  p1=degMA(as.DEGSet(de_list[[contrast]]$lfc)) + ggtitle('Before LFC Shrinking')
+  p1 <- degMA(as.DEGSet(de_list[[contrast]]$lfc)) + ggtitle("Before LFC Shrinking")
   print(p1)
-  p2=degMA(as.DEGSet(de_list[[contrast]]$lfcs), limit = 2) + ggtitle('After LFC Shrinking')
+  p2 <- degMA(as.DEGSet(de_list[[contrast]]$lfcs), limit = 2) + ggtitle("After LFC Shrinking")
   print(p2)
   cat("\n\n")
 }
@@ -581,27 +591,28 @@ for (contrast in names(de_list)){
 This volcano plot shows the genes that are significantly up- and down-regulated as a result of the analysis comparison. The points highlighted in red are genes that have padj < 0.05 and a log2-fold change > 1. Points in blue have a padj < 0.05 and a log2-fold change < 1 and points in green have a padj > 0.05 and a log2-fold change > 2. Grey points are non-significant. The dashed lines correspond to the cutoff values of log2 foldchance and padj that we have chosen.
 
 ```{r volcano_plot, fig.height=6, results='asis'}
-# degVolcano(res_mod[,c('lfc', 'padj')], plot_text = show) 
-for (contrast in names(de_list)){
+# degVolcano(res_mod[,c('lfc', 'padj')], plot_text = show)
+for (contrast in names(de_list)) {
   cat("### ", contrast, "\n\n")
   res <- de_list[[contrast]][["all"]]
-res_mod <- res
+  res_mod <- res
 
-## The below line of code will change anything with an absolute(lfc) above 5 to a 5. This will help remove outliers to better frame the graph if wanted.  
-# res_mod <- res %>% mutate(lfc = replace(lfc, lfc < -5, -5)) %>% mutate(lfc = replace(lfc, lfc > 5, 5))
+  ## The below line of code will change anything with an absolute(lfc) above 5 to a 5. This will help remove outliers to better frame the graph if wanted.
+  # res_mod <- res %>% mutate(lfc = replace(lfc, lfc < -5, -5)) %>% mutate(lfc = replace(lfc, lfc > 5, 5))
 
   show <- as.data.frame(res_mod[1:10, c("lfc", "padj", "gene_name")])
-  p1=EnhancedVolcano(res_mod,
-                  lab= res_mod$gene_name, 
-                  pCutoff = 0.05, 
-                  selectLab = c(show$gene_name),
-                  FCcutoff = 0.5,
-                  x = 'lfc',
-                  y = 'padj', 
-                  title=contrast,
-                  col=c("darkgrey", "lightblue", "plum1", "purple"),
-                # xlim = c(-5,5),  ## set the x-axis to only show some points
-                  subtitle = "", drawConnectors = T,  max.overlaps = Inf ) 
+  p1 <- EnhancedVolcano(res_mod,
+    lab = res_mod$gene_name,
+    pCutoff = 0.05,
+    selectLab = c(show$gene_name),
+    FCcutoff = 0.5,
+    x = "lfc",
+    y = "padj",
+    title = contrast,
+    col = c("darkgrey", "lightblue", "plum1", "purple"),
+    # xlim = c(-5,5),  ## set the x-axis to only show some points
+    subtitle = "", drawConnectors = T, max.overlaps = Inf
+  )
   print(p1)
   cat("\n\n")
 }
@@ -611,28 +622,29 @@ res_mod <- res
 
 ```{r heapmap, results='asis'}
 ### Run pheatmap using the metadata data frame for the annotation
-for (contrast in names(de_list)){
+for (contrast in names(de_list)) {
   cat("### ", contrast, "\n\n")
-  res_sig = de_list[[contrast]][["sig"]]
-  ma=norm_matrix[res_sig$gene_id,]
-  colma=coldata[,c(column), drop=FALSE]
-  ma_colors=lapply(colnames(colma), function(c){
-    l.col=colors[1:length(unique(colma[[c]]))]
-    names(l.col)=unique(colma[[c]])
+  res_sig <- de_list[[contrast]][["sig"]]
+  ma <- norm_matrix[res_sig$gene_id, ]
+  colma <- coldata[, c(column), drop = FALSE]
+  ma_colors <- lapply(colnames(colma), function(c) {
+    l.col <- colors[1:length(unique(colma[[c]]))]
+    names(l.col) <- unique(colma[[c]])
     l.col
   })
-  names(ma_colors)=colnames(colma)
-  p1=pheatmap(ma, 
-           color = inferno(10), 
-           cluster_rows = T, 
-           show_rownames = F,
-           annotation = colma, 
-           annotation_colors = ma_colors,
-           border_color = NA, 
-           fontsize = 10, 
-           scale = "row", 
-           fontsize_row = 10, 
-           height = 20)
+  names(ma_colors) <- colnames(colma)
+  p1 <- pheatmap(ma,
+    color = inferno(10),
+    cluster_rows = T,
+    show_rownames = F,
+    annotation = colma,
+    annotation_colors = ma_colors,
+    border_color = NA,
+    fontsize = 10,
+    scale = "row",
+    fontsize_row = 10,
+    height = 20
+  )
   print(p1)
   cat("\n\n")
 }
@@ -642,12 +654,14 @@ for (contrast in names(de_list)){
 ## Differentially Expressed Genes {.tabset}
 
 ```{r sig_genes_table, results='asis'}
-dt_list=list()
-for (contrast in names(de_list)){
-  res_sig=de_list[[contrast]][["sig"]]
-  dt_list=c(dt_list, 
-            list(h3(contrast)), 
-            list(DT::datatable(res_sig)))
+dt_list <- list()
+for (contrast in names(de_list)) {
+  res_sig <- de_list[[contrast]][["sig"]]
+  dt_list <- c(
+    dt_list,
+    list(h3(contrast)),
+    list(DT::datatable(res_sig))
+  )
 }
 tagList(dt_list)
 ```
@@ -655,26 +669,28 @@ tagList(dt_list)
 ## Plot top 16 genes {.tabset}
 
 ```{r top n DEGs, fig.height = 6, fig.width = 8, results='asis'}
-n = 16
+n <- 16
 
-for (contrast in names(de_list)){
+for (contrast in names(de_list)) {
   cat("### ", contrast, "\n\n")
-  res_sig = de_list[[contrast]][["sig"]]
-  top_n <- res_sig %>% slice_min(order_by = padj, n = n, with_ties = F) %>% 
+  res_sig <- de_list[[contrast]][["sig"]]
+  top_n <- res_sig %>%
+    slice_min(order_by = padj, n = n, with_ties = F) %>%
     dplyr::select(gene_name, gene_id)
-  top_n_exp <- norm_matrix %>% as.data.frame() %>% 
-    rownames_to_column('gene_id') %>%
-    # dplyr::select(-group, -group_name) %>% 
-    pivot_longer(!gene_id, names_to = 'sample', values_to = 'log2_expression') %>%
+  top_n_exp <- norm_matrix %>%
+    as.data.frame() %>%
+    rownames_to_column("gene_id") %>%
+    # dplyr::select(-group, -group_name) %>%
+    pivot_longer(!gene_id, names_to = "sample", values_to = "log2_expression") %>%
     right_join(top_n, relationship = "many-to-many") %>%
-    left_join(coldata, by = 'sample')
-  
-  p1=ggplot(top_n_exp, aes_string(x = column, y = 'log2_expression')) +
-    geom_boxplot(outlier.shape = NA, linewidth=0.5, color="grey") + 
+    left_join(coldata, by = "sample")
+
+  p1 <- ggplot(top_n_exp, aes_string(x = column, y = "log2_expression")) +
+    geom_boxplot(outlier.shape = NA, linewidth = 0.5, color = "grey") +
     geom_point() +
-    facet_wrap(~gene_name) + 
-    ggtitle(str_interp('Expression of Top ${n} DEGs')) +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+    facet_wrap(~gene_name) +
+    ggtitle(str_interp("Expression of Top ${n} DEGs")) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
   print(p1)
   cat("\n\n")
 }
@@ -685,15 +701,15 @@ for (contrast in names(de_list)){
 From the set of differentially expressed genes and using publicly available information about gene sets involved in biological processes and functions, we can calculate which biological processes and functions are significantly perturbed as a result of the treatment. 
 
 ```{r}
-if(grepl("hg|human", genome, ignore.case = TRUE)) {
-   all_in_life=get_databases_v2(sps="human")
-   run_FA=TRUE
-} else if(grepl("mm|mouse", genome, ignore.case = TRUE)) {
-   all_in_life=get_databases_v2(sps="mouse")
-   run_FA=TRUE
+if (grepl("hg|human", genome, ignore.case = TRUE)) {
+  all_in_life <- get_databases_v2(sps = "human")
+  run_FA <- TRUE
+} else if (grepl("mm|mouse", genome, ignore.case = TRUE)) {
+  all_in_life <- get_databases_v2(sps = "mouse")
+  run_FA <- TRUE
 } else {
-   warning("If you are working on an organism other than human or mouse: This pathway enrichment is based on annotations from MSigDB https://www.gsea-msigdb.org/gsea/msigdb which only has human and mouse collections. For non-model organism pathway analysis, please see the template rnaseq/03_functional/Nonmodel_Organism_Pathway_Analysis.Rmd")
-   run_FA=FALSE
+  warning("If you are working on an organism other than human or mouse: This pathway enrichment is based on annotations from MSigDB https://www.gsea-msigdb.org/gsea/msigdb which only has human and mouse collections. For non-model organism pathway analysis, please see the template rnaseq/03_functional/Nonmodel_Organism_Pathway_Analysis.Rmd")
+  run_FA <- FALSE
 }
 ```
 
@@ -706,32 +722,35 @@ Gene Set Enrichment Analysis (GSEA) is a computational method used to determine 
 - Contextual Relevance: Can reveal subtle but coordinated changes in biologically meaningful gene sets that might not be apparent when looking at individual genes.
 
 ```{r, warning=F, message=F, eval=run_FA}
-fa_gsea_list=lapply(de_list,function(contrast){
-  
-  res=contrast[["all"]]
-  gsea_input = res %>% filter(!is.na(padj)) %>% dplyr::select(gene_id, lfc)
-  #change to the right species
-  input_entrezid <- AnnotationDbi::select(ann.org, gsea_input$gene_id, 'ENSEMBL', columns = c('ENTREZID', 'SYMBOL'))
-  input_entrezid <- inner_join(gsea_input, input_entrezid, by=c("gene_id"="ENSEMBL")) %>%
-    filter(!is.na(ENTREZID)) %>% 
-    distinct(ENTREZID, .keep_all=TRUE) %>% 
+fa_gsea_list <- lapply(de_list, function(contrast) {
+  res <- contrast[["all"]]
+  gsea_input <- res %>%
+    filter(!is.na(padj)) %>%
+    dplyr::select(gene_id, lfc)
+  # change to the right species
+  input_entrezid <- AnnotationDbi::select(ann.org, gsea_input$gene_id, "ENSEMBL", columns = c("ENTREZID", "SYMBOL"))
+  input_entrezid <- inner_join(gsea_input, input_entrezid, by = c("gene_id" = "ENSEMBL")) %>%
+    filter(!is.na(ENTREZID)) %>%
+    distinct(ENTREZID, .keep_all = TRUE) %>%
     arrange(desc(lfc))
-  
-  tb = run_fgsea_v2(input_entrezid, all_in_life)
-  tb %>%  filter(padj<0.05)
- }) 
+
+  tb <- run_fgsea_v2(input_entrezid, all_in_life)
+  tb %>% filter(padj < 0.05)
+})
 ```
 
 ```{r, results='asis', eval=run_FA}
 # NOTE DT::datatables doesn't work with tabset and for loops
 # You can use the following code to print dynamically or call manually sanitize_datatable()
 # multiple times
-dt_list=list()
-for (contrast in names(de_list)){
-  res_sig=fa_gsea_list[[contrast]] %>% filter(padj < 0.05)
-  dt_list=c(dt_list, 
-            list(h3(contrast)), 
-            list(sanitize_datatable(res_sig)))
+dt_list <- list()
+for (contrast in names(de_list)) {
+  res_sig <- fa_gsea_list[[contrast]] %>% filter(padj < 0.05)
+  dt_list <- c(
+    dt_list,
+    list(h3(contrast)),
+    list(sanitize_datatable(res_sig))
+  )
 }
 tagList(dt_list)
 ```
@@ -745,33 +764,39 @@ Over-Representation Analysis (ORA) is a statistical method used to determine whe
 - Prior Knowledge Integration: Utilizes existing biological knowledge through predefined gene sets.
 
 ```{r, warning=F, message=F, eval=run_FA}
-fa_list=lapply(de_list,function(contrast){
-  
-  res=contrast[["all"]]
-  universe=res %>% 
-    filter(!is.na(padj)) %>% pull(gene_id)
-  universe_mapping = rdata %>% filter(gene_id %in% universe, !is.na(entrez))
-    # AnnotationDbi::select(ann.org, universe, 'ENSEMBL', columns=c('ENTREZID', 'SYMBOL'))
-  
-  ora_input = res %>% filter(!is.na(padj), padj<0.01, abs(lfc)> 0.3) %>% pull(gene_id)
-  #change to the right species
-  input_entrezid <- rdata %>% filter(gene_id %in% ora_input, !is.na(entrez))
-    # AnnotationDbi::select(ann.org, ora_input, 'ENSEMBL', columns = c('ENTREZID', 'SYMBOL'))
-  all=run_fora_v2(input_entrezid, universe_mapping, all_in_life)
-  
-  ora_input = res %>% filter(!is.na(padj), padj<0.01, lfc> 0.3) %>% pull(gene_id)
-  #change to the right species
-  input_entrezid <- rdata %>% filter(gene_id %in% ora_input, !is.na(entrez))
-    # AnnotationDbi::select(ann.org, ora_input, 'ENSEMBL', columns = c('ENTREZID', 'SYMBOL'))
-  up=run_fora_v2(input_entrezid, universe_mapping,all_in_life)
+fa_list <- lapply(de_list, function(contrast) {
+  res <- contrast[["all"]]
+  universe <- res %>%
+    filter(!is.na(padj)) %>%
+    pull(gene_id)
+  universe_mapping <- rdata %>% filter(gene_id %in% universe, !is.na(entrez))
+  # AnnotationDbi::select(ann.org, universe, 'ENSEMBL', columns=c('ENTREZID', 'SYMBOL'))
 
-  ora_input = res %>% filter(!is.na(padj), padj<0.01, lfc< -0.3) %>% pull(gene_id)
-  #change to the right species
+  ora_input <- res %>%
+    filter(!is.na(padj), padj < 0.01, abs(lfc) > 0.3) %>%
+    pull(gene_id)
+  # change to the right species
   input_entrezid <- rdata %>% filter(gene_id %in% ora_input, !is.na(entrez))
-    # AnnotationDbi::select(ann.org, ora_input, 'ENSEMBL', columns = c('ENTREZID', 'SYMBOL'))
-  down=run_fora_v2(input_entrezid, universe_mapping,all_in_life)
+  # AnnotationDbi::select(ann.org, ora_input, 'ENSEMBL', columns = c('ENTREZID', 'SYMBOL'))
+  all <- run_fora_v2(input_entrezid, universe_mapping, all_in_life)
 
-  list(all=all,up=up,down=down)
+  ora_input <- res %>%
+    filter(!is.na(padj), padj < 0.01, lfc > 0.3) %>%
+    pull(gene_id)
+  # change to the right species
+  input_entrezid <- rdata %>% filter(gene_id %in% ora_input, !is.na(entrez))
+  # AnnotationDbi::select(ann.org, ora_input, 'ENSEMBL', columns = c('ENTREZID', 'SYMBOL'))
+  up <- run_fora_v2(input_entrezid, universe_mapping, all_in_life)
+
+  ora_input <- res %>%
+    filter(!is.na(padj), padj < 0.01, lfc < -0.3) %>%
+    pull(gene_id)
+  # change to the right species
+  input_entrezid <- rdata %>% filter(gene_id %in% ora_input, !is.na(entrez))
+  # AnnotationDbi::select(ann.org, ora_input, 'ENSEMBL', columns = c('ENTREZID', 'SYMBOL'))
+  down <- run_fora_v2(input_entrezid, universe_mapping, all_in_life)
+
+  list(all = all, up = up, down = down)
 })
 ```
 
@@ -781,12 +806,14 @@ fa_list=lapply(de_list,function(contrast){
 # NOTE DT::datatables doesn't work with tabset and for loops
 # You can use the following code to print dynamically or call manually sanitize_datatable()
 # multiple times
-dt_list=list()
-for (contrast in names(de_list)){
-  res_sig=fa_list[[contrast]][["all"]] %>% filter(padj < 0.05)
-  dt_list=c(dt_list, 
-            list(h3(contrast)), 
-            list(sanitize_datatable(res_sig)))
+dt_list <- list()
+for (contrast in names(de_list)) {
+  res_sig <- fa_list[[contrast]][["all"]] %>% filter(padj < 0.05)
+  dt_list <- c(
+    dt_list,
+    list(h3(contrast)),
+    list(sanitize_datatable(res_sig))
+  )
 }
 tagList(dt_list)
 ```
@@ -795,12 +822,14 @@ tagList(dt_list)
 ## Down-regulated genes {.tabset}
 
 ```{r, results='asis', eval=run_FA}
-dt_list=list()
-for (contrast in names(de_list)){
-  res_sig=fa_list[[contrast]][["down"]] %>% filter(padj < 0.05)
-  dt_list=c(dt_list, 
-            list(h3(contrast)), 
-            list(sanitize_datatable(res_sig)))
+dt_list <- list()
+for (contrast in names(de_list)) {
+  res_sig <- fa_list[[contrast]][["down"]] %>% filter(padj < 0.05)
+  dt_list <- c(
+    dt_list,
+    list(h3(contrast)),
+    list(sanitize_datatable(res_sig))
+  )
 }
 tagList(dt_list)
 ```
@@ -809,12 +838,14 @@ tagList(dt_list)
 ## Up-regulated genes {.tabset}
 
 ```{r, results='asis', eval=run_FA}
-dt_list=list()
-for (contrast in names(de_list)){
-  res_sig=fa_list[[contrast]][["up"]] %>% filter(padj < 0.05)
-  dt_list=c(dt_list, 
-            list(h3(contrast)), 
-            list(sanitize_datatable(res_sig)))
+dt_list <- list()
+for (contrast in names(de_list)) {
+  res_sig <- fa_list[[contrast]][["up"]] %>% filter(padj < 0.05)
+  dt_list <- c(
+    dt_list,
+    list(h3(contrast)),
+    list(sanitize_datatable(res_sig))
+  )
 }
 tagList(dt_list)
 ```
@@ -823,58 +854,60 @@ tagList(dt_list)
 # Save files
 
 ```{r write_files}
-if (!is.null(subset_value) & !is.null(subset_value)){
-  filenames = str_interp("${subset_value}")
+if (!is.null(subset_value) & !is.null(subset_value)) {
+  filenames <- str_interp("${subset_value}")
 } else {
-  filenames = "full"
+  filenames <- "full"
 }
 
-filename = paste0(filenames)
-name_expression_fn=file.path(
+filename <- paste0(filenames)
+name_expression_fn <- file.path(
   basedir,
-  str_interp("${filename}_expression.csv"))
-counts_norm=norm_matrix %>% as.data.frame() %>% 
-  rownames_to_column("gene_id") 
+  str_interp("${filename}_expression.csv")
+)
+counts_norm <- norm_matrix %>%
+  as.data.frame() %>%
+  rownames_to_column("gene_id")
 write_csv(counts_norm, name_expression_fn)
 
-for (contrast in names(contrasts)){
-
-  name_deg_fn=file.path(
+for (contrast in names(contrasts)) {
+  name_deg_fn <- file.path(
     basedir,
-    str_interp("${filename}_deg.csv"))
-  
-  name_pathways_fn=file.path(
-    basedir,
-    str_interp("${filename}_pathways.csv"))
+    str_interp("${filename}_deg.csv")
+  )
 
-  res_for_writing <- de_list[[contrast]][["all"]] %>% 
+  name_pathways_fn <- file.path(
+    basedir,
+    str_interp("${filename}_pathways.csv")
+  )
+
+  res_for_writing <- de_list[[contrast]][["all"]] %>%
     mutate(comparison = contrast)
-  
+
   # NOTE choose what pathway to save, all, down or up, or everything, just
-  #.     need to add more lines
-  pathways_for_writing <- fa_list[[contrast]][["all"]] %>% 
+  # .     need to add more lines
+  pathways_for_writing <- fa_list[[contrast]][["all"]] %>%
     mutate(comparison = contrast)
-  
+
   write_csv(res_for_writing, name_deg_fn)
   write_csv(pathways_for_writing, name_pathways_fn)
 }
-
 ```
 
 If you would like to use `DEGpatterns.Rmd` template to visualize trends of gene changes across conditions/groups, please save the following output:
 
 ```{r}
-saveRDS(dds_to_use,"DEGpattern_deseq_obj.rds")
-saveRDS(coldata,"DEGpattern_deseq_meta.rds")
+saveRDS(dds_to_use, "DEGpattern_deseq_obj.rds")
+saveRDS(coldata, "DEGpattern_deseq_meta.rds")
 
 padj.cutoff <- 0.05
 topN <- 1000
-deg_List <- imap(de_list,\(contrast_de,contrast){
+deg_List <- imap(de_list, \(contrast_de, contrast){
   res_LRT <- contrast_de[["sig"]]
-  gene_padj <- setNames(res_LRT$padj,rownames(res_LRT))
-  gene_sig <- gene_padj[gene_padj<padj.cutoff]
-  degs <- sort(gene_sig)[1:min(length(gene_sig),topN)]
-  saveRDS(degs,glue("DEGpattern_deseq_{contrast}_DEGs_padj{padj.cutoff}_topN{topN}.rds"))
+  gene_padj <- setNames(res_LRT$padj, rownames(res_LRT))
+  gene_sig <- gene_padj[gene_padj < padj.cutoff]
+  degs <- sort(gene_sig)[1:min(length(gene_sig), topN)]
+  saveRDS(degs, glue("DEGpattern_deseq_{contrast}_DEGs_padj{padj.cutoff}_topN{topN}.rds"))
   return(degs)
 })
 # Please note, you can choose to combine all significant results across contrast as well
