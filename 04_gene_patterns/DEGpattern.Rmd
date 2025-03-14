@@ -16,8 +16,11 @@ output:
          collapsed: true
          smooth_scroll: true
 params:
+   # RDS object with dds variable from DESeq2 package
    deseq_obj: "https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/DEGpattern/DEGpattern_deseq_obj.rds"
+   # a data.frame specifying the sample groups of interest
    deseq_meta: "https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/DEGpattern/DEGpattern_deseq_meta.rds"
+   # a named vector with Differentially Expressed Genes (DEG) 
    deseq_deg: "https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/DEGpattern/DEGpattern_deseq_DEGs_padj0.05_topN1000.rds"
 ---
 
@@ -43,7 +46,7 @@ There are two additional parameters can be tuned in generating `deseq_deg` from 
 - `topN`: A second filtering after `padj.cutoff` to keep only top significant genes for clustering for computing efficiency. If number of significant genes are less than the number supplied here, all genes will be used for clustering. Default: 1000 
 
 ```{r setup, cache=FALSE,message=FALSE,echo=FALSE,eval=T}
-stopifnot(R.version$major>= 4) # requires R4
+stopifnot(R.version$major >= 4) # requires R4
 options(stringsAsFactors = F)
 library(DEGreport)
 library(DESeq2)
@@ -53,33 +56,34 @@ library(knitr)
 library(glue)
 ggplot2::theme_set(ggprism::theme_prism(base_size = 12))
 catCols <- as.vector(grafify:::graf_palettes[["kelly"]])
-scale_colour_discrete <- function(...)
-  scale_colour_manual(...,values = catCols)
+scale_colour_discrete <- function(...) {
+  scale_colour_manual(..., values = catCols)
+}
 
 set.seed(1454944673L)
 opts_chunk[["set"]](
-    audodep = TRUE,
-    cache = FALSE,
-    cache.lazy = FALSE,
-    error = TRUE,
-    echo = F,
-    eval=T,
-    fig.height = 6,
-    fig.retina = 2L,
-    fig.width = 6,
-    message = FALSE,
-    tidy = F,
-    warning = F
+  audodep = TRUE,
+  cache = FALSE,
+  cache.lazy = FALSE,
+  error = TRUE,
+  echo = F,
+  eval = T,
+  fig.height = 6,
+  fig.retina = 2L,
+  fig.width = 6,
+  message = FALSE,
+  tidy = F,
+  warning = F
 )
 
-invisible(list2env(params,environment()))
+invisible(list2env(params, environment()))
 
-inputRead <- function(f){
-  if(isUrl(deseq_obj)){
-  return(readRDS(url(deseq_obj)))
-  }else{
-  return(readRDS(deseq_obj))
-}
+inputRead <- function(f) {
+  if (isUrl(deseq_obj)) {
+    return(readRDS(url(deseq_obj)))
+  } else {
+    return(readRDS(deseq_obj))
+  }
 }
 ```
 
@@ -91,7 +95,7 @@ deg <- inputRead(deseq_deg)
 
 
 ```{r result-extract}
-rld_mat <- assay(rlog(dds, blind=TRUE))
+rld_mat <- assay(rlog(dds, blind = TRUE))
 ```
 
 # Identifying clusters of genes with shared expression profiles
@@ -111,16 +115,19 @@ The rlog transformed counts for the significant genes are input to `degPatterns`
 * `col`: character column name in metadata to separate samples
 
 ```{r plot-DEGpattern}
-clusters <- degPatterns(cluster_rlog, 
-                        metadata = meta,
-                        time = "sampletype",
-                        col=NULL,plot=F)
-P <- clusters$plot+
-  theme_bw()+
-  theme(legend.position="None",
-        strip.text = element_text(size = rel(1.5)),
-        strip.background = element_blank())+
-  scale_x_discrete(labels=gsub("_","\n",levels(meta$sampletype)))
+clusters <- degPatterns(cluster_rlog,
+  metadata = meta,
+  time = "sampletype",
+  col = NULL, plot = F
+)
+P <- clusters$plot +
+  theme_bw() +
+  theme(
+    legend.position = "None",
+    strip.text = element_text(size = rel(1.5)),
+    strip.background = element_blank()
+  ) +
+  scale_x_discrete(labels = gsub("_", "\n", levels(meta$sampletype)))
 print(P)
 ```
 
@@ -135,7 +142,7 @@ Since we are interested in Group 1, we can filter the dataframe to keep only tho
 ```{r display-clusters}
 # Extract the Group 1 genes
 DT::datatable(clusters$df %>%
-          dplyr::filter(cluster == 1),rownames= FALSE)
+  dplyr::filter(cluster == 1), rownames = FALSE)
 ```
 
 After extracting a group of genes, we can use annotation packages to obtain additional information. We can also use these lists of genes as input to downstream functional analysis tools to obtain more biological insight and see whether the groups of genes share a specific function. 

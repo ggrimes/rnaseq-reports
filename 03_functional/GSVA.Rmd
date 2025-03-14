@@ -32,10 +32,10 @@ library(rstudioapi)
 library(tidyverse)
 setwd(fs::path_dir(getSourceEditorContext()$path))
 # NOTE: This code will check version, this is our recommendation, it may work
-#.      other versions
-stopifnot(R.version$major>= 4) # requires R4
-if (compareVersion(R.version$minor,"3.1")<0) warning("We recommend >= R4.3.1") 
-stopifnot(compareVersion(as.character(BiocManager::version()), "3.18")>=0)
+# .      other versions
+stopifnot(R.version$major >= 4) # requires R4
+if (compareVersion(R.version$minor, "3.1") < 0) warning("We recommend >= R4.3.1")
+stopifnot(compareVersion(as.character(BiocManager::version()), "3.18") >= 0)
 ```
 
 This code is in this ![](https://img.shields.io/badge/status-alpha-yellow) revision.
@@ -62,20 +62,20 @@ library(rstudioapi)
 library(tidyverse)
 library(clusterProfiler)
 
-colors=cb_friendly_cols(1:15)
+colors <- cb_friendly_cols(1:15)
 ggplot2::theme_set(theme_prism(base_size = 14))
 opts_chunk[["set"]](
-    cache = F,
-    cache.lazy = FALSE,
-    dev = c("png", "pdf"),
-    error = TRUE,
-    highlight = TRUE,
-    message = FALSE,
-    prompt = FALSE,
-    tidy = FALSE,
-    warning = FALSE,
-    echo = T, 
-    fig.height = 4)
+  cache = F,
+  cache.lazy = FALSE,
+  dev = c("png", "pdf"),
+  error = TRUE,
+  highlight = TRUE,
+  message = FALSE,
+  prompt = FALSE,
+  tidy = FALSE,
+  warning = FALSE,
+  echo = T,
+  fig.height = 4)
 
 # set seed for reproducibility
 set.seed(1234567890L)
@@ -85,19 +85,20 @@ set.seed(1234567890L)
 ```{r load_params, cache = FALSE, message = FALSE, warning=FALSE}
 source(params$project_file)
 source(params$params_file)
-map(list.files(params$functions_file,pattern = "*.R$",full.names = T),source) %>% invisible()
-column=params$column
-contrasts=params$contrasts
-subset_column=params$subset_column
-subset_value=params$subset_value
-
+map(list.files(params$functions_file, pattern = "*.R$", full.names = T), source) %>% invisible()
+column <- params$column
+contrasts <- params$contrasts
+subset_column <- params$subset_column
+subset_value <- params$subset_value
 ```
 
 ```{r sanitize_datatable}
-sanitize_datatable = function(df, ...) {
- # remove dashes which cause wrapping
- DT::datatable(df, ..., rownames=gsub("-", "_", rownames(df)),
-                   colnames=gsub("-", "_", colnames(df)))
+sanitize_datatable <- function(df, ...) {
+  # remove dashes which cause wrapping
+  DT::datatable(df, ...,
+    rownames = gsub("-", "_", rownames(df)),
+    colnames = gsub("-", "_", colnames(df))
+  )
 }
 ```
 
@@ -110,15 +111,15 @@ sanitize_datatable = function(df, ...) {
 -   Aim: `r aim`
 
 ```{r load_data}
-
-coldata <- load_coldata(coldata_fn, column,
-                        subset_column, subset_value)
-coldata[[contrasts[[1]][1]]] = relevel(as.factor(coldata[[contrasts[[1]][1]]]), contrasts[[1]][3])
-coldata$sample=row.names(coldata)
+coldata <- load_coldata(
+  coldata_fn, column,
+  subset_column, subset_value
+)
+coldata[[contrasts[[1]][1]]] <- relevel(as.factor(coldata[[contrasts[[1]][1]]]), contrasts[[1]][3])
+coldata$sample <- row.names(coldata)
 
 counts <- load_counts(counts_fn)
-counts <- counts[,colnames(counts) %in% coldata$sample]
-
+counts <- counts[, colnames(counts) %in% coldata$sample]
 ```
 
 # Method
@@ -134,59 +135,55 @@ coldata %>% sanitize_datatable()
 ```
 
 ```{r normalize_data}
-dds <- DESeqDataSetFromMatrix(counts, 
-                              colData = coldata, 
-                              design = ~ 1)
+dds <- DESeqDataSetFromMatrix(counts,
+  colData = coldata,
+  design = ~1
+)
 
 dds <- DESeq(dds)
-norm_counts <- counts(dds, normalized=TRUE)
-
+norm_counts <- counts(dds, normalized = TRUE)
 ```
 
 
 ```{r ensembl_to_entrez}
 ## convert ensembl to entrez
 
-entrezIDs_all = convert2EntrezID(IDs=rownames(norm_counts), orgAnn="org.Hs.eg.db",
- ID_type="ensembl_gene_id")
+entrezIDs_all <- convert2EntrezID(
+  IDs = rownames(norm_counts), orgAnn = "org.Hs.eg.db",
+  ID_type = "ensembl_gene_id"
+)
 
-entrezid <- mapIds(org.Hs.eg.db, keys = rownames(norm_counts), keytype="ENSEMBL", column = "ENTREZID")
+entrezid <- mapIds(org.Hs.eg.db, keys = rownames(norm_counts), keytype = "ENSEMBL", column = "ENTREZID")
 
 counts_entrez <- norm_counts
 stopifnot(nrow(counts_entrez) == length(entrezid))
 rownames(counts_entrez) <- entrezid
-
 ```
 
 
 # Prep and run GSVA
 
 ```{r load_genesets}
-
 # gene_sets = read_table(params$geneset_fn, col_names = F)
 gene_sets <- read.gmt(params$geneset_fn)
 
 genes_by_pathway <- split(gene_sets$gene, gene_sets$term)
-
 ```
 
 
 ```{r GSVA, message = F, warning = F}
-
 gsvaPar <- GSVA::gsvaParam(counts_entrez, genes_by_pathway, kcdf = "Poisson")
 
 gsva.es <- gsva(gsvaPar, verbose = F)
-
 ```
 
 ## Test for Significance
 
 ```{r limma}
-
 mod <- model.matrix(~ factor(coldata[[column]]))
 fit <- lmFit(gsva.es, mod)
 fit <- eBayes(fit)
-res <- topTable(fit, coef=paste0("factor(coldata[[column]])",contrasts[[1]][2]),number=Inf,sort.by="P")
+res <- topTable(fit, coef = paste0("factor(coldata[[column]])", contrasts[[1]][2]), number = Inf, sort.by = "P")
 
 res %>% sanitize_datatable()
 ```
@@ -198,35 +195,35 @@ scores <- t(gsva.es)
 
 sig <- subset(res, res$adj.P.Val < 0.1)
 
-if(nrow(sig) >= 5){
+if (nrow(sig) >= 5) {
   pathways <- rownames(sig)[1:5]
-} else if(nrow(sig) == 0) {
+} else if (nrow(sig) == 0) {
   pathways <- c()
 } else {
   pathways <- rownames(sig)
 }
 
-if (length(pathways) > 0){
-  to_graph = data.frame(scores[,pathways]) %>% rownames_to_column('sample') %>%
-    pivot_longer(!sample, names_to = 'pathway', values_to = 'enrichment_score')
+if (length(pathways) > 0) {
+  to_graph <- data.frame(scores[, pathways]) %>%
+    rownames_to_column("sample") %>%
+    pivot_longer(!sample, names_to = "pathway", values_to = "enrichment_score")
   to_graph <- left_join(to_graph, coldata)
-  
+
   for (single_pathway in pathways) {
-    
-    cat('### ', single_pathway, '\n')
-    
+    cat("### ", single_pathway, "\n")
+
     to_graph_single_pathway <- to_graph %>% filter(pathway == single_pathway)
-    p <- ggplot(to_graph_single_pathway, aes(x = .data[[column]], y = enrichment_score)) + geom_boxplot() + 
-      geom_point(alpha=0.5) + ggtitle(single_pathway)
+    p <- ggplot(to_graph_single_pathway, aes(x = .data[[column]], y = enrichment_score)) +
+      geom_boxplot() +
+      geom_point(alpha = 0.5) +
+      ggtitle(single_pathway)
     print(p)
-    
-    cat('\n\n')
-    
+
+    cat("\n\n")
   }
 } else {
-  cat('No pathways were detected as significantly enriched')
+  cat("No pathways were detected as significantly enriched")
 }
-
 ```
 
 # R session
