@@ -15,17 +15,30 @@ output:
          collapsed: true
          smooth_scroll: true
 params:
-    ## Combatseq and ruv can both be false or ONLY ONE can be true
+  ## Combatseq and ruv can both be false or ONLY ONE can be true
+  # column is the factor of interest in your data that you are trying to evaluate
+  # For example, this might be "condition" or "treatment"
   column: "sample_type"
+  # This is a list of contrasts that you would like to evaluate
+  # The syntax for each item in the list is: c("column_name", "treatment_name", "control_name")
   contrasts: !r list(c("sample_type", "tumor", "normal"),c("sample_type", "normal", "tumor"))
+  # These next two subset lines are useful if you would like to subset your data in someway before you run the analysis
+  # The column of data in you would like to subset, perhaps: "cell_type" or "batch"
   subset_column: null
+  # Then, which values for that subset_column would you like to keep, like "macrophages" or "batch_2"
   subset_value: null
+  # Reference genome used
   genome: hg38
+  # If you would like to run RUV, set to TRUE, otherwise FALSE
   ruv: false
+  # If you would like to run ComBatseq, set to TRUE, otherwise FALSE
   combatseq: false
+  # Path to the params.R file
   # params_file: ../00_params/params.R 
   params_file: ../00_params/params-example.R
+  # Path to the information.R file
   project_file: ../information.R
+  # Path to the directory with the functions
   functions_file: ../00_libs
 ---
 
@@ -35,10 +48,12 @@ Template developed with materials from https://hbctraining.github.io/main/.
 # This set up the working directory to this file so all files can be found
 library(rstudioapi)
 setwd(fs::path_dir(getSourceEditorContext()$path))
-# NOTE: This code will check version, this is our recommendation, it may work
-#.      other versions
-stopifnot(R.version$major>= 4) # requires R4
+# NOTE: This code will check version, this is our recommendation, it may work on other versions
+# Requires R version 4
+stopifnot(R.version$major>= 4)
+# If the minor version number is less than .3.1, send a warning that we recommend R version 4.3.1 or higher
 if (compareVersion(R.version$minor,"3.1")<0) warning("We recommend >= R4.3.1") 
+# Requires BiocManager version 3.18 or later
 stopifnot(compareVersion(as.character(BiocManager::version()), "3.18")>=0)
 ```
 
@@ -52,41 +67,49 @@ source(params$params_file)
 source(params$project_file)
 # 3. Load custom functions to load data from coldata/metrics/counts
 map(list.files(params$functions_file,pattern = "*.R$",full.names = T), source) %>% invisible()
-# IMPORTANT set these values if you are not using the parameters in the header (lines 22-31)
-genome=params$genome
-if(grepl("hg|human", genome, ignore.case = TRUE)) {
-   library(org.Hs.eg.db)
-   ann.org=org.Hs.eg.db
-} else if(grepl("mm|mouse", genome, ignore.case = TRUE)) {
-   library(org.Mm.eg.db)
-   ann.org=org.Mm.eg.db
+
+# Assign the genome parameter to the object genome
+# IMPORTANT set these values if you are not using the parameters in the header (lines 23-44)
+genome <- params$genome
+# If the genome name is matching to human or mouse, use their respective annotation, otherwise give a warning
+if (grepl("hg|human", genome, ignore.case = TRUE)) {
+  library(org.Hs.eg.db)
+  ann.org <- org.Hs.eg.db
+} else if (grepl("mm|mouse", genome, ignore.case = TRUE)) {
+  library(org.Mm.eg.db)
+  ann.org <- org.Mm.eg.db
 } else {
-   warning("If you are working on an organism other than human or mouse: Bioconductor packages are also available for a number of other organisms. This code should work for any of the organisms with an eg.db package listed at https://bioconductor.org/packages/release/BiocViews.html#___Organism -- please search for your organism and assign ann.org manually.")
+  warning("If you are working on an organism other than human or mouse: Bioconductor packages are also available for a number of other organisms. This code should work for any of the organisms with an eg.db package listed at https://bioconductor.org/packages/release/BiocViews.html#___Organism -- please search for your organism and assign ann.org manually.")
 }
 
-column=params$column
-# use contrast to set up multiple comparisons
-# this is set up in the top as well, but you can change it here:
-# example would be: list(c("sample_type", "tumor", "normal"))
-contrasts=params$contrasts
-subset_column=params$subset_column
-subset_value=params$subset_value
-run_ruv=params$ruv
-run_combatseq=params$combatseq
-run_rmv=run_ruv | run_combatseq
+# Assigns the column object from the parameters in the YAML header to the column object
+column <- params$column
+# Assigns the contrasts object from the parameters in the YAML header to the contrasts object
+contrasts <- params$contrasts
+# Assigns the subset_column object from the parameters in the YAML header to the subset_column object
+subset_column <- params$subset_column
+# Assigns the subset_value object from the parameters in the YAML header to the subset_value object
+subset_value <- params$subset_value
+# Assigns the ruv boolean object from the parameters in the YAML header to the run_ruv object
+run_ruv <- params$ruv
+# Assigns the combatseq boolean object from the parameters in the YAML header to the run_combatseq object
+run_combatseq <- params$combatseq
+# If the run_ruv object and/or run_combatseq is TRUE, set the run_rmv boolean to TRUE, otherwise set run_rmv boolean to FALSE
+run_rmv <- run_ruv | run_combatseq
+# Assign the value of column to factor_of_interest, this will allow you to change factor_of_interest throughout the Rmd if needed, while maintaining the value of column 
 factor_of_interest <- column
 ```
 
 
 ```{r load_libraries, cache = FALSE, message = FALSE, warning=FALSE}
+# Load required libraries
 library(knitr)
 library(tidyverse)
 library(janitor)
 library(purrr)
 library(ggpubr)
-
-#library(AnnotationHub)
-#library(ensembldb)
+# library(AnnotationHub)
+# library(ensembldb)
 library(rtracklayer)
 library(DESeq2)
 library(vegan)
@@ -95,7 +118,6 @@ library(DEGreport)
 library(pheatmap)
 library(msigdbr)
 library(fgsea)
-
 library(htmltools)
 library(ggforce)
 library(RColorBrewer)
@@ -104,65 +126,101 @@ library(viridis)
 library(ggprism)
 library(grafify)
 
-filter=dplyr::filter
-select=dplyr::select
+# Overwrite the default filter function with dplyr's filter function
+filter <- dplyr::filter
+# Overwrite the default select function with dplyr's select function
+select <- dplyr::select
 
+# Setting the base theme that ggplot2 will use to theme_prism with the standard text size being 12
 ggplot2::theme_set(theme_prism(base_size = 12))
+# Setting scale color palette to the palette "kelly" from grafify
+# You can select different palettes from here:
 # https://grafify-vignettes.netlify.app/colour_palettes.html
-# NOTE change colors here if you wish
-scale_colour_discrete <- function(...)
-  scale_colour_manual(..., 
-                      values = as.vector(grafify:::graf_palettes[["kelly"]]))
-scale_fill_discrete <- function(...)
-  scale_fill_manual(..., 
-                      values = as.vector(grafify:::graf_palettes[["kelly"]]))
+scale_colour_discrete <- function(...) {
+  scale_colour_manual(...,
+    values = as.vector(grafify:::graf_palettes[["kelly"]])
+  )
+}
+# Setting scale fill palette to the palette "kelly" from grafify
+# You can select different palettes from here:
+# https://grafify-vignettes.netlify.app/colour_palettes.html
+scale_fill_discrete <- function(...) {
+  scale_fill_manual(...,
+    values = as.vector(grafify:::graf_palettes[["kelly"]])
+  )
+}
+# Setting color to the palette "kelly" from grafify
+# You can select diffferent palettes from here:
+# https://grafify-vignettes.netlify.app/colour_palettes.html
 colors <- as.vector(grafify:::graf_palettes[["kelly"]])
 
+# Setting options for Rmd code chunks
 opts_chunk[["set"]](
-    cache = F,
-    cache.lazy = FALSE,
-    dev = c("png", "pdf"),
-    error = TRUE,
-    highlight = TRUE,
-    message = FALSE,
-    prompt = FALSE,
-    tidy = FALSE,
-    warning = FALSE,
-    echo = T, 
-    fig.height = 4)
+  cache = FALSE, # When the cache is turned on, knitr will skip the execution of this code chunk if it has been executed before and nothing in the code chunk has changed since then. For a cached code chunk, its output and objects will be automatically loaded from the previous run, as if the chunk were executed again.
+  cache.lazy = FALSE, # Whether to only load cached objects when needed
+  dev = c("png", "pdf"), # Specifies the graphical devices to use figures
+  error = TRUE, # Whether to stop rendering on an error 
+  highlight = TRUE, # Whether to enable syntax highlighting for the code in the chunk
+  message = FALSE, # Whether to preserve messages emitted by message() in the final output 
+  prompt = FALSE, # Whether an R prompt (>) is displayed at the beginning of each line of R input code in rendered documents
+  tidy = FALSE, # Whether or not R code in a chunk is formatted automatically before rendering, similar to the R package, styler
+  warning = FALSE, # Whether to preserve warnings in the output 
+  echo = T, # Whether to include R source code in the final knitted document
+  fig.height = 4) # Sets the default height of plot figures generated in inches
 
-# set seed for reproducibility
+# Set seed for reproducibility
 set.seed(1234567890L)
 ```
 
 ```{r sanitize_datatable}
-sanitize_datatable = function(df, ...) {
- # remove dashes which cause wrapping
- DT::datatable(df, ..., rownames=gsub("-", "_", rownames(df)),
-                   colnames=gsub("-", "_", colnames(df)))
+# Create a function to clean up data frames
+sanitize_datatable <- function(df, ...) {
+  # Remove dashes from row names and column names which cause wrapping
+  DT::datatable(df, ...,
+    rownames = gsub("-", "_", rownames(df)),
+    colnames = gsub("-", "_", colnames(df))
+  )
 }
 ```
 
 ```{r load_data, message=F, warning=F}
 # This code will load from nf-core folder
 # NOTE make sure to set numerator and denominator
-coldata <- load_coldata(coldata_fn, column,
-                        subset_column, subset_value)
-coldata$sample=row.names(coldata)
+# Use the load_coldata function from the sourced load_data.R within the 00_params directory, to subset the colodata_fn dataframe that was pointed to when sourcing params.R within the 00_params directory
+# The factors for this subsetting were set in thr params section of the YAML code chunk. 
+# The default subsetting is none since subset_column and subset_value are both set to null initially
+# The column object here is given to ensure that the column of interest exists in the loaded dataframe
+coldata <- load_coldata(
+  coldata_fn, column,
+  subset_column, subset_value
+)
+# Set the row names from the coldata dataframe to be a column called sample
+# This column should already exist from the Nextflow run
+coldata$sample <- row.names(coldata)
 
+# Use the load_counts function from the sourced load_data.R within the 00_params directory, to load the counts data from the dataframe pointed to when sourcing params.R within the 00_params directory
 counts <- load_counts(counts_fn)
-counts <- counts[,colnames(counts) %in% coldata$sample]
+# If subsetting parameters were provided, this will subset the counts data to match the samples in the coldata dataframe
+counts <- counts[, colnames(counts) %in% coldata$sample]
 
-metrics <- load_metrics(se_object, multiqc_data_dir, gtf_fn, counts) %>% 
-  left_join(coldata, by = c('sample')) %>% 
-  as.data.frame()
+# Use the load_metrics function from the sourced load_data.R within the 00_params directory, to load the metrics from the multiqc, along with the values of se_object and gtf_fn defined in the sourced params.R within the 00_params directory and also the recently created counts data, which is used to estimate the tRNA/rRNA rate (r_and_t_rna_rate).
+metrics <- load_metrics(se_object, multiqc_data_dir, gtf_fn, counts) %>%
+  left_join(coldata, by = c("sample")) %>% # Join the coldata table to the end of object produced from the load_metrics function
+  as.data.frame() # Format it as a dataframe
+# Assign the sample names to be the row names in the metrics object
 rownames(metrics) <- metrics$sample
+# If subsetting parameters were provided, this will subset the metrics data to match the samples in the coldata dataframe
 metrics <- subset(metrics, metrics$sample %in% coldata$sample)
-# if the names don't match in order or string check files names and coldata information
-counts = counts[,rownames(metrics)]
-coldata = coldata[rownames(metrics),]
-coldata[[contrasts[[1]][1]]] = relevel(as.factor(coldata[[contrasts[[1]][1]]]), contrasts[[1]][3])
-stopifnot(all(names(counts) == rownames(metrics)))
+
+# If the sample names in the counts (column) don't match in order or string of the metrics file, reorder them in the counts object
+counts <- counts[, rownames(metrics)]
+# If the sample names in the coldata object (rows) don't match in order or string of the metrics file, reorder them in the counts object
+coldata <- coldata[rownames(metrics), ]
+
+# This will relevel the first contrast in your contrasts list with with the "control_name" as the baseline value defined in the params section of the YAML
+coldata[[contrasts[[1]][1]]] <- relevel(as.factor(coldata[[contrasts[[1]][1]]]), contrasts[[1]][3])
+# Stop if the column names in counts does not match and in the same order as the row names in metrics
+stopifnot(all(colnames(counts) == rownames(metrics)))
 ```
 
 # Overview
@@ -174,35 +232,38 @@ stopifnot(all(names(counts) == rownames(metrics)))
 -   Aim: `r aim`
 
 ```{r load_counts_data}
-# Query AnnotationHub
+# Query AnnotationHub and assign it to ah object
 ah <- AnnotationHub::AnnotationHub()
 
-if (grepl("hg|human", genome, ignore.case = TRUE)) {
-  ens <- AnnotationHub::query(ah, c("Homo sapiens", "EnsDb"))
-  ens <- ens[["AH119325"]]
-} else if(grepl("mm|mouse", genome, ignore.case = TRUE)) {
-  ens <- AnnotationHub::query(ah, c("Mus musculus", "EnsDb"))
-  ens <- ens[["AH116340"]]
-} else {
-  cat("Warning:please, get a table that contains gene_id, gene_name and entrez to continue using this template.")
+# Retrieve the annotations from Annotation Hub dependent on your reference genome
+if (grepl("hg|human", genome, ignore.case = TRUE)) { # If the reference genome is human
+  ens <- AnnotationHub::query(ah, c("Homo sapiens", "EnsDb")) # Retrieve the recent human annotations
+  ens <- ens[["AH119325"]] # Assign a human annotation, may need to change
+} else if (grepl("mm|mouse", genome, ignore.case = TRUE)) { # If the reference genome is mouse
+  ens <- AnnotationHub::query(ah, c("Mus musculus", "EnsDb")) # Retrieve the recent mouse annotations
+  ens <- ens[["AH116340"]] # Assign a mouse annotation, may need to change
+} else { # If the reference genome is not human or mouse, prin this warning
+  cat("Warning: Please, get a table that contains gene_id, gene_name and entrez to continue using this template.")
 }
 
-# Create a gene-level dataframe 
-# NOTE change this code if you are not using AnnotationHub
-#       the rdata is a table with gene_id, gene_name and entrez columns
-rdata <- ensembldb::genes(ens, return.type = "data.frame")  %>%
-  dplyr::select(gene_id, gene_name, entrez=entrezid,
-                gene_biotype, description) %>% 
-  dplyr::filter(gene_id %in% rownames(counts)) %>% 
-  dplyr::distinct(gene_id, .keep_all = TRUE)
+# Create a gene-level dataframe
+# NOTE: Change this code if you are not using AnnotationHub
+#       The rdata is a table with gene_id, gene_name and entrez columns
+rdata <- ensembldb::genes(ens, return.type = "data.frame") %>% # Extract ens annotation as a dataframe
+  dplyr::select(gene_id, gene_name,
+    entrez = entrezid,
+    gene_biotype, description
+  ) %>% # Retrieve certain columns and rename the entrez column
+  dplyr::filter(gene_id %in% rownames(counts)) %>% # Retain only gene annotations in the counts matrix
+  dplyr::distinct(gene_id, .keep_all = TRUE) # Retain only unique gene_ids and also retain all of the other columns with .keep_all = TRUE
 
 # Keep one entrez Id per gene
-rdata$entrez <- purrr::map(rdata$entrez,1) %>%  unlist()
+rdata$entrez <- purrr::map(rdata$entrez, 1) %>% unlist()
 # Filter not needed genes
-# rdata <- rdata %>% filter(!grepl("ncRNA", gene_biotype)) %>% 
-#   filter(!grepl('Mir', gene_name)) %>% # other examples
-#   filter(!grepl('Snor', gene_name))
-# counts <- counts[rdata$gene_id,]
+# rdata <- rdata %>% filter(!grepl("ncRNA", gene_biotype)) %>% # Remove non-coding RNAs
+#   filter(!grepl('Mir', gene_name)) %>% # Remove miRNAs
+#   filter(!grepl('Snor', gene_name)) # Remove snoRNAs
+# counts <- counts[rdata$gene_id,] # Filter the counts matrix after removing these not needed genes
 ```
 
 # Set up
@@ -215,10 +276,13 @@ We recommend not to filter before DESeq2 since it will be handling by it. There 
 
 
 ```{r setup_RUV}
+# Establish a null DDS object for DESeq2
 dds_to_use <- DESeqDataSetFromMatrix(counts, coldata, design = ~1)
 
+# Perform a variance-stabilized transformation and assign the DESeqTransform object to vsd_before
 vsd_before <- vst(dds_to_use)
-norm_matrix = assay(vsd_before)
+# Extract the variance-stabilized transformed (normalized) counts and assign them to norm_matrix
+norm_matrix <- assay(vsd_before)
 ```
 
 
@@ -234,20 +298,29 @@ Dispersion estimates are a key part of the DESEQ2 analysis. DESEQ2 uses data fro
 
 ```{r set group, eval=FALSE, echo=FALSE}
 ## Example of creating a group covariate
+#meta$group <- paste0(meta$sex, "_", meta$age, "_", meta$treatment)
 
-## meta$group <- paste0(meta$sex,"_", meta$age,"_",meta$treatment)
-
-factor_of_interest <- "insert column name for covariate of interest"
+# Re-assign the factor of interest in case it has change
+# You can modify this to test for different factors of interest with:
+# factor_of_interest <- "insert column name for covariate of interest"
+factor_of_interest <- column
 ```
 
 
 ```{r PCA}
-pca <- degPCA(norm_matrix, metrics,
-              condition = factor_of_interest, name = "sample", data = T)
+# Run PCA on the normalized counts
+pca <- degPCA(norm_matrix, 
+  metadata = metrics, # Using the metrics object as our metadata
+  condition = factor_of_interest, # Specifying the condition as our factor_of_interest from the above code chunk
+  name = "sample", # Column from metadata to use to label the points in the PCA plot
+  data = TRUE # Include the data 
+)
 
-pca$plot + ggtitle(paste0("All samples", "\nPCA using ", nrow(vsd_before), " genes")) +
-  theme(plot.title=element_text(hjust=0.5)) +
-  geom_mark_ellipse(aes(color = .data[[column]])) +  scale_color_grafify("kelly")
+pca$plot + # Create plot
+  ggtitle(paste0("All samples", "\nPCA using ", nrow(vsd_before), " genes")) + # Add title to plot
+  theme(plot.title=element_text(hjust=0.5)) + # Center title on plot
+  geom_mark_ellipse(aes(color = .data[[column]])) +  # Create ellipses on plot
+  scale_color_grafify("kelly") # Set color parameter for plot
 ```
 
 ## Analysis of the variance by group
@@ -257,10 +330,17 @@ Groups in a univariate analysis can also differ with regard to their mean values
 Here we apply this test to our variance stabilized data. We calculate distances between samples and then use the `betadisper()` function from the popular vegan package. We get two overall p-values where significant means that the dispersions are different between groups. The first p-value comes from the `anova()` function and the second from the `permutest()` function. We also get pairwise p-values for every group-group comparison.
 
 ```{r PERMDISP}
+# Use vegdist() to compute pair-wise dissimilarity indices between samples from the normalized count matrix
+# Note, we need to transpose (use t())) the counts matrix for vegdist() to compute dissimilarity indices between the samples
 vare.disa <- vegdist(t(assay(vsd_before)))
 
-mod = betadisper(vare.disa, metrics[[factor_of_interest]])
+# Evaluate the homogeneity of dispersion within the groups
+mod <- betadisper(vare.disa, group = metrics[[factor_of_interest]])
+# Test the homogeniety of dispersion between groups  with ANOVA. 
+# ANOVA tests is there is overall significant variation in variance between groups.
 anova(mod)
+# Test the homogeniety of dispersion between groups  with a permutation test
+# The permutation test considers pairwise comparisons so you can see which group(s) is different
 permutest(mod, pairwise = TRUE)
 ```
 
@@ -273,9 +353,9 @@ Here, we are using `DEGreport::degCovariates()` to explore potential correlation
 
 
 ```{r covariates, fig.height = 6, fig.width = 10}
-degCovariates(
-  norm_matrix,
-  metrics,
+# Visualize covariates for the PCs
+degCovariates(counts = norm_matrix, # Normalized counts matrix
+  metadata = metrics # Metadata to overlay as covariates
 )
 ```
 
@@ -283,14 +363,27 @@ degCovariates(
 
 
 ```{r init_DESEQ}
+# Enter your design formula
+# The format should be:
+# as.formula(paste0("~ ", column_to_control_for, " + ", factor_of_interest))
 formula <- as.formula(paste0("~ ", " + ", column))
-## Check if sample name matches
-stopifnot(all(names(counts) == rownames(coldata)))
+# Stop if the column names in counts does not match and in the same order as the row names in metrics
+stopifnot(all(colnames(counts) == rownames(coldata)))
 
-dds_to_use <- DESeqDataSetFromMatrix(counts, coldata, design = formula)
+# Create the DDS object for DESeq2 and assign it to the object dds_to_use
+dds_to_use <- DESeqDataSetFromMatrix(
+  countData = counts, # Provide the raw counts data
+  colData = coldata,  # Provide the metadata
+  design = formula # Provide the design formula
+)
 
+# Carry out a variance-stabilized transformation of the data in the DDS object and assign it to vsd_before
+# Note: vsd_before was previously assigned in the setup_RUV code chunk so this is overwriting that
 vsd_before <- vst(dds_to_use)
-norm_matrix = assay(vsd_before)
+# Extract the variance-stabilized transformed (normalized) counts and assign them to norm_matrix
+# Note: norm_matrix was previously assigned in the setup_RUV code chunk so this is overwriting that
+norm_matrix <- assay(vsd_before)
+# We are going to modify coldata in the RUV section (thus why we are creating new_cdata), but we will also want to retain the original
 new_cdata <- coldata
 ```
 
@@ -621,7 +714,8 @@ fa_gsea_list=lapply(de_list,function(contrast){
   input_entrezid <- AnnotationDbi::select(ann.org, gsea_input$gene_id, 'ENSEMBL', columns = c('ENTREZID', 'SYMBOL'))
   input_entrezid <- inner_join(gsea_input, input_entrezid, by=c("gene_id"="ENSEMBL")) %>%
     filter(!is.na(ENTREZID)) %>% 
-    distinct(ENTREZID, .keep_all=TRUE)
+    distinct(ENTREZID, .keep_all=TRUE) %>% 
+    arrange(desc(lfc))
   
   tb = run_fgsea_v2(input_entrezid, all_in_life)
   tb %>%  filter(padj<0.05)
@@ -767,6 +861,24 @@ for (contrast in names(contrasts)){
 
 ```
 
+If you would like to use `DEGpatterns.Rmd` template to visualize trends of gene changes across conditions/groups, please save the following output:
+
+```{r}
+saveRDS(dds_to_use,"DEGpattern_deseq_obj.rds")
+saveRDS(coldata,"DEGpattern_deseq_meta.rds")
+
+padj.cutoff <- 0.05
+topN <- 1000
+deg_List <- imap(de_list,\(contrast_de,contrast){
+  res_LRT <- contrast_de[["sig"]]
+  gene_padj <- setNames(res_LRT$padj,rownames(res_LRT))
+  gene_sig <- gene_padj[gene_padj<padj.cutoff]
+  degs <- sort(gene_sig)[1:min(length(gene_sig),topN)]
+  saveRDS(degs,glue("DEGpattern_deseq_{contrast}_DEGs_padj{padj.cutoff}_topN{topN}.rds"))
+  return(degs)
+})
+# Please note, you can choose to combine all significant results across contrast as well
+```
 # Conclusion
 
 # Methods
