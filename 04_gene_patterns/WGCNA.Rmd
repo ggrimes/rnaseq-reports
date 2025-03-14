@@ -20,9 +20,11 @@ params:
   minModuleSize: 30
   maxBlockSize: 4000
   mergeCutHeight: 0.25
+  # use this column 
   column: "sample_type"
   project_file: ../information.R
-  params_file: params_de-example.R
+  # use params.R with your data
+  params_file: ../00_params/params-example.R
   functions_file: ../libs 
 ---
 

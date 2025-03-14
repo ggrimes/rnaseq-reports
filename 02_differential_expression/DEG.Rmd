@@ -16,8 +16,6 @@ output:
          smooth_scroll: true
 params:
     ## Combatseq and ruv can both be false or ONLY ONE can be true
-  # numerator: tumor
-  # denominator: normal
   column: "sample_type"
   contrasts: !r list(c("sample_type", "tumor", "normal"),c("sample_type", "normal", "tumor"))
   subset_column: null
