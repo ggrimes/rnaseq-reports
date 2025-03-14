@@ -3,14 +3,14 @@
 # species_name       = "Candida albicans"
 # species_id         = "cal"
 # example: Salmonella
-species_name     = "Salmonella enterica subsp. enterica serovar Typhimurium 14028S"
-species_id       = "seo"
+species_name <- "Salmonella enterica subsp. enterica serovar Typhimurium 14028S"
+species_id <- "seo"
 
 # set input data: DE output (1 row per gene or protein with LFC and adjusted p-value)
 # example: Candida
 # input_file = "Candida_DEproteins.csv"
 # example: Salmonella
-input_file = "Salmonella_DEgenes.csv"
+input_file <- "Salmonella_DEgenes.csv"
 
 # set columns in the input_file for:
 #   log2 fold change (lfc)
@@ -23,10 +23,10 @@ input_file = "Salmonella_DEgenes.csv"
 # colname_uniprot = "UniprotID"
 # colname_gene = "GeneSymbol"
 # example: Salmonella
-colname_lfc = "Log2FC_Reads"
-colname_padj = "P_Value"
-colname_uniprot = "Locus_Tag"
-colname_gene = "Gene_ID"
+colname_lfc <- "Log2FC_Reads"
+colname_padj <- "P_Value"
+colname_uniprot <- "Locus_Tag"
+colname_gene <- "Gene_ID"
 
 # set Uniprot reference data
 # get data from UniProt
@@ -49,10 +49,10 @@ colname_gene = "Gene_ID"
 # example: Candida
 # uniprot_ref_file = "Candida_reference_uniprotkb_taxonomy_id_237561_2024_07_31.xlsx"
 # example: Salmonella
-uniprot_ref_file = "Salmonella_reference_uniprotkb_taxonomy_id_588858_2024_09_11.xlsx"
+uniprot_ref_file <- "Salmonella_reference_uniprotkb_taxonomy_id_588858_2024_09_11.xlsx"
 
 # set column for Uniprot ID (or other mappable ID) in reference data
 # example: Candida
 # colname_ref = "Entry"
 # example: Salmonella
-colname_ref = "KEGG"
+colname_ref <- "KEGG"

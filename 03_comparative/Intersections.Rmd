@@ -24,10 +24,10 @@ library(rstudioapi)
 library(tidyverse)
 setwd(fs::path_dir(getSourceEditorContext()$path))
 # NOTE: This code will check version, this is our recommendation, it may work
-#.      other versions
-stopifnot(R.version$major>= 4) # requires R4
-if (compareVersion(R.version$minor,"3.1")<0) warning("We recommend >= R4.3.1") 
-stopifnot(compareVersion(as.character(BiocManager::version()), "3.18")>=0)
+# .      other versions
+stopifnot(R.version$major >= 4) # requires R4
+if (compareVersion(R.version$minor, "3.1") < 0) warning("We recommend >= R4.3.1")
+stopifnot(compareVersion(as.character(BiocManager::version()), "3.18") >= 0)
 ```
 
 This code is in this ![](https://img.shields.io/badge/status-alpha-yellow) revision.
@@ -47,24 +47,24 @@ library(ggvenn)
 library(ggplot2)
 library(UpSetR)
 library(ggprism)
-#library(org.Ce.eg.db)
+# library(org.Ce.eg.db)
 library(org.Hs.eg.db)
-#library(org.Mm.eg.db)
+# library(org.Mm.eg.db)
 
-colors=cb_friendly_cols(1:15)
+colors <- cb_friendly_cols(1:15)
 ggplot2::theme_set(theme_prism(base_size = 14))
 opts_chunk[["set"]](
-    cache = F,
-    cache.lazy = FALSE,
-    dev = c("png", "pdf"),
-    error = TRUE,
-    highlight = TRUE,
-    message = FALSE,
-    prompt = FALSE,
-    tidy = FALSE,
-    warning = FALSE,
-    echo = T, 
-    fig.height = 4)
+  cache = F,
+  cache.lazy = FALSE,
+  dev = c("png", "pdf"),
+  error = TRUE,
+  highlight = TRUE,
+  message = FALSE,
+  prompt = FALSE,
+  tidy = FALSE,
+  warning = FALSE,
+  echo = T,
+  fig.height = 4)
 
 # set seed for reproducibility
 set.seed(1234567890L)
@@ -80,16 +80,18 @@ LFC <- 0.5
 # norm <- "/Users/emb016/Documents/comparisons_templates/norm_counts.csv"
 # Load the count data, for this example it is the last columns of the DE table
 norm_counts <- read.csv("https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/norm_counts.csv.gz",
-         row.names = 1)
+  row.names = 1
+)
 
 # Load the meta data, here we are making one for the exmaple
 metadata <- read_csv("https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/meta.csv.gz") %>% as.data.frame()
 
 ## Full results file (all genes) for contrast 1
-files=c("https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/all_results_DMSO_vs_Group1.csv.gz",
-      "https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/all_results_DMSO_vs_Group2.csv.gz",
-      "https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/all_results_DMSO_vs_Group3.csv.gz")
-
+files <- c(
+  "https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/all_results_DMSO_vs_Group1.csv.gz",
+  "https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/all_results_DMSO_vs_Group2.csv.gz",
+  "https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/all_results_DMSO_vs_Group3.csv.gz"
+)
 ```
 
 # Load Data
@@ -97,26 +99,25 @@ files=c("https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cr
 We load our dataset
 
 ```{r load_data}
-
 ## Name of contrast. This will be displayed on the figures.
 # you can manually indicate a list of names as comp_names=c("name1","name2"...)
-comp_names = basename(files) %>%
+comp_names <- basename(files) %>%
   str_remove_all("all_results_|.csv|.gz") %>%
   str_replace_all("_", " ")
-names(files)=comp_names
-N=length(files)
-stopifnot(length(files)==length(comp_names))
+names(files) <- comp_names
+N <- length(files)
+stopifnot(length(files) == length(comp_names))
 
 ## Make sure you have set up N above
-all_genes=lapply(names(files), function(name){
-    data <- read_csv(files[name]) %>%
-        dplyr::filter(padj <= 1)
+all_genes <- lapply(names(files), function(name) {
+  data <- read_csv(files[name]) %>%
+    dplyr::filter(padj <= 1)
 })
-sign_genes=lapply(names(files), function(name){
-    data <- read_csv(files[name]) %>%
-        dplyr::filter(padj <= 1)
-    data %>%
-        dplyr::filter(padj < padj_co, abs(lfc) > LFC)
+sign_genes <- lapply(names(files), function(name) {
+  data <- read_csv(files[name]) %>%
+    dplyr::filter(padj <= 1)
+  data %>%
+    dplyr::filter(padj < padj_co, abs(lfc) > LFC)
 })
 ```
 
@@ -124,7 +125,7 @@ sign_genes=lapply(names(files), function(name){
 # Make list of comparisons
 
 ```{r, fig.height=8, fig.width=8, warning=FALSE, error=FALSE, message=FALSE}
-de=lapply(sign_genes, function(x){
+de <- lapply(sign_genes, function(x) {
   x$gene_id
 })
 names(de) <- comp_names
@@ -135,7 +136,7 @@ names(de) <- comp_names
 Because we have done so many tests venn diagrams no longer work for our data. Instead we will use upset plots. *These plots are relatively intuitive for 2 or 3 categories, but can tend to get more complex for >3 categories. In all cases, you will find the categories being compared and their size listed below the bar plots on the left. As you look to the right (directly below each bar) there are dots with connecting lines that denote which categories the overlap is between, or if there is no overlap (just a dot). The numbers at the top of the bars denote the size of the overlap.*
 
 ```{r, fig.height=8, fig.width=12}
-upset(fromList(de), order.by = "freq", nsets=N)
+upset(fromList(de), order.by = "freq", nsets = N)
 ```
 
 ## Pull intersect(s) of interest
@@ -144,23 +145,23 @@ After identifying intersect(s) of interest we can determine which genes are foun
 
 ```{r, warning=FALSE, error=FALSE, message=FALSE}
 ## Grab intersection
-gene_names <- data.frame(gene=unique(unlist(de)))
+gene_names <- data.frame(gene = unique(unlist(de)))
 
-df1 <- lapply(de,function(x){
+df1 <- lapply(de, function(x) {
   data.frame(gene = x)
-}) %>% 
+}) %>%
   bind_rows(.id = "path")
 
-df_int <- lapply(gene_names$gene,function(x){
+df_int <- lapply(gene_names$gene, function(x) {
   # pull the name of the intersections
-  intersection <- df1 %>% 
-    dplyr::filter(gene==x) %>% 
-    arrange(path) %>% 
-    pull("path") %>% 
+  intersection <- df1 %>%
+    dplyr::filter(gene == x) %>%
+    arrange(path) %>%
+    pull("path") %>%
     paste0(collapse = "|")
   # build the dataframe
-  data.frame(gene = x,int = intersection)
-}) %>%  bind_rows()
+  data.frame(gene = x, int = intersection)
+}) %>% bind_rows()
 ```
 
 ```{r, eval=F}
@@ -171,7 +172,7 @@ table(df_int$int)
 ```{r, warning=FALSE, error=FALSE, message=FALSE}
 ## NOTE: subset interaction of interest replace the intersect name with the name of the intersect from above. You can copy and paste the below commands to grab multiple intersects.
 
-Intersect1 <- subset(df_int, df_int$int=="DMSO vs Group2|DMSO vs Group3")
+Intersect1 <- subset(df_int, df_int$int == "DMSO vs Group2|DMSO vs Group3")
 ```
 
 ## Get annotation data
@@ -182,7 +183,7 @@ Intersect1 <- subset(df_int, df_int$int=="DMSO vs Group2|DMSO vs Group3")
 #   dplyr::select(gene_id = ENSEMBL, gene_name = SYMBOL) %>%  distinct(gene_id, .keep_all = T)
 
 # NOTE: following code is only for test data, use the above with real data
-rdata=data.frame(gene_id=row.names(norm_counts), gene_name=row.names(norm_counts))
+rdata <- data.frame(gene_id = row.names(norm_counts), gene_name = row.names(norm_counts))
 ```
 
 ## Heatmap of intersect
@@ -197,56 +198,60 @@ factor2 <- "Cell_line"
 # Extract significant genes
 stopifnot(all(Intersect1$gene %in% row.names(norm_counts)))
 sigGenes <- Intersect1$gene
-  
-### Extract normalized expression for significant genes 
-norm_sig <- norm_counts[sigGenes,] 
-meta <- data.frame(metadata[,print(factor1)],metadata[,print(factor1)])
-colnames(meta) <- c(print(factor1),print(factor2))
+
+### Extract normalized expression for significant genes
+norm_sig <- norm_counts[sigGenes, ]
+meta <- data.frame(metadata[, print(factor1)], metadata[, print(factor1)])
+colnames(meta) <- c(print(factor1), print(factor2))
 rownames(meta) <- colnames(norm_sig)
 ### Set a color palette
-heat_colors <- lapply(colnames(norm_sig), function(c){
-  l.col=colors[1:length(unique(norm_sig[[c]]))]
-  names(l.col)=unique(norm_sig[[c]])
+heat_colors <- lapply(colnames(norm_sig), function(c) {
+  l.col <- colors[1:length(unique(norm_sig[[c]]))]
+  names(l.col) <- unique(norm_sig[[c]])
   l.col
 })
 
 ### Run pheatmap using the metadata data frame for the annotation (11 x 5)
-pheatmap(norm_sig, 
-    color =  inferno(10), 
-    cluster_rows = T, 
-    show_rownames = F,
-    annotation = meta, 
-    annotation_colors = heat_colors,
-    border_color = NA, 
-    fontsize = 10, 
-    scale = "row", 
-    fontsize_row = 10, 
-    height = 20)
+pheatmap(norm_sig,
+  color = inferno(10),
+  cluster_rows = T,
+  show_rownames = F,
+  annotation = meta,
+  annotation_colors = heat_colors,
+  border_color = NA,
+  fontsize = 10,
+  scale = "row",
+  fontsize_row = 10,
+  height = 20
+)
 ```
 
 ## Graph genes in intersect
 
 ```{r, warning=FALSE, error=FALSE, message=FALSE}
-Intersect1_annot <- Intersect1 %>% left_join(rdata, by=c("gene"="gene_id"))
+Intersect1_annot <- Intersect1 %>% left_join(rdata, by = c("gene" = "gene_id"))
 # REMOVE to plot all
-Intersect1_annot <- Intersect1_annot[1:10,]
+Intersect1_annot <- Intersect1_annot[1:10, ]
 
 graphs <- length(Intersect1_annot$gene)
 to_test <- t(norm_counts)
-rna = Intersect1_annot$gene
-names = Intersect1_annot$gene_name
+rna <- Intersect1_annot$gene
+names <- Intersect1_annot$gene_name
 
-to_graph = data.frame(to_test[,rna])
-to_graph = to_graph[Intersect1_annot$gene]
-to_graph$Factor1 <- metadata[,factor1]
-to_graph$Factor2 <- metadata[,factor2]
+to_graph <- data.frame(to_test[, rna])
+to_graph <- to_graph[Intersect1_annot$gene]
+to_graph$Factor1 <- metadata[, factor1]
+to_graph$Factor2 <- metadata[, factor2]
 
-#out <- vector("list", length = graphs)
-for (i in seq(1,graphs)) {
-  to_graph$temp=to_graph[[i]]
-  print(ggplot(to_graph,aes(x=Factor1,y=temp,color=Factor2)) +
-    geom_boxplot() + geom_point(alpha=0.5, position = position_dodge(width = .75)) +
-      ylab(paste0(names[[i]]))  + xlab(factor1) +  scale_color_discrete(name = "Covariate"))
+# out <- vector("list", length = graphs)
+for (i in seq(1, graphs)) {
+  to_graph$temp <- to_graph[[i]]
+  print(ggplot(to_graph, aes(x = Factor1, y = temp, color = Factor2)) +
+    geom_boxplot() +
+    geom_point(alpha = 0.5, position = position_dodge(width = .75)) +
+    ylab(paste0(names[[i]])) +
+    xlab(factor1) +
+    scale_color_discrete(name = "Covariate"))
 }
 ```
 
