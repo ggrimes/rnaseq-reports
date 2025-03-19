@@ -123,6 +123,9 @@ sanitize_datatable <- function(df, ...) {
 # This code will load from bcbio or nf-core folder
 # NOTE make sure to set numerator and denominator
 coldata <- load_coldata(coldata_fn)
+# Change this line to change the levels to the desired order. 
+# It will affect downstream colors in plots.
+coldata[[factor_of_interest]] <- as.factor(coldata[[factor_of_interest]])
 coldata$sample <- row.names(coldata)
 
 counts <- load_counts(counts_fn)
@@ -470,7 +473,7 @@ colma <- colma[rownames(vst_cor), ]
 colma <- colma %>% dplyr::select(.data[[factor_of_interest]])
 anno_colors <- lapply(colnames(colma), function(c) {
   l.col <- grafify:::graf_palettes[["kelly"]][1:length(unique(colma[[c]]))]
-  names(l.col) <- unique(colma[[c]])
+  names(l.col) <- levels(colma[[c]])
   l.col
 })
 names(anno_colors) <- colnames(colma)
