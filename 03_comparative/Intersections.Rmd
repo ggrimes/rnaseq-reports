@@ -72,18 +72,18 @@ set.seed(1234567890L)
 
 
 ```{r load_params, cache = FALSE, message = FALSE, warning=FALSE}
+# NOTE: This variables are pointing to example data.
 ## Adjusted P-value used for significance
 padj_co <- 0.05
 ## Log2FC used for significance. If no cutoff used put 0
 LFC <- 0.5
 ## Normalized counts for ALL samples
-# norm <- "/Users/emb016/Documents/comparisons_templates/norm_counts.csv"
 # Load the count data, for this example it is the last columns of the DE table
 norm_counts <- read.csv("https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/norm_counts.csv.gz",
   row.names = 1
 )
 
-# Load the meta data, here we are making one for the exmaple
+# Load the meta data, here we are making one for the example
 metadata <- read_csv("https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/meta.csv.gz") %>% as.data.frame()
 
 ## Full results file (all genes) for contrast 1

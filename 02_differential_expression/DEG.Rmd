@@ -35,7 +35,7 @@ params:
   combatseq: false
   # Path to the params.R file
   # params_file: ../00_params/params.R 
-  params_file: ../00_params/params-example.R
+  params_file: ../00_params/params-example.R # example data
   # Path to the information.R file
   project_file: ../information.R
   # Path to the directory with the functions

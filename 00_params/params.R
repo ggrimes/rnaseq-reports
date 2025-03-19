@@ -12,4 +12,3 @@ multiqc_data_dir <- "/path/to/nf-core/output/multiqc/star_salmon/multiqc_report_
 # This file is inside the genome folder in the output directory, use this only for non-model organism
 # gtf_fn='/path/to/nf-core/output/genome/hg38.filtered.gtf'
 gtf_fn <- NULL
-se_object <- NA

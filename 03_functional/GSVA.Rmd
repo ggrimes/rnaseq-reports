@@ -19,10 +19,10 @@ params:
   column: "sample_type"
   contrasts: !r list(c("sample_type", "tumor", "normal"))
   project_file: ../information.R
-  params_file: params_de-example.R
-  functions_file: ../libs
+  params_file: ../00_params/params-example.R # example data
+  functions_file: ../00_libs
   # select from gene set repository at https://github.com/bcbio/resources/tree/main/gene_sets/gene_sets
-  # choose geneset, click "Raw', and copy url
+  # choose geneset, click "Raw', and copy url to work with mouse data
   geneset_fn: https://raw.githubusercontent.com/bcbio/resources/main/gene_sets/gene_sets/20240904/human/h.all.v2024.1.Hs.entrez.gmt
 ---
 
@@ -38,12 +38,9 @@ if (compareVersion(R.version$minor, "3.1") < 0) warning("We recommend >= R4.3.1"
 stopifnot(compareVersion(as.character(BiocManager::version()), "3.18") >= 0)
 ```
 
-This code is in this ![](https://img.shields.io/badge/status-alpha-yellow) revision.
+This code is in this ![](https://img.shields.io/badge/status-draft-grey) revision.
 
 ```{r libraries, message = FALSE, warning=FALSE}
-# path to libraries if working on O2
-# .libPaths("/n/app/bcbio/R4.3.1_rnaseq/")
-
 ## load libraries
 library(GSVA)
 library(GSEABase)
@@ -164,7 +161,6 @@ rownames(counts_entrez) <- entrezid
 # Prep and run GSVA
 
 ```{r load_genesets}
-# gene_sets = read_table(params$geneset_fn, col_names = F)
 gene_sets <- read.gmt(params$geneset_fn)
 
 genes_by_pathway <- split(gene_sets$gene, gene_sets$term)
