@@ -18,7 +18,7 @@ We recommend to use the `samplesheet.csv` used with nf-core as metadata file, wh
 ## Downstream analysis
 
 - **Modify** `information.R` with the right information. You can use this file with any other Rmd to include the project/analysis information.
-- **Modify** the `00_params/params.R` that goes together with the Rmd templates with the right input files.
+- **Modify** the `00_params/params.R` that goes together with the Rmd templates with the right input files location from the output of [nf-core/rnaseq](https://nf-co.re/rnaseq/3.14.0/docs/output).
 - `params*example.R` are parameters pointing to test data to be used as an example to test the reports.
 - `run_markdown.R` is an example of code to run the Rmd with different parameters.
 
