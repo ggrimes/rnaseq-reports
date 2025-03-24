@@ -123,7 +123,7 @@ sanitize_datatable <- function(df, ...) {
 # This code will load from bcbio or nf-core folder
 # NOTE make sure to set numerator and denominator
 coldata <- load_coldata(coldata_fn)
-# Change this line to change the levels to the desired order. 
+# Change this line to change the levels to the desired order.
 # It will affect downstream colors in plots.
 coldata[[factor_of_interest]] <- as.factor(coldata[[factor_of_interest]])
 coldata$sample <- row.names(coldata)
