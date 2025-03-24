@@ -621,7 +621,7 @@ de_list <- lapply(contrasts, function(contrast) {
     drop_na(pvalue) # Remove genes who don't have a p-value (lots of lowly expressed genes)
 
   # Extract the significant genes
-  res_sig <- res %>% 
+  res_sig <- res %>%
     filter(padj < 0.05) %>% # Retain the values that have an adjusted p-value less than 0.05
     arrange(padj) %>% # Arrange the genes by the lowest adjusted p-value
     mutate(gene_name = ifelse(test = gene_name == "" | is.na(gene_name), # If the gene_name value for a gene is NA or blank then
@@ -640,7 +640,7 @@ de_list <- lapply(contrasts, function(contrast) {
 })
 
 # NOTE: If you manually add any other comparison to the list with the following variables, the code below will make the plots for those as well:
-# de_list <- c(de_list, new_comparison=list(lfc=resLFC, 
+# de_list <- c(de_list, new_comparison=list(lfc=resLFC,
 #                                           lfcs=resLFCS,
 #                                           all=res, sig=res_sig))
 ```
@@ -762,7 +762,7 @@ for (contrast in names(de_list)) {
   # Retrieve the significantly differential expressed genes data frame for the contrast
   res_sig <- de_list[[contrast]][["sig"]]
   # Populate the dt_list list
-  dt_list <- c( 
+  dt_list <- c(
     dt_list, # With the contents of dt_list from the previous loop
     list(h3(contrast)), # Odd numbered objects in the list will be the contrast name in a HTML renderable Heading 3 size
     list(DT::datatable(res_sig)) # Even numbered object in the list will hold HTML renderable data table from the DT package containing the significant genes
@@ -770,7 +770,7 @@ for (contrast in names(de_list)) {
 }
 
 # Render the dt_list into HTML
-tagList(dt_list) 
+tagList(dt_list)
 ```
 
 ## Plot top 16 genes {.tabset}
@@ -787,13 +787,14 @@ for (contrast in names(de_list)) {
   # Retrieve the significantly differential expressed genes data frame for the contrast
   res_sig <- de_list[[contrast]][["sig"]]
   # Extract the names of the top n (defined at the start of the code block) most significant genes
-  top_n <- res_sig %>% # Use the significantly differentially expressed genes 
-    slice_min( # Retain the genes with the smallest values 
+  top_n <- res_sig %>% # Use the significantly differentially expressed genes
+    slice_min( # Retain the genes with the smallest values
       order_by = padj, # As ordered by their adjusted p-value
       n = n, # The number of genes to retain
-      with_ties = FALSE) %>% # Do not retain ties if they return the same adjusted p-value
+      with_ties = FALSE
+    ) %>% # Do not retain ties if they return the same adjusted p-value
     dplyr::select(gene_name, gene_id) # Only retain the gene_name and gene_id columns
-  # Extract the variance stabilized transformed expression of the top n (defined at the start of the code block) most significant genes 
+  # Extract the variance stabilized transformed expression of the top n (defined at the start of the code block) most significant genes
   top_n_exp <- norm_matrix %>% # Use the variance stabilized transformed expression counts matrix
     as.data.frame() %>% # Convert the matrix to a data frame
     rownames_to_column("gene_id") %>% # Make the row names (the gene_ids) into a column named "gene_id"
@@ -801,30 +802,40 @@ for (contrast in names(de_list)) {
     pivot_longer( # Pivot the data across the rows and give each value its own new row
       cols = !gene_id, # Pivot all columns except the gene_id column
       names_to = "sample", # Name the samples column to be "sample"
-      values_to = "log2_expression") %>% # Name the variance stabilized transformed counts column to "log2_expression"
+      values_to = "log2_expression"
+    ) %>% # Name the variance stabilized transformed counts column to "log2_expression"
     right_join( # Subset the expression table and add a new column to the table
       y = top_n, # Subset by the values matching by gene_id from top_n and add the gene_name
-      relationship = "many-to-many") %>% # Multiple rows in the norm_matrix can rows in top_n 
-    left_join( # Add data 
+      relationship = "many-to-many"
+    ) %>% # Multiple rows in the norm_matrix can rows in top_n
+    left_join( # Add data
       y = coldata, # Add the metadata
-      by = "sample") # Match it by the value in sample
+      by = "sample"
+    ) # Match it by the value in sample
 
   # Create a facet wrapped plot for the expression of the top n (defined at the start of the code block) most significant genes
-  p1 <- ggplot(top_n_exp, # Use the data from top_n_exp to create this figure
-               aes_string(x = column, # In each panel the x-axis will have the variable of interest
-                          y = "log2_expression")) +  # In each panel the y-axis will be the variance stabilized transformed counts
+  p1 <- ggplot(
+    top_n_exp, # Use the data from top_n_exp to create this figure
+    aes_string(
+      x = column, # In each panel the x-axis will have the variable of interest
+      y = "log2_expression"
+    )
+  ) + # In each panel the y-axis will be the variance stabilized transformed counts
     geom_boxplot( # Each panel will display boxplots
       outlier.shape = NA, # Don't display outlier points
       linewidth = 0.5, # Set the line width of the box in the boxplot
-      color = "grey") + # Color of the box outline in each panel as "grey"
+      color = "grey"
+    ) + # Color of the box outline in each panel as "grey"
     geom_point() + # Overlap the data points on the boxplot
     facet_wrap(~gene_name) + # Make a different panel for each gene
     # facet_wrap(~gene_name, scales = "free") + # If you want the y-axis to be able to be different in each plot use this facet-wrap instead of the above line of code
     ggtitle(str_interp("Expression of Top ${n} DEGs")) + # Add a title
-    theme(axis.text.x = element_text(angle = 90, # Rotate the text on the x-axis 90 degrees
-                                     vjust = 0.5, # Center the text relative to the tick mark on the x-axis
-                                     hjust = 1)) # Right align the text against the x-axis
-  # Print the plot 
+    theme(axis.text.x = element_text(
+      angle = 90, # Rotate the text on the x-axis 90 degrees
+      vjust = 0.5, # Center the text relative to the tick mark on the x-axis
+      hjust = 1
+    )) # Right align the text against the x-axis
+  # Print the plot
   print(p1)
   # Print two new lines
   cat("\n\n")
@@ -872,20 +883,23 @@ fa_gsea_list <- lapply(de_list, function(contrast) {
     x = ann.org, # Annotation database to search
     keys = gsea_input$gene_id, # The gene_ids to search for
     keytype = "ENSEMBL", # The gene_ids (keys) are ENSEMBL annotations
-    columns = c("ENTREZID", "SYMBOL")) # Return the queried ENSEMBL ID, along with the ENTREZ ID and the gene symbol
-  # Combine gene annotation with the lfc information 
+    columns = c("ENTREZID", "SYMBOL")
+  ) # Return the queried ENSEMBL ID, along with the ENTREZ ID and the gene symbol
+  # Combine gene annotation with the lfc information
   input_entrezid <- inner_join(
-      x = gsea_input, # Combine the ENSEMBL ID and lfc input with
-      y = input_entrezid, # The ENTREZ ID and gene symbol information
-      by = c("gene_id" = "ENSEMBL")) %>% # Join these table together by common ENSEMBL IDs 
+    x = gsea_input, # Combine the ENSEMBL ID and lfc input with
+    y = input_entrezid, # The ENTREZ ID and gene symbol information
+    by = c("gene_id" = "ENSEMBL")
+  ) %>% # Join these table together by common ENSEMBL IDs
     filter(!is.na(ENTREZID)) %>% # Remove the genes without an ENTREZ ID
     distinct(ENTREZID, .keep_all = TRUE) %>% # Retain the unique ENTREZ IDs and all columns of data
     arrange(desc(lfc)) # Arrange the data frame by descending values of lfc
-  
+
   # Run the run_fgsea_v2 function found in FA.R within the 00_libs directory to run the GSEA analysis and assign the output to the object tb
   tb <- run_fgsea_v2(
     input = input_entrezid, # Query for the GSEA analysis
-    all_in_life = all_in_life) # Annotation databases to query against
+    all_in_life = all_in_life
+  ) # Annotation databases to query against
   tb %>% filter(padj < 0.05) # Filter the GSEA output for results with an adjust p-value less than 0.05 and return them
 })
 ```
@@ -893,7 +907,7 @@ fa_gsea_list <- lapply(de_list, function(contrast) {
 ```{r print-gsea, results='asis', eval=run_FA}
 # NOTE: DT::datatables doesn't work with tabset and for loops
 # You can use the following code to print dynamically or call manually sanitize_datatable() multiple times
-# Create an empty list to assign contrast values and DT data tables to 
+# Create an empty list to assign contrast values and DT data tables to
 dt_list <- list()
 
 # For each of the contrasts in the de_list list object to extract the name of the contrast and the GSEA results to be rendered into an HTML table
@@ -910,7 +924,7 @@ for (contrast in names(de_list)) {
 }
 
 # Render the dt_list into HTML
-tagList(dt_list) 
+tagList(dt_list)
 ```
 
 # Pathway Analysis- Over-representation
@@ -922,11 +936,11 @@ Over-Representation Analysis (ORA) is a statistical method used to determine whe
 - Prior Knowledge Integration: Utilizes existing biological knowledge through predefined gene sets.
 
 ```{r run-ora, warning=F, message=F, eval=run_FA}
-# Go through each contrast in the de_list list object and 
+# Go through each contrast in the de_list list object and
 fa_list <- lapply(de_list, function(contrast) {
   # For a given contrast pull out the full differential expression results
   res <- contrast[["all"]]
-  
+
   # Extract the universe of genes to the ORA on and assign it to the object universe
   universe <- res %>% # Start with the full differential expression results (NOTE: these do exclude genes without any expression, p-value or adjusted p-value)
     filter(!is.na(padj)) %>% # Remove any adjusted p-values that are NA, but there should be since they were filtered when making the de_list object
@@ -944,14 +958,15 @@ fa_list <- lapply(de_list, function(contrast) {
   # NOTE: Change to the correct species if not working in human or mouse
   input_entrezid <- rdata %>% # Start with the full annotations
     filter(gene_id %in% ora_input, !is.na(entrez)) # Only retain the the annotations that are are in the ora_input object (ajusted p-value less than 0.01, lfc greater than the absolute value of 0.3) and have an ENTREZ ID
-  
+
   # AnnotationDbi::select(ann.org, ora_input, 'ENSEMBL', columns = c('ENTREZID', 'SYMBOL'))
-  
+
   # Run the ORA using the run_fora_v2 function within the FA.R file in the 00_libs directory
   all <- run_fora_v2(
     input = input_entrezid, # Data frame of genes that are being evaluated for enrichment
     uni = universe_mapping, # Universe of gene to look for enrichment within
-    all_in_life = all_in_life) # Annotation databases to query against
+    all_in_life = all_in_life
+  ) # Annotation databases to query against
 
   # Create the input vector of genes for the ORA with a positive lfc
   ora_input <- res %>% # Start with the full differential expression results (NOTE: these do exclude genes without any expression, p-value or adjusted p-value)
@@ -961,12 +976,13 @@ fa_list <- lapply(de_list, function(contrast) {
   # NOTE: Change to the correct species if not working in human or mouse
   input_entrezid <- rdata %>% # Start with the full annotations
     filter(gene_id %in% ora_input, !is.na(entrez)) # Only retain the the annotations that are are in the ora_input object (adjusted p-value less than 0.01 and lfc greater than 0.3) and have an ENTREZ ID
-  
+
   # Run the ORA using the run_fora_v2 function within the FA.R file in the 00_libs directory
   up <- run_fora_v2(
     input = input_entrezid, # Data frame of genes that are being evaluated for enrichment
     uni = universe_mapping, # Universe of gene to look for enrichment within
-    all_in_life = all_in_life) # Annotation databases to query against
+    all_in_life = all_in_life
+  ) # Annotation databases to query against
 
   # Create the input vector of genes for the ORA with a negative lfc
   ora_input <- res %>% # Start with the full differential expression results (NOTE: these do exclude genes without any expression, p-value or adjusted p-value)
@@ -976,19 +992,20 @@ fa_list <- lapply(de_list, function(contrast) {
   # NOTE: Change to the correct species if not working in human or mouse
   input_entrezid <- rdata %>% # Start with the full annotations
     filter(gene_id %in% ora_input, !is.na(entrez)) # Only retain the the annotations that are are in the ora_input object (adjusted p-value less than 0.01 and lfc less than -0.3) and have an ENTREZ ID
-  
+
   # Run the ORA using the run_fora_v2 function within the FA.R file in the 00_libs directory
   down <- run_fora_v2(
     input = input_entrezid, # Data frame of genes that are being evaluated for enrichment
     uni = universe_mapping, # Universe of gene to look for enrichment within
-    all_in_life = all_in_life) # Annotation databases to query against
+    all_in_life = all_in_life
+  ) # Annotation databases to query against
 
   # Create a list to hold the ORA results for a given contrast
   list(
     all = all, # Assign the positive and negative lfc combined ORA results to "all"
     up = up, # Assign the positive lfc combined ORA results to "up"
     down = down # Assign the negative lfc combined ORA results to "down"
-    )
+  )
 })
 ```
 
@@ -998,14 +1015,14 @@ fa_list <- lapply(de_list, function(contrast) {
 # NOTE DT::datatables doesn't work with tabset and for loops
 # You can use the following code to print dynamically or call manually sanitize_datatable() multiple times
 
-# Create an empty list to assign contrast values and DT data tables to 
+# Create an empty list to assign contrast values and DT data tables to
 dt_list <- list()
 # For each of the contrasts in the de_list list object to extract the name of the contrast and the ORA results to be rendered into an HTML table
 for (contrast in names(de_list)) {
   # Create a dataframe to hold the significantly over-represented terms for genes with a positive and negative lfc
   res_sig <- fa_list[[contrast]][["all"]] %>% # Start with the complete list of terms used in the ORA evaluated for negative or positive lfc
     filter(padj < 0.05) # Retain only the results with adjusted p-values of 0.05
-  
+
   # Populate the dt_list list
   dt_list <- c(
     dt_list, # With the contents of dt_list from the previous loop
@@ -1021,14 +1038,14 @@ tagList(dt_list)
 ## Down-regulated genes {.tabset}
 
 ```{r print-ora-down, results='asis', eval=run_FA}
-# Create an empty list to assign contrast values and DT data tables to 
+# Create an empty list to assign contrast values and DT data tables to
 dt_list <- list()
 # For each of the contrasts in the de_list list object to extract the name of the contrast and the ORA results to be rendered into an HTML table
 for (contrast in names(de_list)) {
   # Create a dataframe to hold the significantly over-represented terms for genes with a negative lfc
-  res_sig <- fa_list[[contrast]][["down"]] %>%  # Start with the complete list of terms used in the ORA evaluated for negative lfc
+  res_sig <- fa_list[[contrast]][["down"]] %>% # Start with the complete list of terms used in the ORA evaluated for negative lfc
     filter(padj < 0.05) # Retain only the results with adjusted p-values of 0.05
-  
+
   # Populate the dt_list list
   dt_list <- c(
     dt_list, # With the contents of dt_list from the previous loop
@@ -1044,14 +1061,14 @@ tagList(dt_list)
 ## Up-regulated genes {.tabset}
 
 ```{r print-ora-up, results='asis', eval=run_FA}
-# Create an empty list to assign contrast values and DT data tables to 
+# Create an empty list to assign contrast values and DT data tables to
 dt_list <- list()
 # For each of the contrasts in the de_list list object to extract the name of the contrast and the ORA results to be rendered into an HTML table
 for (contrast in names(de_list)) {
   # Create a dataframe to hold the significantly over-represented terms for genes with a positive lfc
   res_sig <- fa_list[[contrast]][["up"]] %>% # Start with the complete list of terms used in the ORA evaluated for positive lfc
     filter(padj < 0.05) # Retain only the results with adjusted p-values of 0.05
-  
+
   # Populate the dt_list list
   dt_list <- c(
     dt_list, # With the contents of dt_list from the previous loop
@@ -1081,7 +1098,7 @@ filename <- paste0(filenames)
 
 # Assign the file path to save the file path for the expression data CSV to the object name_expression_fn
 name_expression_fn <- file.path( # Construct a file path
-  basedir, # Base directory path to write output files to specificied in the params.R file within the 00_params directory 
+  basedir, # Base directory path to write output files to specificied in the params.R file within the 00_params directory
   str_interp("${filename}_expression.csv") # Interpret the value of "filename" and insert that in front of "_expression.csv"
 )
 
@@ -1097,20 +1114,20 @@ write_csv(counts_norm, name_expression_fn)
 for (contrast in names(contrasts)) {
   # Create a file name for the differential expression analysis
   name_deg_fn <- file.path( # Construct a file path
-    basedir, # Base directory path to write output files to specificied in the params.R file within the 00_params directory 
+    basedir, # Base directory path to write output files to specificied in the params.R file within the 00_params directory
     str_interp("${filename}_${contrast}_deg.csv") # Interpret the value of "filename" and "contrast", then insert that in front of "_deg.csv"
   )
-  
+
   # Create a file name for the ORA analysis
   name_pathways_fn <- file.path( # Construct a file path
-    basedir, # Base directory path to write output files to specificied in the params.R file within the 00_params directory 
+    basedir, # Base directory path to write output files to specificied in the params.R file within the 00_params directory
     str_interp("${filename}_${contrast}_pathways.csv") # Interpret the value of "filename" and "contrast", then insert that in front of "_pathways.csv"
   )
 
   # Assign the full differential expression analysis for a given contrast to the object called res_for_writing
   res_for_writing <- de_list[[contrast]][["all"]] %>% # Start with the full differential expression analysis dataframe for the given contrast
     mutate(comparison = contrast) # Add a column to the table with the given contrast
-  
+
   # Assign the full ORA for positive and negative lfc for a given contrast to the object called pathways_for_writing
   # NOTE: Choose what ORA to save (all, down or up). To save everything, add more lines of this code
   pathways_for_writing <- fa_list[[contrast]][["all"]] %>% # Start with the full ORA dataframe evaluating negative and positive lfc for the given contrast
