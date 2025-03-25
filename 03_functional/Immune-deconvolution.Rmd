@@ -21,9 +21,9 @@ params:
   params_file: params_immune_deconv.R
   # metadata to separate by on plot
   factor_of_interest_1: tissue
-  factor_of_interest_1_levels: c("Duo", "Ile")
+  factor_of_interest_1_levels: !r c("Duo", "Ile")
   factor_of_interest_2: timepoint
-  factor_of_interest_2_levels: c("0d", "2d", "4d", "6d", "8d", "2w", "3w", "4w")
+  factor_of_interest_2_levels: !r c("0d", "2d", "4d", "6d", "8d", "2w", "3w", "4w")
   # which organism are your expression matrices from?
   # can be human or mouse
   organism: mouse
