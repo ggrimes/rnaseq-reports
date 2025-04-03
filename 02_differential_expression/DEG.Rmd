@@ -1106,8 +1106,8 @@ name_expression_fn <- file.path( # Construct a file path
 counts_norm <- norm_matrix %>% # Start with the variance stabilized transformed counts matrix
   as.data.frame() %>% # Convert the matrix to a data frame
   # Convert the row names (ENSEMBL IDs) to a column called "gene_id"
-  rownames_to_column("gene_id") %>% 
-  left_join(rdata, by="gene_id")
+  rownames_to_column("gene_id") %>%
+  left_join(rdata, by = "gene_id")
 
 # Write the variance stabilized  transformed counts matrix to a CSV file with the name_expression_fn path
 write_csv(counts_norm, name_expression_fn)

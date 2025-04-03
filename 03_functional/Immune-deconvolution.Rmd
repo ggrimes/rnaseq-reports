@@ -56,11 +56,11 @@ source(params$project_file)
 # input_counts <- "../counts/salmon.merged.gene_counts.tsv"
 # input_tpm    <- "../counts/salmon.merged.gene_tpm.tsv"
 # metadata <- "metadata.csv"
-factor_of_interest_1        <- params$factor_of_interest_1
+factor_of_interest_1 <- params$factor_of_interest_1
 factor_of_interest_1_levels <- params$factor_of_interest_1_levels
-factor_of_interest_2        <- params$factor_of_interest_2
+factor_of_interest_2 <- params$factor_of_interest_2
 factor_of_interest_2_levels <- params$factor_of_interest_2_levels
-organism    <- params$organism
+organism <- params$organism
 cancer_type <- params$cancer_type
 
 # determine which gene conversion chunks to run based on starting organism
@@ -181,69 +181,85 @@ df_counts_mouse <- convert_gene_names_mouse_ensembl_to_MGI(df_counts)
 df_tpm_mouse <- convert_gene_names_mouse_ensembl_to_MGI(df_tpm)
 
 # ALTERNATIVELY, if your DF already contains a column for gene symbol
-genenames_mouse <- data.frame(ensembl_gene_id = rownames(df_counts),
-                              mgi_symbol      = df_counts$gene_name)
+genenames_mouse <- data.frame(
+  ensembl_gene_id = rownames(df_counts),
+  mgi_symbol = df_counts$gene_name
+)
 # use this vector to change the rownames of both df_counts and df_tpm
 df_counts_mouse <- df_counts %>%
   # rename column for consistency
   dplyr::rename(mgi_symbol = gene_name) %>%
   # combine any rows where multiple mouse Ensembl IDs map to the same gene symbol
-  group_by(mgi_symbol) %>% summarize(across(starts_with(c("A")), sum)) %>%
+  group_by(mgi_symbol) %>%
+  summarize(across(starts_with(c("A")), sum)) %>%
   # change rownames from Ensembl ID to gene name
-  remove_rownames() %>% column_to_rownames("mgi_symbol")
+  remove_rownames() %>%
+  column_to_rownames("mgi_symbol")
 df_tpm_mouse <- df_tpm %>%
   # add gene symbols
   rownames_to_column("ensembl_gene_id") %>%
   left_join(genenames_mouse, by = "ensembl_gene_id") %>%
   dplyr::select(-ensembl_gene_id) %>%
   # combine any rows where multiple mouse Ensembl IDs map to the same gene symbol
-  group_by(mgi_symbol) %>% summarize(across(starts_with(c("A")), sum)) %>%
+  group_by(mgi_symbol) %>%
+  summarize(across(starts_with(c("A")), sum)) %>%
   # make gene name new rownames
   column_to_rownames("mgi_symbol")
 
 # save results
 write.table(df_counts_mouse, "gene_expression_converted_symbols/df_counts_mouse.tsv",
-            quote = FALSE, sep = "\t", row.names = TRUE)
-write.table(df_tpm_mouse,    "gene_expression_converted_symbols/df_tpm_mouse.tsv",
-            quote = FALSE, sep = "\t", row.names = TRUE)
+  quote = FALSE, sep = "\t", row.names = TRUE
+)
+write.table(df_tpm_mouse, "gene_expression_converted_symbols/df_tpm_mouse.tsv",
+  quote = FALSE, sep = "\t", row.names = TRUE
+)
 
 # also convert from mouse MGI symbol to human HGNC symbol so we can run additional methods
-if(file.exists("gene_expression_converted_symbols/df_counts_human.tsv")) {
+if (file.exists("gene_expression_converted_symbols/df_counts_human.tsv")) {
   df_counts_human <- read.delim("gene_expression_converted_symbols/df_counts_human.tsv")
 } else {
   df_counts_human <- convert_human_mouse_genes(df_counts_mouse, convert_to = "human")
   write.table(df_counts_human, "gene_expression_converted_symbols/df_counts_human.tsv",
-              quote = FALSE, sep = "\t", row.names = TRUE)
+    quote = FALSE, sep = "\t", row.names = TRUE
+  )
 }
-if(file.exists("gene_expression_converted_symbols/df_tpm_human.tsv")) {
+if (file.exists("gene_expression_converted_symbols/df_tpm_human.tsv")) {
   df_tpm_human <- read.delim("gene_expression_converted_symbols/df_tpm_human.tsv")
 } else {
   df_tpm_human <- convert_human_mouse_genes(df_tpm_mouse, convert_to = "human")
   write.table(df_tpm_human, "gene_expression_converted_symbols/df_tpm_human.tsv",
-              quote = FALSE, sep = "\t", row.names = TRUE)
+    quote = FALSE, sep = "\t", row.names = TRUE
+  )
 }
 
 # combine any rows where multiple mouse symbols map to the same human symbol
 # this will prevent CIBERSORT from throwing an error later
-if(any(duplicated(rownames(df_counts_human)))) {
-  df_counts_human <- df_counts_human %>% rownames_to_column("hgnc_symbol") %>%
-    group_by(hgnc_symbol) %>% summarize(across(starts_with(c("A")), sum)) %>%
+if (any(duplicated(rownames(df_counts_human)))) {
+  df_counts_human <- df_counts_human %>%
+    rownames_to_column("hgnc_symbol") %>%
+    group_by(hgnc_symbol) %>%
+    summarize(across(starts_with(c("A")), sum)) %>%
     column_to_rownames("hgnc_symbol")
   write.table(df_counts_human, "gene_expression_converted_symbols/df_counts_human.tsv",
-              quote = FALSE, sep = "\t", row.names = TRUE)
+    quote = FALSE, sep = "\t", row.names = TRUE
+  )
 }
-if(any(duplicated(rownames(df_tpm_human)))) {
-  df_tpm_human <- df_tpm_human %>% rownames_to_column("hgnc_symbol") %>%
-    group_by(hgnc_symbol) %>% summarize(across(starts_with(c("A")), sum)) %>%
+if (any(duplicated(rownames(df_tpm_human)))) {
+  df_tpm_human <- df_tpm_human %>%
+    rownames_to_column("hgnc_symbol") %>%
+    group_by(hgnc_symbol) %>%
+    summarize(across(starts_with(c("A")), sum)) %>%
     column_to_rownames("hgnc_symbol")
   write.table(df_tpm_human, "gene_expression_converted_symbols/df_tpm_human.tsv",
-              quote = FALSE, sep = "\t", row.names = TRUE)
+    quote = FALSE, sep = "\t", row.names = TRUE
+  )
 }
 
 # save a version of df_tpm_human with "gene names" column for CIBERSORT
 write.table(df_tpm_human %>% rownames_to_column("gene"),
-            "gene_expression_converted_symbols/df_tpm_human_for_CIBERSORT.tsv",
-            quote = FALSE, sep = "\t", row.names = FALSE)
+  "gene_expression_converted_symbols/df_tpm_human_for_CIBERSORT.tsv",
+  quote = FALSE, sep = "\t", row.names = FALSE
+)
 ```
 
 ```{r convert_gene_names_human, eval = run_human}
@@ -301,13 +317,13 @@ df_tpm_mouse <- convert_human_mouse_genes(df_tpm_human, convert_to = "mouse")
 ```
 
 ```{r function_graph_results}
-graph_deconvolution_results <- function(res, method){
+graph_deconvolution_results <- function(res, method) {
   # reshape data to one row per sample per cell type
   res_long <- res %>%
     gather(sample, score, -cell_type) %>%
     # add metadata columns
     left_join(metadata, by = "sample")
-  
+
   # # graph
   # print(
   #   res_long %>%
@@ -320,11 +336,11 @@ graph_deconvolution_results <- function(res, method){
   #     theme_bw() +
   #     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
   # )
-  
+
   cat("### Graph by comparison\n")
-  
+
   # also graph subsets by factor_of_interest_1 (treatment)
-  for(i in 1:length(factor_of_interest_1_levels)) {
+  for (i in 1:length(factor_of_interest_1_levels)) {
     print(
       res_long %>% filter(.data[[factor_of_interest_1]] == factor_of_interest_1_levels[i]) %>%
         ggplot(aes(x = .data[[factor_of_interest_2]], y = score, color = cell_type)) +
@@ -336,9 +352,9 @@ graph_deconvolution_results <- function(res, method){
         theme(axis.text.x = element_text(vjust = 0.5))
     )
   }
-  
+
   # also graph subsets by factor_of_interest_2 (genotype)
-  for(i in 1:length(factor_of_interest_2_levels)) {
+  for (i in 1:length(factor_of_interest_2_levels)) {
     print(
       res_long %>% filter(.data[[factor_of_interest_2]] == factor_of_interest_2_levels[i]) %>%
         ggplot(aes(x = .data[[factor_of_interest_1]], y = score, color = cell_type)) +
@@ -350,14 +366,14 @@ graph_deconvolution_results <- function(res, method){
         theme(axis.text.x = element_text(vjust = 0.5))
     )
   }
-  
+
   cat("\n\n### Graph summary\n\n")
-  
+
   cat("We can also summarize these graphs as a boxplot, while removing any cell types not present in this analysis:\n")
-  
+
   # remove cell types that have 0 expression in this analysis
-  res_clean <- res[rowSums(res[,-1]) != 0, ]
-  
+  res_clean <- res[rowSums(res[, -1]) != 0, ]
+
   # reshape data to one row per sample per cell type
   res_long <- res_clean %>%
     gather(sample, score, -cell_type) %>%
@@ -381,11 +397,14 @@ graph_deconvolution_results <- function(res, method){
 
 ```{r describe_mouse, echo = FALSE}
 cat("When using mouse MGI gene symbols, we have a total of", nrow(df_counts_mouse), "genes available to test.")
-if(organism == "human")
+if (organism == "human") {
   cat(" The number here is much smaller because not all human genes can be mapped to mouse genes.")
+}
 
-cat("\n\nThe following methods are currently available for mouse data:",
-    paste(names(deconvolution_methods_mouse), collapse = ", "))
+cat(
+  "\n\nThe following methods are currently available for mouse data:",
+  paste(names(deconvolution_methods_mouse), collapse = ", ")
+)
 ```
 
 ## mMCPcounter {.tabset}
@@ -395,7 +414,7 @@ mMCPcounter is a mouse data-based method (related to the human method MCPcounter
 mMCPcounter provides cell-type scores for each sample in arbitrary units that are **comparable between samples** but not between cell-types.
 
 ```{r mmcp_counter, fig.width = 10, fig.height = 10}
-if(file.exists("results/mouse_mMCPcounter.csv")) {
+if (file.exists("results/mouse_mMCPcounter.csv")) {
   res_mmcp <- read.csv("results/mouse_mMCPcounter.csv")
 } else {
   # TPM normalized is preferred input
@@ -416,7 +435,7 @@ SeqImmuCC is a mouse data-based method using **`r nrow(df_counts_mouse)` genes**
 SeqImmuCC provides cell-type scores for each sample in units that are **comparable between both samples and cell-types**.
 
 ```{r seqimmucc, fig.width = 10, fig.height = 8}
-if(file.exists("results/mouse_SeqImmuCC.csv")) {
+if (file.exists("results/mouse_SeqImmuCC.csv")) {
   res_seqimmucc <- read.csv("results/mouse_SeqImmuCC.csv")
 } else {
   # raw counts is preferred input
@@ -438,7 +457,7 @@ DCQ is a mouse data-based method using **`r nrow(df_counts_mouse)` genes**.
 DCQ provides cell-type scores for each sample in arbitrary units that are **comparable between cell-types** but not between samples.
 
 ```{r dcq, fig.width = 10, fig.height = 12}
-if(file.exists("results/mouse_DCQ.csv")) {
+if (file.exists("results/mouse_DCQ.csv")) {
   res_dcq <- read.csv("results/mouse_DCQ.csv")
 } else {
   # TPM normalized is preferred input
@@ -459,7 +478,7 @@ BASE is a mouse data-based method using **`r nrow(df_counts_mouse)` genes**.
 BASE provides cell-type scores for each sample in arbitrary units that are **comparable between samples** but not between cell-types.
 
 ```{r base, fig.width = 10, fig.height = 10}
-if(file.exists("results/mouse_BASE.csv")) {
+if (file.exists("results/mouse_BASE.csv")) {
   res_base <- read.csv("results/mouse_BASE.csv")
 } else {
   # TPM normalized is preferred input
@@ -477,13 +496,17 @@ graph_deconvolution_results(res_base, "BASE")
 
 ```{r describe_human, echo = FALSE}
 cat("When using human HGNC gene symbols, we have a total of", nrow(df_counts_human), "genes available to test.")
-if(organism == "mouse")
+if (organism == "mouse") {
   cat(" The number here is much smaller because not all mouse genes can be mapped to human genes.")
+}
 
-cat("\n\nThe following methods are currently available for human data:",
-    paste(names(deconvolution_methods), collapse = ", "))
-if(organism == "mouse")
+cat(
+  "\n\nThe following methods are currently available for human data:",
+  paste(names(deconvolution_methods), collapse = ", ")
+)
+if (organism == "mouse") {
   cat(". The reason to convert to human genes is that more methods are available for immune deconvolution.")
+}
 ```
 
 ## CIBERSORT {.tabset}
@@ -539,13 +562,14 @@ TIMER is a human data-based method using **`r nrow(df_counts_human)` genes**.
 TIMER provides cell-type scores for each sample in arbitrary units that are **comparable between samples** but not between cell-types.
 
 ```{r timer, fig.width = 10, fig.height = 4}
-if(file.exists("results/human_TIMER.csv")) {
+if (file.exists("results/human_TIMER.csv")) {
   res_timer <- read.csv("results/human_TIMER.csv")
 } else {
   # TPM normalized is preferred input
   # requires additional parameter "indications": cancer type
   res_timer <- immunedeconv::deconvolute(df_tpm_human, "timer",
-                                         indications = rep(tolower(cancer_type), ncol(df_tpm_human)))
+    indications = rep(tolower(cancer_type), ncol(df_tpm_human))
+  )
   # save results
   write.csv(res_timer, file = "results/human_TIMER.csv", quote = FALSE, row.names = FALSE)
 }
@@ -562,12 +586,13 @@ quanTIseq is a human data-based method using **`r nrow(df_counts_human)` genes**
 quanTIseq provides cell-type scores for each sample in absolute units that are **comparable between both samples and cell-types** and **can be interpreted as a cell fraction**.
 
 ```{r quantiseq, fig.width = 10, fig.height = 8}
-if(file.exists("results/human_quanTIseq.csv")) {
+if (file.exists("results/human_quanTIseq.csv")) {
   res_quant <- read.csv("results/human_quanTIseq.csv")
 } else {
   # TPM normalized is preferred input
   res_quant <- immunedeconv::deconvolute(df_tpm_human, "quantiseq",
-                                         tumor = FALSE, arrays = FALSE)
+    tumor = FALSE, arrays = FALSE
+  )
   # save results
   write.csv(res_quant, file = "results/human_quanTIseq.csv", quote = FALSE, row.names = FALSE)
 }
@@ -584,13 +609,14 @@ EPIC is a human data-based method using **`r nrow(df_counts_human)` genes**.
 EPIC provides cell-type scores for each sample in absolute units that are **comparable between both samples and cell-types** and **can be interpreted as a cell fraction**.
 
 ```{r epic, fig.width = 10, fig.height = 6}
-if(file.exists("results/human_EPIC.csv")) {
+if (file.exists("results/human_EPIC.csv")) {
   res_epic <- read.csv("results/human_EPIC.csv")
 } else {
-# TPM normalized is preferred input
-# requires additional parameter "tumor": tumor data T/F
+  # TPM normalized is preferred input
+  # requires additional parameter "tumor": tumor data T/F
   res_epic <- immunedeconv::deconvolute(df_tpm_human, "epic",
-                                        tumor = FALSE)
+    tumor = FALSE
+  )
   # save results
   write.csv(res_epic, file = "results/human_EPIC.csv", quote = FALSE, row.names = FALSE)
 }
@@ -607,7 +633,7 @@ MCPcounter is a human data-based method (related to the mouse method mMCPcounter
 MCPcounter provides cell-type scores for each sample in arbitrary units that are **comparable between samples** but not between cell-types.
 
 ```{r mcp_counter, fig.width = 10, fig.height = 8}
-if(file.exists("results/human_MCPcounter.csv")) {
+if (file.exists("results/human_MCPcounter.csv")) {
   res_mcp <- read.csv("results/human_MCPcounter.csv")
 } else {
   # TPM normalized is preferred input
@@ -649,7 +675,9 @@ markers <- data.frame(
   `HUGO symbols` = c(
     "IL12", "IL15", "IL18", "IFNG", "TNF", # ILC1
     "IL25", "IL33", "TSLP", "IL4", "IL5", "IL13", "AREG", # ILC2
-    "IL1B", "IL23", "IL17", "IL22", "LTA", "CSF2")) # ILC3
+    "IL1B", "IL23", "IL17", "IL22", "LTA", "CSF2"
+  )
+) # ILC3
 colnames(markers) <- c("Cell population", "HUGO symbols")
 
 # check which marker genes are found in the human set
@@ -697,7 +725,9 @@ markers <- data.frame(
   Gene.Symbol = c(
     "Il12a", "Il12b", "Il15", "Il18", "Ifng", "Tnf", # ILC1
     "Il25", "Il33", "Tslp", "Il4", "Il5", "Il13", "Areg", # ILC2
-    "Il1b", "Il23a", "Il17a", "Il22", "Il22b", "Lta", "Csf2")) # ILC3
+    "Il1b", "Il23a", "Il17a", "Il22", "Il22b", "Lta", "Csf2"
+  )
+) # ILC3
 
 # check which marker genes are found in the mouse set
 # df_tpm_mouse[which(rownames(df_tpm_mouse) %in% markers$Gene.Symbol),]
