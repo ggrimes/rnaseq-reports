@@ -32,7 +32,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-R-
 
-      - name: Install system dependencies
+    - name: Install system dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y libcurl4-openssl-dev libfontconfig1-dev libfreetype6-dev
