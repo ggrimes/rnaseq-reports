@@ -32,10 +32,16 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-R-
 
+      - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libcurl4-openssl-dev libfontconfig1-dev libfreetype6-dev
+
     - name: Install necessary R packages
       run: |
         R -e 'install.packages("BiocManager")'
         R -e 'BiocManager::install("renv")'
+        R -e 'BiocManager::install(c("Rhtslib", "Rsamtools", "GenomicAlignments", "rtracklayer", "systemfonts"))'
         R -e 'BiocManager::install(renv::dependencies(path = "./01_quality_assessment/.")[["Package"]])'
         # Add any other package installations you need here
         # e.g., Rscript ./install_depedencies.R
