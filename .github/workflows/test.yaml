@@ -17,7 +17,7 @@ jobs:
     - name: Setup R
       uses: r-lib/actions/setup-r@v3
       with:
-          use-public-rspm: true
+        use-public-rspm: true
 
     # Cache R package installations
     - name: Cache R packages
