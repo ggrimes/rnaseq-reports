@@ -48,8 +48,8 @@ jobs:
 
     - name: Render R Markdown
       run: |
-        Rscript -e 'rmarkdown::render("./01_quality_assessment/QC.Rmd")'
-        
+        Rscript -e 'rmarkdown::render("QC.Rmd", quiet = TRUE)'
+      working-directory: ./01_quality_assessment
     - name: Upload HTML report
       uses: actions/upload-artifact@v4
       with:
