@@ -147,6 +147,10 @@ coldata <- coldata[rownames(metrics), ]
 stopifnot(all(names(counts) == rownames(metrics)))
 ```
 
+```{r}
+metrics
+```
+
 ```{r load_metadata}
 meta_df <- coldata
 ggplot(meta_df, aes(.data[[factor_of_interest]],
