@@ -147,10 +147,6 @@ coldata <- coldata[rownames(metrics), ]
 stopifnot(all(names(counts) == rownames(metrics)))
 ```
 
-```{r}
-metrics
-```
-
 ```{r load_metadata}
 meta_df <- coldata
 ggplot(meta_df, aes(.data[[factor_of_interest]],
@@ -215,7 +211,7 @@ max_pct_mapped <- round(max(metrics$mapped_reads / metrics$total_reads) * 100, 1
 
 ## Mapping rate
 
-The genomic mapping rate represents the percentage of reads mapping to the reference genome. We want to see consistent mapping rates between samples and over 70% mapping (the grey line). These samples have mapping rates: `r min_pct_mapped` - `r max_pct_mapped`%.
+The genomic mapping rate represents the percentage of reads mapping to the reference genome. We want to see consistent mapping rates between samples and over 70% mapping (the grey line). These samples have mapping rates: `min_pct_mapped` % - `max_pct_mapped` %.
 
 ```{r plot_mapping_rate}
 metrics$mapped_reads_pct <- round(metrics$mapped_reads / metrics$total_reads * 100, 1)
