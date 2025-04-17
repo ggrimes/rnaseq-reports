@@ -47,8 +47,13 @@ jobs:
         R -e 'BiocManager::install("renv")'
         R -e 'BiocManager::install(c("Rhtslib", "Rsamtools", "GenomicAlignments", "rtracklayer", "systemfonts"))'
         R -e 'BiocManager::install(renv::dependencies(path = "./01_quality_assessment/.")[["Package"]])'
+        R -e 'BiocManager::install(renv::dependencies(path = "./00_libs/.")[["Package"]])'
         # Add any other package installations you need here
         # e.g., Rscript ./install_depedencies.R
+    - name: Run R script (expect failure if packages missing)
+      run: |
+        Rscript pkgs.R
+      working-directory: ./01_quality_assessment
 
     - name: Render R Markdown
       run: |
