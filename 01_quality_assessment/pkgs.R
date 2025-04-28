@@ -22,8 +22,8 @@ single_end <- FALSE
 sanitize_datatable <- function(df, ...) {
   # remove dashes which cause wrapping
   DT::datatable(df, ...,
-                rownames = gsub("-", "_", rownames(df)),
-                colnames = gsub("-", "_", colnames(df))
+    rownames = gsub("-", "_", rownames(df)),
+    colnames = gsub("-", "_", colnames(df))
   )
 }
 
@@ -40,12 +40,12 @@ ggplot2::theme_set(theme_prism(base_size = 12))
 # NOTE change colors here if you wish
 scale_colour_discrete <- function(...) {
   scale_colour_manual(...,
-                      values = as.vector(grafify:::graf_palettes[["kelly"]])
+    values = as.vector(grafify:::graf_palettes[["kelly"]])
   )
 }
 scale_fill_discrete <- function(...) {
   scale_fill_manual(...,
-                    values = as.vector(grafify:::graf_palettes[["kelly"]])
+    values = as.vector(grafify:::graf_palettes[["kelly"]])
   )
 }
 
@@ -78,7 +78,7 @@ stopifnot(all(names(counts) == rownames(metrics)))
 
 meta_df <- coldata
 ggplot(meta_df, aes(.data[[factor_of_interest]],
-                    fill = .data[[factor_of_interest]]
+  fill = .data[[factor_of_interest]]
 )) +
   geom_bar() +
   ylab("") +
