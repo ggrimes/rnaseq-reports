@@ -64,10 +64,7 @@ load_metrics <- function(se = se_object, multiqc = multiqc_data_dir,
       } else if (genome == "mm39") {
         gtf <- "mm39.rna.gtf.gz"
       }
-      gtf <- system.file("extdata", "annotation",
-        gtf,
-        package = "bcbioR"
-      )
+      gtf <- file.path("https://github.com/bcbio/bcbioR/raw/refs/heads/main/inst/extdata/annotation", gtf)
     }
     if (is.null(gtf)) {
       warning("No genome provided! Please add it at the top of this Rmd")
