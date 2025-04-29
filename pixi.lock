@@ -331,6 +331,8 @@ packages:
   - libblas >=3.9.0,<4.0a0
   - liblapack >=3.9.0,<4.0a0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   size: 2780442
   timestamp: 1734315385001
@@ -355,6 +357,8 @@ packages:
   - r-cpp11
   - r-futile.logger
   - r-snow
+  arch: arm64
+  platform: osx
   license: GPL-2 | GPL-3
   size: 1738014
   timestamp: 1738715358637
@@ -376,6 +380,8 @@ packages:
   - liblapack >=3.9.0,<4.0a0
   - r-base >=4.4,<4.5.0a0
   - r-crayon
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   size: 14491593
   timestamp: 1737050707452
@@ -432,6 +438,8 @@ packages:
   - liblapack >=3.9.0,<4.0a0
   - r-base >=4.4,<4.5.0a0
   - r-matrix
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   size: 2618027
   timestamp: 1738827393819
@@ -495,6 +503,8 @@ packages:
   - r-matrix
   - r-rcpp
   - r-scales
+  arch: arm64
+  platform: osx
   license: MIT + file LICENCE
   size: 4705422
   timestamp: 1738883763455
@@ -538,6 +548,8 @@ packages:
   - libblas >=3.9.0,<4.0a0
   - liblapack >=3.9.0,<4.0a0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   size: 2582174
   timestamp: 1738827665903
@@ -592,6 +604,8 @@ packages:
   - r-rcpp
   - r-rlang
   - r-yulab.utils >=0.1.6
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   size: 1201748
   timestamp: 1744658965853
@@ -606,6 +620,8 @@ packages:
   - libblas >=3.9.0,<4.0a0
   - liblapack >=3.9.0,<4.0a0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   size: 2609893
   timestamp: 1738084810007
@@ -655,6 +671,8 @@ packages:
   - r-base >=4.4,<4.5.0a0
   - r-crayon
   - r-matrix
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   size: 1070000
   timestamp: 1744662747880
@@ -667,6 +685,8 @@ packages:
   - libblas >=3.9.0,<4.0a0
   - liblapack >=3.9.0,<4.0a0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   size: 2712939
   timestamp: 1738084679887
@@ -691,6 +711,8 @@ packages:
   - r-base >=4.4,<4.5.0a0
   - r-matrix
   - r-matrixstats
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   size: 1848290
   timestamp: 1744662874753
@@ -755,6 +777,8 @@ packages:
   - liblapack >=3.9.0,<4.0a0
   - libzlib >=1.3.1,<2.0a0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   size: 736640
   timestamp: 1738084911828
@@ -765,6 +789,8 @@ packages:
   - libblas >=3.9.0,<4.0a0
   - liblapack >=3.9.0,<4.0a0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: Artistic-2.0 + file LICENSE
   size: 254360
   timestamp: 1738084561569
@@ -773,6 +799,8 @@ packages:
   md5: 30d320d62d26ed91ca8b06166e4609df
   depends:
   - tk
+  arch: arm64
+  platform: osx
   license: TCL
   size: 129779
   timestamp: 1733809630752
@@ -781,6 +809,8 @@ packages:
   md5: fc6948412dbbbe9a4c9ddbbcfe0a79ab
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: bzip2-1.0.6
   license_family: BSD
   size: 122909
@@ -790,6 +820,8 @@ packages:
   md5: f8cd1beb98240c7edb1a95883360ccfa
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 179696
@@ -817,6 +849,8 @@ packages:
   - libpng >=1.6.47,<1.7.0a0
   - libzlib >=1.3.1,<2.0a0
   - pixman >=0.44.2,<1.0a0
+  arch: arm64
+  platform: osx
   license: LGPL-2.1-only or MPL-1.1
   size: 896173
   timestamp: 1741554795915
@@ -835,6 +869,8 @@ packages:
   - cctools 1010.6.*
   - ld64 951.9.*
   - clang 20.1.*
+  arch: arm64
+  platform: osx
   license: APSL-2.0
   license_family: Other
   size: 1105310
@@ -844,6 +880,8 @@ packages:
   md5: 1e79d6d7b71a9a39aa0c2f951d8bb951
   depends:
   - clang-20 20.1.3 default_h03658f6_0
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   size: 24352
@@ -856,6 +894,8 @@ packages:
   - libclang-cpp20.1 20.1.3 default_h03658f6_0
   - libcxx >=20.1.3
   - libllvm20 >=20.1.3,<20.2.0a0
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   size: 793918
@@ -869,6 +909,8 @@ packages:
   - compiler-rt 20.1.3.*
   - ld64_osx-arm64
   - llvm-tools 20.1.3.*
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 18324
@@ -878,6 +920,8 @@ packages:
   md5: e4660217e0a85fab1f4aa1bea57c4ee6
   depends:
   - clang_impl_osx-arm64 20.1.3 h90cea14_24
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 21550
@@ -888,6 +932,8 @@ packages:
   depends:
   - clang 20.1.3 default_hcdeef69_0
   - libcxx-devel 20.1.*
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   size: 24416
@@ -900,6 +946,8 @@ packages:
   - clangxx 20.1.3.*
   - libcxx >=20
   - libllvm20 >=20.1.3,<20.2.0a0
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 18469
@@ -910,6 +958,8 @@ packages:
   depends:
   - clang_osx-arm64 20.1.3 h07b0088_24
   - clangxx_impl_osx-arm64 20.1.3 hd54f55a_24
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 19905
@@ -921,6 +971,8 @@ packages:
   - __osx >=11.0
   - clang 20.1.3.*
   - compiler-rt_osx-arm64 20.1.3.*
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: APACHE
   size: 98885
@@ -948,6 +1000,8 @@ packages:
   - libzlib >=1.3.1,<2.0a0
   - openssl >=3.4.1,<4.0a0
   - zstd >=1.5.7,<1.6.0a0
+  arch: arm64
+  platform: osx
   license: curl
   license_family: MIT
   size: 168954
@@ -988,6 +1042,8 @@ packages:
   - freetype >=2.12.1,<3.0a0
   - libexpat >=2.6.3,<3.0a0
   - libzlib >=1.3.1,<2.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 234227
@@ -1019,12 +1075,16 @@ packages:
   depends:
   - libfreetype 2.13.3 hce30654_1
   - libfreetype6 2.13.3 h1d14073_1
+  arch: arm64
+  platform: osx
   license: GPL-2.0-only OR FTL
   size: 172220
   timestamp: 1745370149658
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/fribidi-1.0.10-h27ca646_0.tar.bz2
   sha256: 4b37ea851a2cf85edf0a63d2a63266847ec3dcbba4a31156d430cdd6aa811303
   md5: c64443234ff91d70cb9c7dc926c58834
+  arch: arm64
+  platform: osx
   license: LGPL-2.1
   size: 60255
   timestamp: 1604417405528
@@ -1043,6 +1103,8 @@ packages:
   - mpc >=1.3.1,<2.0a0
   - mpfr >=4.2.1,<5.0a0
   - zlib
+  arch: arm64
+  platform: osx
   license: GPL-3.0-only WITH GCC-exception-3.1
   license_family: GPL
   size: 18726808
@@ -1059,6 +1121,8 @@ packages:
   - libgfortran >=5
   - libgfortran-devel_osx-arm64 13.3.0
   - libgfortran5 >=13.3.0
+  arch: arm64
+  platform: osx
   license: GPL-3.0-or-later WITH GCC-exception-3.1
   license_family: GPL
   size: 35872
@@ -1068,6 +1132,8 @@ packages:
   md5: 02b868940101a06a6365c109ab1a94fe
   depends:
   - gmp >=6.2.1,<7.0a0
+  arch: arm64
+  platform: osx
   license: GPL-3.0-or-later
   license_family: GPL
   size: 1003220
@@ -1078,6 +1144,8 @@ packages:
   depends:
   - __osx >=11.0
   - libcxx >=16
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later OR LGPL-3.0-or-later
   size: 365188
   timestamp: 1718981343258
@@ -1086,6 +1154,8 @@ packages:
   md5: 339991336eeddb70076d8ca826dac625
   depends:
   - libcxx >=16
+  arch: arm64
+  platform: osx
   license: LGPL-2.0-or-later
   license_family: LGPL
   size: 79774
@@ -1096,6 +1166,8 @@ packages:
   depends:
   - libblas >=3.9.0,<4.0a0
   - libcblas >=3.9.0,<4.0a0
+  arch: arm64
+  platform: osx
   license: GPL-3.0-or-later
   license_family: GPL
   size: 2734398
@@ -1113,6 +1185,8 @@ packages:
   - libexpat >=2.7.0,<3.0a0
   - libglib >=2.84.0,<3.0a0
   - libzlib >=1.3.1,<2.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 1398206
@@ -1122,6 +1196,8 @@ packages:
   md5: 5eb22c1d7b3fc4abb50d92d621583137
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 11857802
@@ -1131,6 +1207,8 @@ packages:
   md5: e80e44a3f4862b1da870dc0557f8cf3b
   depends:
   - libcxx >=14.0.6
+  arch: arm64
+  platform: osx
   track_features:
   - isl_imath-32
   license: MIT
@@ -1143,6 +1221,8 @@ packages:
   depends:
   - oniguruma 6.9.*
   - oniguruma >=6.9.9,<6.10.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 317604
@@ -1156,6 +1236,8 @@ packages:
   - libedit >=3.1.20191231,<3.2.0a0
   - libedit >=3.1.20191231,<4.0a0
   - openssl >=3.3.1,<4.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 1155530
@@ -1174,6 +1256,8 @@ packages:
   - ld 951.9.*
   - cctools 1010.6.*
   - clang >=20.1.2,<21.0a0
+  arch: arm64
+  platform: osx
   license: APSL-2.0
   license_family: Other
   size: 1021994
@@ -1184,6 +1268,8 @@ packages:
   depends:
   - __osx >=11.0
   - libcxx >=18
+  arch: arm64
+  platform: osx
   license: Apache-2.0
   license_family: Apache
   size: 188306
@@ -1194,6 +1280,8 @@ packages:
   depends:
   - __osx >=11.0
   - libcxx >=18
+  arch: arm64
+  platform: osx
   license: LGPL-2.1-or-later
   size: 41679
   timestamp: 1739039255705
@@ -1210,6 +1298,8 @@ packages:
   - blas =2.131=openblas
   - mkl <2025
   - liblapack =3.9.0=31*_openblas
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 17123
@@ -1224,6 +1314,8 @@ packages:
   - liblapacke =3.9.0=31*_openblas
   - blas =2.131=openblas
   - liblapack =3.9.0=31*_openblas
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 17032
@@ -1235,6 +1327,8 @@ packages:
   - __osx >=11.0
   - libcxx >=20.1.3
   - libllvm20 >=20.1.3,<20.2.0a0
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   size: 13937615
@@ -1250,6 +1344,8 @@ packages:
   - libzlib >=1.3.1,<2.0a0
   - openssl >=3.4.1,<4.0a0
   - zstd >=1.5.7,<1.6.0a0
+  arch: arm64
+  platform: osx
   license: curl
   license_family: MIT
   size: 397929
@@ -1259,6 +1355,8 @@ packages:
   md5: 379db9caa727cab4d3a6c4327e4e7053
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   size: 566462
@@ -1268,6 +1366,8 @@ packages:
   md5: 6ae18bcb92fe947323f0e7a729e81107
   depends:
   - libcxx >=20.1.3
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   size: 1211325
@@ -1277,6 +1377,8 @@ packages:
   md5: 4dc332b504166d7f89e4b3b18ab5e6ea
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 54685
@@ -1288,6 +1390,8 @@ packages:
   - ncurses
   - __osx >=11.0
   - ncurses >=6.5,<7.0a0
+  arch: arm64
+  platform: osx
   license: BSD-2-Clause
   license_family: BSD
   size: 107691
@@ -1295,6 +1399,8 @@ packages:
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libev-4.33-h93a5062_2.conda
   sha256: 95cecb3902fbe0399c3a7e67a5bed1db813e5ab0e22f4023a5e0f722f2cc214f
   md5: 36d33e440c31857372a72137f78bacf5
+  arch: arm64
+  platform: osx
   license: BSD-2-Clause
   license_family: BSD
   size: 107458
@@ -1306,6 +1412,8 @@ packages:
   - __osx >=11.0
   constrains:
   - expat 2.7.0.*
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 65714
@@ -1315,6 +1423,8 @@ packages:
   md5: c215a60c2935b517dcda8cad4705734d
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 39839
@@ -1324,6 +1434,8 @@ packages:
   md5: d06282e08e55b752627a707d58779b8f
   depends:
   - libfreetype6 >=2.13.3
+  arch: arm64
+  platform: osx
   license: GPL-2.0-only OR FTL
   size: 7813
   timestamp: 1745370144506
@@ -1336,6 +1448,8 @@ packages:
   - libzlib >=1.3.1,<2.0a0
   constrains:
   - freetype >=2.13.3
+  arch: arm64
+  platform: osx
   license: GPL-2.0-only OR FTL
   size: 333529
   timestamp: 1745370142848
@@ -1346,6 +1460,8 @@ packages:
   - __osx >=11.0
   - libiconv >=1.17,<2.0a0
   - libintl 0.23.1 h493aca8_0
+  arch: arm64
+  platform: osx
   license: GPL-3.0-or-later
   license_family: GPL
   size: 166929
@@ -1355,6 +1471,8 @@ packages:
   md5: ad35937216e65cfeecd828979ee5e9e6
   depends:
   - libgfortran5 14.2.0 h2c44a93_105
+  arch: arm64
+  platform: osx
   license: GPL-3.0-only WITH GCC-exception-3.1
   license_family: GPL
   size: 155474
@@ -1373,6 +1491,8 @@ packages:
   - llvm-openmp >=8.0.0
   constrains:
   - libgfortran 14.2.0
+  arch: arm64
+  platform: osx
   license: GPL-3.0-only WITH GCC-exception-3.1
   license_family: GPL
   size: 806283
@@ -1389,6 +1509,8 @@ packages:
   - pcre2 >=10.44,<10.45.0a0
   constrains:
   - glib 2.84.0 *_0
+  arch: arm64
+  platform: osx
   license: LGPL-2.1-or-later
   size: 3698518
   timestamp: 1743039055882
@@ -1397,6 +1519,8 @@ packages:
   md5: 450e6bdc0c7d986acf7b8443dce87111
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: LGPL-2.1-only
   size: 681804
   timestamp: 1740128227484
@@ -1406,6 +1530,8 @@ packages:
   depends:
   - __osx >=11.0
   - libiconv >=1.17,<2.0a0
+  arch: arm64
+  platform: osx
   license: LGPL-2.1-or-later
   size: 78921
   timestamp: 1739039271409
@@ -1416,6 +1542,8 @@ packages:
   - __osx >=11.0
   constrains:
   - jpeg <0.0.0a
+  arch: arm64
+  platform: osx
   license: IJG AND BSD-3-Clause AND Zlib
   size: 553624
   timestamp: 1745268405713
@@ -1429,6 +1557,8 @@ packages:
   - liblapacke =3.9.0=31*_openblas
   - libcblas =3.9.0=31*_openblas
   - blas =2.131=openblas
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 17033
@@ -1442,6 +1572,8 @@ packages:
   - libxml2 >=2.13.7,<2.14.0a0
   - libzlib >=1.3.1,<2.0a0
   - zstd >=1.5.7,<1.6.0a0
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   size: 28901429
@@ -1451,6 +1583,8 @@ packages:
   md5: ba24e6f25225fea3d5b6912e2ac562f8
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: 0BSD
   size: 92295
   timestamp: 1743771392206
@@ -1459,6 +1593,8 @@ packages:
   md5: 7476305c35dd9acef48da8f754eedb40
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: BSD-2-Clause
   license_family: BSD
   size: 69263
@@ -1474,6 +1610,8 @@ packages:
   - libev >=4.33,<5.0a0
   - libzlib >=1.3.1,<2.0a0
   - openssl >=3.3.2,<4.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 566719
@@ -1488,6 +1626,8 @@ packages:
   - llvm-openmp >=18.1.8
   constrains:
   - openblas >=0.3.29,<0.3.30.0a0
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 4168442
@@ -1498,6 +1638,8 @@ packages:
   depends:
   - __osx >=11.0
   - libzlib >=1.3.1,<2.0a0
+  arch: arm64
+  platform: osx
   license: zlib-acknowledgement
   size: 259332
   timestamp: 1739953032676
@@ -1507,6 +1649,8 @@ packages:
   depends:
   - __osx >=11.0
   - libzlib >=1.3.1,<2.0a0
+  arch: arm64
+  platform: osx
   license: Unlicense
   size: 900188
   timestamp: 1742083865246
@@ -1516,6 +1660,8 @@ packages:
   depends:
   - libzlib >=1.3.1,<2.0a0
   - openssl >=3.5.0,<4.0a0
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 279193
@@ -1533,6 +1679,8 @@ packages:
   - libwebp-base >=1.5.0,<2.0a0
   - libzlib >=1.3.1,<2.0a0
   - zstd >=1.5.7,<1.6.0a0
+  arch: arm64
+  platform: osx
   license: HPND
   size: 370898
   timestamp: 1745372834516
@@ -1543,6 +1691,8 @@ packages:
   - __osx >=11.0
   constrains:
   - libwebp 1.5.0
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 290013
@@ -1556,6 +1706,8 @@ packages:
   - libiconv >=1.18,<2.0a0
   - liblzma >=5.8.1,<6.0a0
   - libzlib >=1.3.1,<2.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 583561
@@ -1567,6 +1719,8 @@ packages:
   - __osx >=11.0
   constrains:
   - zlib 1.3.1 *_2
+  arch: arm64
+  platform: osx
   license: Zlib
   license_family: Other
   size: 46438
@@ -1578,6 +1732,8 @@ packages:
   - __osx >=11.0
   constrains:
   - openmp 20.1.3|20.1.3.*
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: APACHE
   size: 282301
@@ -1594,6 +1750,8 @@ packages:
   - llvmdev     20.1.3
   - clang       20.1.3
   - clang-tools 20.1.3
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   size: 88700
@@ -1607,6 +1765,8 @@ packages:
   - libllvm20 20.1.3 h598bca7_0
   - libzlib >=1.3.1,<2.0a0
   - zstd >=1.5.7,<1.6.0a0
+  arch: arm64
+  platform: osx
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   size: 18174507
@@ -1616,6 +1776,8 @@ packages:
   md5: 9f44ef1fea0a25d6a3491c58f3af8460
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: GPL-3.0-or-later
   license_family: GPL
   size: 274048
@@ -1627,6 +1789,8 @@ packages:
   - __osx >=11.0
   - gmp >=6.3.0,<7.0a0
   - mpfr >=4.2.1,<5.0a0
+  arch: arm64
+  platform: osx
   license: LGPL-3.0-or-later
   license_family: LGPL
   size: 104766
@@ -1637,6 +1801,8 @@ packages:
   depends:
   - __osx >=11.0
   - gmp >=6.3.0,<7.0a0
+  arch: arm64
+  platform: osx
   license: LGPL-3.0-only
   license_family: LGPL
   size: 345517
@@ -1646,6 +1812,8 @@ packages:
   md5: 068d497125e4bf8a66bf707254fff5ae
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: X11 AND BSD-3-Clause
   size: 797030
   timestamp: 1738196177597
@@ -1654,6 +1822,8 @@ packages:
   md5: 045afd0b8e35a71bfbe95345146592c4
   depends:
   - __osx >=11.0
+  arch: arm64
+  platform: osx
   license: BSD-2-Clause
   license_family: BSD
   size: 223354
@@ -1664,6 +1834,8 @@ packages:
   depends:
   - __osx >=11.0
   - ca-certificates
+  arch: arm64
+  platform: osx
   license: Apache-2.0
   license_family: Apache
   size: 3067649
@@ -1671,6 +1843,8 @@ packages:
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pandoc-3.6.4-hce30654_0.conda
   sha256: 3b405dfdc0a8b200cdbb2717fe2c7474a236fca892dc406b42f6ccc85ba8a5b6
   md5: 997bdef39cea11cc12e1a95c903b329f
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL
   size: 23272821
@@ -1690,6 +1864,8 @@ packages:
   - libglib >=2.84.0,<3.0a0
   - libpng >=1.6.47,<1.7.0a0
   - libzlib >=1.3.1,<2.0a0
+  arch: arm64
+  platform: osx
   license: LGPL-2.1-or-later
   size: 426212
   timestamp: 1743352728692
@@ -1700,6 +1876,8 @@ packages:
   - __osx >=11.0
   - bzip2 >=1.0.8,<2.0a0
   - libzlib >=1.3.1,<2.0a0
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 621564
@@ -1710,6 +1888,8 @@ packages:
   depends:
   - __osx >=11.0
   - libcxx >=18
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 201076
@@ -1733,6 +1913,8 @@ packages:
   - readline >=8.2,<9.0a0
   - tk >=8.6.13,<8.7.0a0
   - tzdata
+  arch: arm64
+  platform: osx
   license: Python-2.0
   size: 12136505
   timestamp: 1744663807953
@@ -1756,6 +1938,8 @@ packages:
   - python >=3.13,<3.14.0a0 *_cp313
   - python_abi 3.13.* *_cp313
   - yaml >=0.2.5,<0.3.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 194243
@@ -1782,6 +1966,8 @@ packages:
   - r-lattice
   - r-nlme
   - r-rcpp >=0.12.0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL3
   size: 2918519
@@ -1808,6 +1994,8 @@ packages:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
   - r-sys >=2.1
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 31804
@@ -1838,6 +2026,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL2
   size: 130588
@@ -1885,6 +2075,8 @@ packages:
   - tk >=8.6.13,<8.7.0a0
   - tktable
   - tzdata >=2024a
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL
   size: 27582040
@@ -1895,6 +2087,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL3
   size: 45877
@@ -1914,6 +2108,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL2
   size: 612560
@@ -1925,6 +2121,8 @@ packages:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
   - r-bit >=4.0.0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-only
   license_family: GPL2
   size: 495013
@@ -1987,6 +2185,8 @@ packages:
   - r-base >=4.4,<4.5.0a0
   - r-fastmap
   - r-rlang
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 76154
@@ -2020,6 +2220,8 @@ packages:
   - __osx >=11.0
   - libcxx >=18
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 1316460
@@ -2048,6 +2250,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 2533846
@@ -2102,6 +2306,8 @@ packages:
   - __osx >=11.0
   - libcurl >=8.12.1,<9.0a0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 471898
@@ -2114,6 +2320,8 @@ packages:
   - libzlib >=1.3.1,<2.0a0
   - llvm-openmp >=18.1.8
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MPL-2.0
   license_family: OTHER
   size: 2284785
@@ -2159,6 +2367,8 @@ packages:
   - __osx >=11.0
   - libcxx >=16
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL2
   size: 205807
@@ -2181,6 +2391,8 @@ packages:
   - r-tibble >=2.1.3
   - r-tidyselect >=1.1.0
   - r-vctrs >=0.3.5
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 1426912
@@ -2211,6 +2423,8 @@ packages:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
   - r-rlang >=0.3.0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 43408
@@ -2230,6 +2444,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL3
   size: 320637
@@ -2241,6 +2457,8 @@ packages:
   - __osx >=11.0
   - libcxx >=16
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 1396517
@@ -2252,6 +2470,8 @@ packages:
   - __osx >=11.0
   - libcxx >=16
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 72928
@@ -2262,6 +2482,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-only
   license_family: GPL2
   size: 48277
@@ -2310,6 +2532,8 @@ packages:
   - __osx >=11.0
   - libcxx >=18
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 296052
@@ -2382,6 +2606,8 @@ packages:
   - r-tidyselect
   - r-tweenr >=0.1.5
   - r-withr
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 1830210
@@ -2454,6 +2680,8 @@ packages:
   - r-rcpp
   - r-rlang >=0.3.0
   - r-scales >=0.5.0
+  arch: arm64
+  platform: osx
   license: GPL-3.0-only
   license_family: GPL3
   size: 274463
@@ -2479,6 +2707,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 165032
@@ -2576,6 +2806,8 @@ packages:
   - r-tibble
   - r-tidyselect
   - r-vctrs >=0.3.0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 347389
@@ -2616,6 +2848,8 @@ packages:
   - r-ellipsis
   - r-fastmap >=1.1.0
   - r-rlang >=0.4.10
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL3
   size: 365871
@@ -2688,6 +2922,8 @@ packages:
   - r-pkgconfig >=2.0.0
   - r-rlang
   - r-vctrs
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL3
   size: 5122864
@@ -2699,6 +2935,8 @@ packages:
   - __osx >=11.0
   - libcxx >=16
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 1626128
@@ -2719,6 +2957,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 635322
@@ -2761,6 +3001,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL3
   size: 1380614
@@ -2771,6 +3013,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-3.0-only
   license_family: GPL3
   size: 160850
@@ -2795,6 +3039,8 @@ packages:
   - r-base >=4.4,<4.5.0a0
   - r-generics
   - r-timechange >=0.1.1
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL2
   size: 984279
@@ -2805,6 +3051,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 211244
@@ -2815,6 +3063,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL3
   size: 1141047
@@ -2828,6 +3078,8 @@ packages:
   - liblapack >=3.9.0,<4.0a0
   - r-base >=4.4,<4.5.0a0
   - r-lattice
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL3
   size: 4121581
@@ -2838,6 +3090,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: Artistic-2.0
   license_family: OTHER
   size: 442177
@@ -2864,6 +3118,8 @@ packages:
   - r-base >=4.4,<4.5.0a0
   - r-matrix
   - r-nlme >=3.1_64
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL2
   size: 3398105
@@ -2874,6 +3130,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL
   size: 64937
@@ -2930,6 +3188,8 @@ packages:
   - libgfortran5 >=14.2.0
   - r-base >=4.4,<4.5.0a0
   - r-lattice
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL3
   size: 2347650
@@ -2942,6 +3202,8 @@ packages:
   - openssl >=3.4.1,<4.0a0
   - r-askpass
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 685555
@@ -3000,6 +3262,8 @@ packages:
   - libcxx >=16
   - r-base >=4.4,<4.5.0a0
   - r-rcpp >=0.11.0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 782778
@@ -3011,6 +3275,8 @@ packages:
   - __osx >=11.0
   - libpng >=1.6.43,<1.7.0a0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-only OR GPL-3.0-only
   license_family: GPL3
   size: 59671
@@ -3022,6 +3288,8 @@ packages:
   - __osx >=11.0
   - libcxx >=16
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: BSL-1.0
   license_family: OTHER
   size: 124969
@@ -3045,6 +3313,8 @@ packages:
   - r-base >=4.4,<4.5.0a0
   - r-ps >=1.2.0
   - r-r6
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 329350
@@ -3068,6 +3338,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 403098
@@ -3083,6 +3355,8 @@ packages:
   - r-magrittr >=1.5
   - r-rlang >=0.4.10
   - r-vctrs >=0.5
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 534342
@@ -3139,6 +3413,8 @@ packages:
   - r-base >=4.4,<4.5.0a0
   - r-systemfonts >=1.0.3
   - r-textshaping >=0.3.0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 478205
@@ -3149,6 +3425,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 53426
@@ -3169,6 +3447,8 @@ packages:
   - __osx >=11.0
   - libcxx >=18
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL2
   size: 2058054
@@ -3184,6 +3464,8 @@ packages:
   - r-base >=4.4,<4.5.0a0
   - r-matrix >=1.1_0
   - r-rcpp >=0.11.0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL2
   size: 1469794
@@ -3206,6 +3488,8 @@ packages:
   - r-tibble
   - r-tzdb >=0.1.1
   - r-vroom >=1.5.4
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 826469
@@ -3222,6 +3506,8 @@ packages:
   - r-cpp11 >=0.4.0
   - r-progress
   - r-tibble >=2.0.1
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 341732
@@ -3276,6 +3562,8 @@ packages:
   - r-plyr >=1.8.1
   - r-rcpp
   - r-stringr
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 119277
@@ -3287,6 +3575,8 @@ packages:
   - __osx >=11.0
   - libcxx >=18
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: GPL-3.0-only
   license_family: GPL3
   size: 1569701
@@ -3325,6 +3615,8 @@ packages:
   - r-memoise
   - r-pkgconfig
   - r-plogr >=0.2.0
+  arch: arm64
+  platform: osx
   license: LGPL-2.1-or-later
   license_family: LGPL
   size: 1224857
@@ -3370,6 +3662,8 @@ packages:
   - r-r6
   - r-rappdirs
   - r-rlang
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 2098869
@@ -3434,6 +3728,8 @@ packages:
   - icu >=75.1,<76.0a0
   - libcxx >=18
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: FOSS
   license_family: OTHER
   size: 869898
@@ -3460,6 +3756,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 49081
@@ -3475,6 +3773,8 @@ packages:
   - r-cpp11 >=0.2.1
   - r-jsonlite
   - r-lifecycle
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 287522
@@ -3493,6 +3793,8 @@ packages:
   - r-lifecycle
   - r-stringi
   - r-systemfonts >=1.1.0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 166579
@@ -3510,6 +3812,8 @@ packages:
   - r-pkgconfig
   - r-rlang >=1.0.2
   - r-vctrs >=0.4.2
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 617006
@@ -3532,6 +3836,8 @@ packages:
   - r-tibble >=2.1.1
   - r-tidyselect >=1.2.0
   - r-vctrs >=0.5.2
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 1117897
@@ -3616,6 +3922,8 @@ packages:
   - libcxx >=16
   - r-base >=4.4,<4.5.0a0
   - r-cpp11 >=0.2.7
+  arch: arm64
+  platform: osx
   license: GPL-3.0-only AND Apache-2.0
   license_family: GPL3
   size: 178856
@@ -3642,6 +3950,8 @@ packages:
   - r-magrittr
   - r-rlang
   - r-vctrs
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 375975
@@ -3654,6 +3964,8 @@ packages:
   - libcxx >=18
   - r-base >=4.4,<4.5.0a0
   - r-cpp11 >=0.5.2
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 548522
@@ -3664,6 +3976,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: Apache-2.0
   license_family: APACHE
   size: 140291
@@ -3674,6 +3988,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 52689
@@ -3689,6 +4005,8 @@ packages:
   - r-glue
   - r-lifecycle >=1.0.3
   - r-rlang >=1.0.6
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 1244215
@@ -3723,6 +4041,8 @@ packages:
   - r-tzdb >=0.1.1
   - r-vctrs >=0.2.0
   - r-withr
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 798627
@@ -3743,6 +4063,8 @@ packages:
   - __osx >=11.0
   - libcxx >=18
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 590686
@@ -3757,6 +4079,8 @@ packages:
   - r-base >=4.4,<4.5.0a0
   - r-cli
   - r-rlang >=1.1.0
+  arch: arm64
+  platform: osx
   license: GPL-2.0-or-later
   license_family: GPL2
   size: 200825
@@ -3767,6 +4091,8 @@ packages:
   depends:
   - __osx >=11.0
   - r-base >=4.4,<4.5.0a0
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 106489
@@ -3790,6 +4116,8 @@ packages:
   md5: 63ef3f6e6d6d5c589e64f11263dc5676
   depends:
   - ncurses >=6.5,<7.0a0
+  arch: arm64
+  platform: osx
   license: GPL-3.0-only
   license_family: GPL
   size: 252359
@@ -3808,6 +4136,8 @@ packages:
   md5: 4a2cac04f86a4540b8c9b8d8f597848f
   depends:
   - openssl >=3.0.0,<4.0a0
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 210264
@@ -3819,6 +4149,8 @@ packages:
   - __osx >=11.0
   - libcxx >=17.0.0.a0
   - ncurses >=6.5,<7.0a0
+  arch: arm64
+  platform: osx
   license: NCSA
   license_family: MIT
   size: 207679
@@ -3828,6 +4160,8 @@ packages:
   md5: b50a57ba89c32b62428b71a875291c9b
   depends:
   - libzlib >=1.2.13,<2.0.0a0
+  arch: arm64
+  platform: osx
   license: TCL
   license_family: BSD
   size: 3145523
@@ -3838,6 +4172,8 @@ packages:
   depends:
   - __osx >=11.0
   - tk >=8.6.13,<8.7.0a0
+  arch: arm64
+  platform: osx
   license: TCL
   size: 79824
   timestamp: 1719242715383
@@ -3877,6 +4213,8 @@ packages:
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-0.2.5-h3422bc3_2.tar.bz2
   sha256: 93181a04ba8cfecfdfb162fc958436d868cc37db504c58078eab4c1a3e57fbb7
   md5: 4bb3f014845110883a3c5ee811fd84b4
+  arch: arm64
+  platform: osx
   license: MIT
   license_family: MIT
   size: 88016
@@ -3903,6 +4241,8 @@ packages:
   depends:
   - __osx >=11.0
   - libzlib 1.3.1 h8359307_2
+  arch: arm64
+  platform: osx
   license: Zlib
   license_family: Other
   size: 77606
@@ -3913,6 +4253,8 @@ packages:
   depends:
   - __osx >=11.0
   - libzlib >=1.3.1,<2.0a0
+  arch: arm64
+  platform: osx
   license: BSD-3-Clause
   license_family: BSD
   size: 399979
