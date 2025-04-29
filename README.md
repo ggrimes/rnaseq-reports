@@ -7,27 +7,28 @@ Templates with ![](https://img.shields.io/badge/status-draft-grey) revision indi
 
 # Guidelines for RNAseq downstream analysis
 
-- Set the working directory to the directory containing this README. We recommend to use **Projects** in Rstudio.
+- Set the working directory to the directory containing this README. We recommend using a [Project](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects) in Rstudio.
 - Use `install_dependencies.R` to install all packages used in these reports.
 
 ## Run data with nf-core rnaseq
 
 These templates assume that the raw data has been processed by [nf-core/rnaseq](https://nf-co.re/rnaseq/3.14.0/docs/usage).
-We recommend using the `samplesheet.csv` used with nf-core as a metadata or coldata file when applicable. This CSV can contain additional columns of relevant information even if these columns are not required or used by `nf-core/rnaseq`.
+
+The `nf-core/rnaseq` documentation describes a `samplesheet.csv`. We recommend using this `samplesheet.csv` as a metadata or coldata file when applicable. This CSV can contain additional columns of relevant information even if these columns are not required or used by `nf-core/rnaseq`.
 
 ## Downstream analysis
 
 Before using any template:
-- **Modify** `information.R` with the right information. You can use this file with any other Rmd to include the project/analysis information.
+- **Modify** `information.R` with the right information. You can use this file with any template to include the project/analysis information.
 - **Modify** `00_params/params.R` with the locations of select files/folders from the output of [nf-core/rnaseq](https://nf-co.re/rnaseq/3.14.0/docs/output). These nf-core outputs will become inputs to various templates.
 
 Additional useful info:
-- `params*example.R` are parameters pointing to test data to be used as an example to test the report code and see how the fully rendered report looks.
-- `run_markdown.R` is an example of code to render a report while specifying parameters at the time of rendering. This can be used multiple times to render the same report using multiple sets of parameters. 
+- `params*example.R` are parameters pointing to a small, simple dataset that can be used to test the report code and see how the fully rendered report looks.
+- `run_markdown.R` is an example of code to render a report while specifying parameters at the time of rendering. This can be used to render a report multiple times using multiple sets of parameters without duplicating the report code. 
 
 ### Quality assessment
 
-![](https://img.shields.io/badge/status-stable-green) `01_quality_assessment/QC.Rmd` is a report template that uses as input the `nf-core/rnaseq` outputs specified in  `00_params/params.R`. This template examines:
+![](https://img.shields.io/badge/status-stable-green) `01_quality_assessment/QC.Rmd` is a report template that uses as input the `nf-core/rnaseq` outputs specified in  `00_params/params.R`. It also uses helper functions defined in `00_libs/load_data.R`. This template examines:
 
 - read metrics
 - sample similarity analysis (PCA and hierarchical clustering)
@@ -35,13 +36,13 @@ Additional useful info:
   
 ### Differential expression
 
-![](https://img.shields.io/badge/status-stable-green) `02_differential_expression/DEG.Rmd` is a report template for comparison between two groups. It supports multiple contrasts. Like `01_quality_assessment/QC.Rmd`, it uses as input the `nf-core/rnaseq` outputs specified in `00_params/params.R`.
+![](https://img.shields.io/badge/status-stable-green) `02_differential_expression/DEG.Rmd` is a report template for comparison between two groups. It supports multiple contrasts. Like `01_quality_assessment/QC.Rmd`, it uses as input the `nf-core/rnaseq` outputs specified in `00_params/params.R`. It also uses helper functions defined in `00_libs/load_data.R` and `00_libs/FA.R`.
 
-On the `YAML` header file of the `Rmd` you can specify some parameters or just set them up in the first chunk of code of the template. 
+On the `YAML` header file of the `Rmd` you can specify some parameters or just set them up in the second chunk of code of the template. 
 
 This template has examples of:
 
-- sub-setting data
+- subsetting data
 - two groups comparison
 - volcano plot
 - MA plot
