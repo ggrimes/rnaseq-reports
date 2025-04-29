@@ -1,0 +1,15 @@
+[project]
+authors = ["Edmund Miller <edmund.miller@seqera.io>"]
+channels = ["conda-forge", "bioconda"]
+description = "Add a short description here"
+name = "rnaseq-reports"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[target.osx.tasks]
+rstudio = "open -a rstudio"
+
+[dependencies]
+r-msigdbr = ">=10.0.2,<11"
+bioconductor-clusterprofiler = ">=4.14.0,<5"
+r-rmarkdown = ">=2.29,<3"
