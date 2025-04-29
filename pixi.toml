@@ -8,8 +8,13 @@ version = "0.1.0"
 
 [target.osx.tasks]
 rstudio = "open -a rstudio"
+test = "Rscript -e 'rmarkdown::render(\"01_quality_assessment/QC.Rmd\", quiet = TRUE)'"
 
 [dependencies]
 r-msigdbr = ">=10.0.2,<11"
 bioconductor-clusterprofiler = ">=4.14.0,<5"
 r-rmarkdown = ">=2.29,<3"
+r-tidyverse = ">=2.0.0,<3"
+bioconductor-summarizedexperiment = ">=1.36.0,<2"
+bioconductor-genomeinfodb = ">=1.42.0,<2"
+bioconductor-genomeinfodbdata = ">=1.2.13,<2"
