@@ -3,7 +3,7 @@ authors = ["Edmund Miller <edmund.miller@seqera.io>"]
 channels = ["conda-forge", "bioconda"]
 description = "Add a short description here"
 name = "rnaseq-reports"
-platforms = ["osx-arm64"]
+platforms = ["osx-arm64", "linux-64"]
 version = "0.1.0"
 
 [target.osx.tasks]
