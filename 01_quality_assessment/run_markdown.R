@@ -8,7 +8,7 @@ rmarkdown::render("QC.Rmd",
   clean = TRUE,
   output_format = "html_document",
   params = list(
-    params_file = "params_qc_nf-core-testdata.R",
+    params_file = "../00_params/params-example.R",
     project_file = "../information.R"
   )
 )
