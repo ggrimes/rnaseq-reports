@@ -1,0 +1,32 @@
+[project]
+authors = ["Edmund Miller <edmund.miller@seqera.io>"]
+channels = ["conda-forge", "bioconda"]
+description = "Add a short description here"
+name = "rnaseq-reports"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[target.osx.tasks]
+rstudio = "open -a rstudio"
+test_qc = "Rscript -e 'rmarkdown::render(\"01_quality_assessment/QC.Rmd\", quiet = TRUE)'"
+
+[dependencies]
+r-msigdbr = ">=10.0.2,<11"
+bioconductor-clusterprofiler = ">=4.14.0,<5"
+r-rmarkdown = ">=2.29,<3"
+r-tidyverse = ">=2.0.0,<3"
+bioconductor-summarizedexperiment = ">=1.36.0,<2"
+bioconductor-genomeinfodb = ">=1.42.0,<2"
+bioconductor-genomeinfodbdata = ">=1.2.13,<2"
+bioconductor-biocgenerics = ">=0.52.0,<1"
+bioconductor-s4vectors = ">=0.42.0,<1"
+bioconductor-iranges = ">=2.38.0,<3"
+bioconductor-genomicranges = ">=1.56.0,<2"
+r-janitor = ">=2.2.0,<3"
+bioconductor-rtracklayer = ">=1.62.0,<2"
+bioconductor-deseq2 = ">=1.42.0,<2"
+bioconductor-degreport = ">=1.38.0,<2"
+r-dt = ">=0.33,<0.34"
+r-pheatmap = ">=1.0.12,<2"
+r-ggprism = ">=1.0.5,<2"
+r-grafify = ">=5.0.0.1,<6"
