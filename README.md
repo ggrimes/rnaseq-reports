@@ -17,6 +17,13 @@ Read [main page](https://github.com/bcbio) to know how to collaborate with us.
 This templates assume data has been processed by [nf-core/rnaseq](https://nf-co.re/rnaseq/3.14.0/docs/usage).
 We recommend to use the `samplesheet.csv` used with nf-core as metadata file, where other relevant columns can be there even if they are not used by the pipeline.
 
+**Quick Start**
+
+```
+Rscript ./install_depedencies.R
+Rscript -e 'rmarkdown::render("QC.Rmd", quiet = TRUE)'
+```
+
 ## Downstream analysis
 
 - **Modify** `information.R` with the right information. You can use this file with any other Rmd to include the project/analysis information.
