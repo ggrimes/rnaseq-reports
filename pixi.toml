@@ -10,6 +10,10 @@ version = "0.1.0"
 rstudio = "open -a rstudio"
 test_qc = "Rscript -e 'rmarkdown::render(\"01_quality_assessment/QC.Rmd\", quiet = TRUE)'"
 
+[target.linux-64.tasks]
+rstudio = "open -a rstudio"
+test_qc = "Rscript -e 'rmarkdown::render(\"01_quality_assessment/QC.Rmd\", quiet = TRUE)'"
+
 [dependencies]
 r-msigdbr = ">=10.0.2,<11"
 bioconductor-clusterprofiler = ">=4.14.0,<5"
