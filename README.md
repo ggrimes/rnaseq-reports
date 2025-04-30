@@ -16,6 +16,13 @@ These templates assume that the raw data has been processed by [nf-core/rnaseq](
 
 The `nf-core/rnaseq` documentation describes a `samplesheet.csv`. We recommend using this `samplesheet.csv` as a metadata or coldata file when applicable. This CSV can contain additional columns of relevant information even if these columns are not required or used by `nf-core/rnaseq`.
 
+**Quick Start**
+
+```
+Rscript ./install_depedencies.R
+Rscript -e 'rmarkdown::render("QC.Rmd", quiet = TRUE)'
+```
+
 ## Downstream analysis
 
 Before using any template:

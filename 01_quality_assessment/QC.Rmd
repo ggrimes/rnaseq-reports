@@ -28,7 +28,7 @@ params:
 
 Template developed with materials from https://hbctraining.github.io/main/.
 
-```{r, cache = FALSE, message = FALSE, warning=FALSE}
+```{r, cache = FALSE, message = FALSE, warning=FALSE, eval = interactive()}
 # This set up the working directory to this file so all files can be found
 library(rstudioapi)
 setwd(fs::path_dir(getSourceEditorContext()$path))
@@ -121,7 +121,7 @@ sanitize_datatable <- function(df, ...) {
 
 ```{r load_data, message=F, warning=F}
 # This code will load from bcbio or nf-core folder
-# NOTE make sure to set numerator and denominator
+# TODO:  make sure to set numerator and denominator
 coldata <- load_coldata(coldata_fn)
 # Change this line to change the levels to the desired order.
 # It will affect downstream colors in plots.
@@ -211,7 +211,7 @@ max_pct_mapped <- round(max(metrics$mapped_reads / metrics$total_reads) * 100, 1
 
 ## Mapping rate
 
-The genomic mapping rate represents the percentage of reads mapping to the reference genome. We want to see consistent mapping rates between samples and over 70% mapping (the grey line). These samples have mapping rates: `r min_pct_mapped` - `r max_pct_mapped`%.
+The genomic mapping rate represents the percentage of reads mapping to the reference genome. We want to see consistent mapping rates between samples and over 70% mapping (the grey line). These samples have mapping rates: `r min_pct_mapped`% - `r max_pct_mapped` %.
 
 ```{r plot_mapping_rate}
 metrics$mapped_reads_pct <- round(metrics$mapped_reads / metrics$total_reads * 100, 1)
