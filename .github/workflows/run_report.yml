@@ -1,4 +1,4 @@
-name: Run Report
+name: Run QC Report
 
 on:
   push:

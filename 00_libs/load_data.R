@@ -1,4 +1,5 @@
 library(tidyverse)
+BiocManager::install("GenomeInfoDbData", update = FALSE, ask = FALSE)
 library(SummarizedExperiment)
 library(janitor)
 load_metrics <- function(se = se_object, multiqc = multiqc_data_dir,
