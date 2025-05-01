@@ -3,15 +3,15 @@ authors = ["Edmund Miller <edmund.miller@seqera.io>"]
 channels = ["conda-forge", "bioconda"]
 description = "Add a short description here"
 name = "rnaseq-reports"
-platforms = ["osx-arm64", "linux-64", "linux-aarch64"]
+platforms = ["osx-arm64", "linux-64"]
 version = "0.1.0"
 
 [target.osx.tasks]
 rstudio = "open -a rstudio"
-test_qc = "Rscript -e 'rmarkdown::render(\"01_quality_assessment/QC.Rmd\", quiet = TRUE)'"
+test_qc = "Rscript -e 'quarto::quarto_render(\"01_quality_assessment/QC.qmd\", quiet = TRUE)'"
 
 [target.linux.tasks]
-test_qc = "Rscript -e 'rmarkdown::render(\"01_quality_assessment/QC.Rmd\", quiet = TRUE)'"
+test_qc = "Rscript -e 'quarto::quarto_render(\"01_quality_assessment/QC.qmd\", quiet = TRUE)'"
 
 [dependencies]
 r-msigdbr = ">=10.0.2,<11"
@@ -34,3 +34,5 @@ r-pheatmap = ">=1.0.12,<2"
 r-ggprism = ">=1.0.5,<2"
 r-grafify = ">=5.0.0.1,<6"
 r-biocmanager = ">=1.30.25,<2"
+quarto = ">=1.6.43,<2"
+r-quarto = ">=1.4.4,<2"
