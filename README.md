@@ -47,13 +47,13 @@ Before using any template:
 
 Additional useful info:
 - `params*example.R` are files containing parameters pointing to a small, simple dataset that can be used to test the report code and see how the fully rendered report looks.
-- `run_markdown.R` is an example of code to render a report while specifying parameters at the time of rendering. This can be used to render a report multiple times using multiple sets of parameters without duplicating the report code. 
+- `render.R` is an example of code to render a report while specifying parameters at the time of rendering. This can be used to render a report multiple times using multiple sets of parameters without duplicating the report code. 
 
 ### Quality assessment
 
 ![](https://img.shields.io/badge/status-stable-green) [01_quality_assessment/QC.qmd](01_quality_assessment/QC.qmd) is a report template that uses as input the `nf-core/rnaseq` outputs specified in  [00_params/params.R](00_params/params.R). It also uses helper functions defined in [00_libs/load_data.R](00_libs/load_data.R). This template examines:
 
-On the `YAML` header file of the `Rmd` you can specify some parameters or just set them up in the second chunk of code of the template. 
+On the `YAML` header file of the `qmd` you can specify some parameters or just set them up in the second chunk of code of the template. 
 
 - read metrics
 - sample similarity analysis (PCA and hierarchical clustering)
