@@ -2,18 +2,18 @@
 title: "Quality Control"
 author: "Harvard Chan Bioinformatics Core"
 date: "`r Sys.Date()`"
-output:
-   html_document:
-      code_folding: hide
-      df_print: paged
-      highlights: pygments
-      number_sections: true
-      self_contained: true
-      theme: default
-      toc: true
-      toc_float:
-         collapsed: true
-         smooth_scroll: true
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    df-print: paged
+    highlight-style: pygments
+    number-sections: true
+    self-contained: true
+    theme: default
+    toc: true
+    toc-location: right
+    toc-expand: false
 params:
   # Fill this file with the right paths to nfcore output
   # Put hg38, mm10, mm39, or other
@@ -170,7 +170,9 @@ meta_sm <- meta_df %>%
 meta_sm %>% sanitize_datatable()
 ```
 
-# Read metrics {.tabset}
+# Read metrics
+
+::: {.panel-tabset}
 
 ## Total reads
 
@@ -403,7 +405,6 @@ metrics %>%
 ```
 
 ## Counts per gene - all genes
-
 We expect consistency in the box plots here between the samples, i.e. the distribution of counts across the genes is similar
 
 ```{r plot_counts_per_gene}
@@ -429,6 +430,7 @@ ggplot(counts_lng, aes(factor(name, level = order),
   ggtitle("Counts per gene, all non-zero genes")
 ```
 
+:::
 
 # Sample similarity analysis
 

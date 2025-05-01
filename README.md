@@ -51,7 +51,7 @@ Additional useful info:
 
 ### Quality assessment
 
-![](https://img.shields.io/badge/status-stable-green) [01_quality_assessment/QC.Rmd](01_quality_assessment/QC.Rmd) is a report template that uses as input the `nf-core/rnaseq` outputs specified in  [00_params/params.R](00_params/params.R). It also uses helper functions defined in [00_libs/load_data.R](00_libs/load_data.R). This template examines:
+![](https://img.shields.io/badge/status-stable-green) [01_quality_assessment/QC.qmd](01_quality_assessment/QC.qmd) is a report template that uses as input the `nf-core/rnaseq` outputs specified in  [00_params/params.R](00_params/params.R). It also uses helper functions defined in [00_libs/load_data.R](00_libs/load_data.R). This template examines:
 
 On the `YAML` header file of the `Rmd` you can specify some parameters or just set them up in the second chunk of code of the template. 
 
