@@ -505,7 +505,7 @@ treatment <- coldata[[to_keep]]
 # treatment3 <- metrics[[to_keep]]
 
 # Column bind all of the vectors with columns containing variables of interest into one object
-# imp <- cbind(as.numeric(as.character(treatment1)),as.numeric(as.character(treatment2)), as.numeric(as.character(treatment3)))
+# imp <- cbind(as.numeric(as.factor(as.character(treatment1))),as.numeric(as.factor(as.character(treatment2))), as.numeric(as.factor(as.character(treatment3))))
 ```
 
 ```{r do_combatseq, eval=run_combatseq}
