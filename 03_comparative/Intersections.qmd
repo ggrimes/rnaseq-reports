@@ -25,7 +25,7 @@ params:
 #| warning: FALSE
 # This set up the working directory to this file so all files can be found
 library(rstudioapi)
-library(tidyverse)
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 # NOTE: This code will check version, this is our recommendation, it may work
 # .      other versions
 stopifnot(R.version$major >= 4) # requires R4
@@ -44,8 +44,6 @@ library(tidyverse)
 library(stringr)
 library(ggpubr)
 library(knitr)
-library(bcbioR)
-library(ggprism)
 library(viridis)
 library(pheatmap)
 library(janitor)
@@ -231,7 +229,7 @@ sigGenes <- Intersect1$gene
 
 ### Extract normalized expression for significant genes
 norm_sig <- norm_counts[sigGenes, ]
-meta <- data.frame(metadata[, print(factor1)], metadata[, print(factor1)])
+meta <- data.frame(metadata[, print(factor1)], metadata[, print(factor2)])
 colnames(meta) <- c(print(factor1), print(factor2))
 rownames(meta) <- colnames(norm_sig)
 ### Set a color palette
