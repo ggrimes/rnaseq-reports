@@ -6,12 +6,7 @@ load_metrics <- function(se = se_object, multiqc = multiqc_data_dir,
                          gtf = gtf_fn,
                          counts = counts,
                          single_end = FALSE) {
-  # bcbio input
-  if (!is.na(se_object)) {
-    se <- readRDS(se_object)
-    metrics <- metadata(se)$metrics %>% as.data.frame()
-    # left_join(coldata %>% rownames_to_column('sample')) %>% column_to_rownames('sample')
-  } else { # nf-core input
+
 
     # Get metrics from nf-core into bcbio like table
     # many metrics are already in the General Table of MultiQC, this reads the file
@@ -136,7 +131,7 @@ load_metrics <- function(se = se_object, multiqc = multiqc_data_dir,
       "total_reads",
       "x5_3_bias", "r_and_t_rna_rate", "intergenic_rate"
     )]
-  }
+  
   rownames(metrics) <- metrics$sample
   return(metrics)
 }
