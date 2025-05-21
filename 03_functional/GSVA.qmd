@@ -2,22 +2,26 @@
 title: "GSVA"
 author: "Harvard Chan Bioinformatics Core"
 date: "`r Sys.Date()`"
-output:
-   html_document:
-      code_folding: hide
-      df_print: paged
-      highlights: pygments
-      number_sections: true
-      self_contained: true
-      theme: default
-      toc: true
-      toc_float:
-         collapsed: true
-         smooth_scroll: true
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-overflow: wrap
+    df-print: paged
+    highlight-style: pygments
+    number-sections: true
+    self-contained: true
+    theme: default
+    toc: true
+    toc-location: right
+    toc-expand: false
+    lightbox: true
 params:
   # set column name and contrasts to be factors of interest
   column: "sample_type"
-  contrasts: !r list(c("sample_type", "tumor", "normal"))
+  contrasts:
+    value:
+      - ["sample_type", "tumor", "normal"]
   project_file: ../information.R
   params_file: ../00_params/params-example.R # example data
   functions_file: ../00_libs
@@ -26,11 +30,12 @@ params:
   geneset_fn: https://raw.githubusercontent.com/bcbio/resources/main/gene_sets/gene_sets/20240904/human/h.all.v2024.1.Hs.entrez.gmt
 ---
 
-```{r, message=FALSE, warning=FALSE}
+```{r}
+#| message: FALSE
+#| warning: FALSE
 # This set up the working directory to this file so all files can be found
 library(rstudioapi)
 library(tidyverse)
-setwd(fs::path_dir(getSourceEditorContext()$path))
 # NOTE: This code will check version, this is our recommendation, it may work
 # .      other versions
 stopifnot(R.version$major >= 4) # requires R4
@@ -40,7 +45,9 @@ stopifnot(compareVersion(as.character(BiocManager::version()), "3.18") >= 0)
 
 This code is in this ![](https://img.shields.io/badge/status-draft-grey) revision.
 
-```{r libraries, message = FALSE, warning=FALSE}
+```{r libraries}
+#| message: FALSE
+#| warning: FALSE
 ## load libraries
 library(GSVA)
 library(GSEABase)
@@ -55,8 +62,6 @@ library(gridExtra)
 library(bcbioR)
 library(ggprism)
 library(knitr)
-library(rstudioapi)
-library(tidyverse)
 library(clusterProfiler)
 
 colors <- cb_friendly_cols(1:15)
@@ -79,7 +84,10 @@ set.seed(1234567890L)
 ```
 
 
-```{r load_params, cache = FALSE, message = FALSE, warning=FALSE}
+```{r load_params}
+#| cache: FALSE
+#| message: FALSE
+#| warning: FALSE
 source(params$project_file)
 source(params$params_file)
 map(list.files(params$functions_file, pattern = "*.R$", full.names = T), source) %>% invisible()
@@ -155,6 +163,10 @@ entrezid <- mapIds(org.Hs.eg.db, keys = rownames(norm_counts), keytype = "ENSEMB
 counts_entrez <- norm_counts
 stopifnot(nrow(counts_entrez) == length(entrezid))
 rownames(counts_entrez) <- entrezid
+library(matrixStats)
+if (any(duplicated(rownames(counts_entrez)))) {
+  counts_entrez <- rowsum(as.matrix(counts_entrez), group = rownames(counts_entrez))
+}
 ```
 
 
@@ -167,7 +179,9 @@ genes_by_pathway <- split(gene_sets$gene, gene_sets$term)
 ```
 
 
-```{r GSVA, message = F, warning = F}
+```{r GSVA}
+#| message: FALSE
+#| warning: FALSE
 gsvaPar <- GSVA::gsvaParam(counts_entrez, genes_by_pathway, kcdf = "Poisson")
 
 gsva.es <- gsva(gsvaPar, verbose = F)
@@ -184,9 +198,12 @@ res <- topTable(fit, coef = paste0("factor(coldata[[column]])", contrasts[[1]][2
 res %>% sanitize_datatable()
 ```
 
-## Graph top 5 pathways{.tabset}
+## Graph top 5 pathways
+::: {.panel-tabset}
 
-```{r graph pathways, results = 'asis'}
+```{r graph_pathways}
+#| results: 'asis'
+
 scores <- t(gsva.es)
 
 sig <- subset(res, res$adj.P.Val < 0.1)
@@ -222,6 +239,8 @@ if (length(pathways) > 0) {
 }
 ```
 
+:::
+
 # R session
 
 List and version of tools used for the QC report generation.
@@ -229,4 +248,3 @@ List and version of tools used for the QC report generation.
 ```{r}
 sessionInfo()
 ```
-
