@@ -100,16 +100,7 @@ load_metrics <- function(se = se_object, multiqc = multiqc_data_dir,
       biotype <- one
     } else if (length(another) == 1) {
       biotype <- another
-    metrics$sample <- make.names(metrics$sample)
-    if (!is.null(biotype)) {
-      annotation <- as.data.frame(gtf) %>% .[, c("gene_id", biotype)]
-      annotation$gene_id <- stringr::str_remove(annotation$gene_id, "\\..*$") # remove .1 from end of gene
-      rRNA <- grepl("rRNA|tRNA", annotation[[biotype]])
-      genes <- intersect(annotation[rRNA, "gene_id"], row.names(counts))
-      ratio <- data.frame(
-        sample = colnames(counts),
-        r_and_t_rna_rate = colSums(counts[genes, ]) / colSums(counts)
-      )
+      metrics$sample <- make.names(metrics$sample)
       metrics <- left_join(metrics, ratio, by = "sample")
     } else {
       warning("No gene biotype founded")
@@ -119,6 +110,7 @@ load_metrics <- function(se = se_object, multiqc = multiqc_data_dir,
   metrics$sample <- make.names(metrics$sample)
   if (!is.null(biotype)) {
     annotation <- as.data.frame(gtf) %>% .[, c("gene_id", biotype)]
+    annotation$gene_id <- stringr::str_remove(annotation$gene_id, "\\..*$") # remove .1 from end of gene
     rRNA <- grepl("rRNA|tRNA", annotation[[biotype]])
     genes <- intersect(annotation[rRNA, "gene_id"], row.names(counts))
     ratio <- data.frame(
