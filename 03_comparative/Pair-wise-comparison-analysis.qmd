@@ -2,26 +2,29 @@
 title: "Comparing DE Results - Pairwise"
 author: "Harvard Chan Bioinformatics Core"
 date: "`r Sys.Date()`"
-output:
-   html_document:
-      code_folding: hide
-      df_print: paged
-      highlights: pygments
-      number_sections: true
-      self_contained: true
-      theme: default
-      toc: true
-      toc_float:
-         collapsed: true
-         smooth_scroll: true
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-overflow: wrap
+    df-print: paged
+    highlight-style: pygments
+    number-sections: true
+    self-contained: true
+    theme: default
+    toc: true
+    toc-location: right
+    toc-expand: false
+    lightbox: true
 params:
   project_file: ../information.R
 ---
-```{r, message=FALSE, warning=FALSE}
+```{r}
+#| message: FALSE
+#| warning: FALSE
 # This set up the working directory to this file so all files can be found
 library(rstudioapi)
 library(tidyverse)
-setwd(fs::path_dir(getSourceEditorContext()$path))
 # NOTE: This code will check version, this is our recommendation, it may work
 # .      other versions
 stopifnot(R.version$major >= 4) # requires R4
@@ -31,7 +34,10 @@ stopifnot(compareVersion(as.character(BiocManager::version()), "3.18") >= 0)
 
 This code is in this ![](https://img.shields.io/badge/status-alpha-yellow) revision.
 
-```{r load_libraries, cache = FALSE, message = FALSE, warning=FALSE}
+```{r load_libraries}
+#| cache: FALSE
+#| message: FALSE
+#| warning: FALSE
 library(rtracklayer)
 library(tidyverse)
 library(stringr)
@@ -66,7 +72,10 @@ set.seed(1234567890L)
 
 # Compare two differential expression analysis
 
-```{r load_params, cache = FALSE, message = FALSE, warning=FALSE}
+```{r load_params}
+#| cache: FALSE
+#| message: FALSE
+#| warning: FALSE
 # 1. Set up input files in this R file (params_pairwisecomp.R)
 ## Full results file (all genes) for contrastt 1
 comp1_fn <- "https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/cross-comparison/all_results_DMSO_vs_Group1.csv.gz"
@@ -107,7 +116,9 @@ comp2_sig <- comp2 %>%
 
 We start with a venn diagram looking at the overlap between our two contrasts
 
-```{r, fig.height=8, fig.width=8}
+```{r}
+#| fig-height: 8
+#| fig-width: 8
 name1 <- rlang::ensym(comp1_name)
 name2 <- rlang::ensym(comp2_name)
 names <- c(name1, name2)
@@ -123,7 +134,8 @@ ggvenn(full, show_percentage = F)
 We plot Log2FC for our contrasts and color points by whether or not they are significant in our contrasts. The black line is 1:1.
 
 
-```{r fig.height=6, fig.width=8}
+```{r fig.height=6}
+#| fig-width: 8
 # Edit based on the data you are using
 
 # make sure to only use genes present in both results files
@@ -181,7 +193,8 @@ ggplot(lfc, aes(x = comp1, y = comp2, color = col)) +
 We plot adjusted P-values for our contrasts and color points by whether or not they are significant in our contrasts. The black line is 1:1.
 
 
-```{r fig.height=6, fig.width=8}
+```{r fig.height=6}
+#| fig-width: 8
 # Edit based on the data you are using
 
 # make sure to only use genes present in both results files
