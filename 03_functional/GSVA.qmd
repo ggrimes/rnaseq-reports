@@ -62,8 +62,6 @@ library(gridExtra)
 library(bcbioR)
 library(ggprism)
 library(knitr)
-library(rstudioapi)
-library(tidyverse)
 library(clusterProfiler)
 
 colors <- cb_friendly_cols(1:15)
