@@ -2,19 +2,20 @@
 title: "DEGpattern visualizations"
 author: "Harvard Chan Bioinformatics Core"
 date: "`r Sys.Date()`"
-output:
-   html_document:
-      code_folding: hide
-      df_print: paged
-      highlights: pygments
-      number_sections: true
-      self_contained: true
-      theme: default
-      eval: true
-      toc: true
-      toc_float:
-         collapsed: true
-         smooth_scroll: true
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-overflow: wrap
+    df-print: paged
+    highlight-style: pygments
+    number-sections: true
+    self-contained: true
+    theme: default
+    toc: true
+    toc-location: right
+    toc-expand: false
+    lightbox: true
 params:
    # RDS object with dds variable from DESeq2 package
    deseq_obj: "https://raw.githubusercontent.com/bcbio/bcbioR-test-data/main/rnaseq/DEGpattern/DEGpattern_deseq_obj.rds"
@@ -45,7 +46,11 @@ There are two additional parameters can be tuned in generating `deseq_deg` from 
 - `padj.cutoff`: cutoff for adjusted p-value of DESeq results; Default: 0.05
 - `topN`: A second filtering after `padj.cutoff` to keep only top significant genes for clustering for computing efficiency. If number of significant genes are less than the number supplied here, all genes will be used for clustering. Default: 1000 
 
-```{r setup, cache=FALSE,message=FALSE,echo=FALSE,eval=T}
+```{r setup}
+#| cache: FALSE
+#| message: FALSE
+#| echo: FALSE
+#| eval: !expr T
 stopifnot(R.version$major >= 4) # requires R4
 options(stringsAsFactors = F)
 library(DEGreport)
@@ -54,6 +59,7 @@ library(dplyr)
 library(ggplot2)
 library(knitr)
 library(glue)
+library(R.utils)
 ggplot2::theme_set(ggprism::theme_prism(base_size = 12))
 catCols <- as.vector(grafify:::graf_palettes[["kelly"]])
 scale_colour_discrete <- function(...) {
@@ -79,10 +85,10 @@ opts_chunk[["set"]](
 invisible(list2env(params, environment()))
 
 inputRead <- function(f) {
-  if (isUrl(deseq_obj)) {
-    return(readRDS(url(deseq_obj)))
+  if (isUrl(f)) {
+    return(readRDS(url(f)))
   } else {
-    return(readRDS(deseq_obj))
+    return(readRDS(f))
   }
 }
 ```
@@ -148,10 +154,9 @@ DT::datatable(clusters$df %>%
 After extracting a group of genes, we can use annotation packages to obtain additional information. We can also use these lists of genes as input to downstream functional analysis tools to obtain more biological insight and see whether the groups of genes share a specific function. 
 
 
----
 *This lesson has been developed by members of the teaching team at the [Harvard Chan Bioinformatics Core (HBC)](http://bioinformatics.sph.harvard.edu/). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.*
 
-* *Materials and hands-on activities were adapted from [RNA-seq workflow](http://www.bioconductor.org/help/workflows/rnaseqGene/#de) on the Bioconductor website*
+*Materials and hands-on activities were adapted from [RNA-seq workflow](http://www.bioconductor.org/help/workflows/rnaseqGene/#de) on the Bioconductor website*
 
 # Conclusions
 
@@ -159,7 +164,8 @@ After extracting a group of genes, we can use annotation packages to obtain addi
 
 ## R package references
 
-```{r citations, results='asis'}
+```{r citations}
+#| results='asis'
 citation("DEGreport")
 citation("DESeq2")
 citation("ggplot2")
@@ -173,4 +179,3 @@ List and version of tools used for the QC report generation.
 ```{r}
 sessionInfo()
 ```
-
