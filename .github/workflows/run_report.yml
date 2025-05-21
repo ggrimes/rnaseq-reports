@@ -3,9 +3,12 @@ name: Run QC Report
 on:
   push:
     branches: [ main ]
+    paths:
+      - 01_quality_assessment/QC.qmd
   pull_request:
     branches: [ main ]
-
+    paths:
+      - 01_quality_assessment/QC.qmd
 jobs:
   run-report:
     runs-on: ubuntu-latest
