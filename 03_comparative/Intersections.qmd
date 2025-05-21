@@ -2,27 +2,30 @@
 title: "Comparing DE Results - Multiple Contrasts"
 author: "Harvard Chan Bioinformatics Core"
 date: "`r Sys.Date()`"
-output:
-   html_document:
-      code_folding: hide
-      df_print: paged
-      highlights: pygments
-      number_sections: true
-      self_contained: true
-      theme: default
-      toc: true
-      toc_float:
-         collapsed: true
-         smooth_scroll: true
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-overflow: wrap
+    df-print: paged
+    highlight-style: pygments
+    number-sections: true
+    self-contained: true
+    theme: default
+    toc: true
+    toc-location: right
+    toc-expand: false
+    lightbox: true
 params:
   project_file: ../information.R
 ---
 
-```{r, message=FALSE, warning=FALSE}
+```{r}
+#| message: FALSE
+#| warning: FALSE
 # This set up the working directory to this file so all files can be found
 library(rstudioapi)
-library(tidyverse)
-setwd(fs::path_dir(getSourceEditorContext()$path))
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 # NOTE: This code will check version, this is our recommendation, it may work
 # .      other versions
 stopifnot(R.version$major >= 4) # requires R4
@@ -32,14 +35,15 @@ stopifnot(compareVersion(as.character(BiocManager::version()), "3.18") >= 0)
 
 This code is in this ![](https://img.shields.io/badge/status-alpha-yellow) revision.
 
-```{r load_libraries, cache = FALSE, message = FALSE, warning=FALSE}
+```{r load_libraries}
+#| cache: FALSE
+#| message: FALSE
+#| warning: FALSE
 library(rtracklayer)
 library(tidyverse)
 library(stringr)
 library(ggpubr)
 library(knitr)
-library(bcbioR)
-library(ggprism)
 library(viridis)
 library(pheatmap)
 library(janitor)
@@ -71,7 +75,10 @@ set.seed(1234567890L)
 ```
 
 
-```{r load_params, cache = FALSE, message = FALSE, warning=FALSE}
+```{r load_params}
+#| cache: FALSE
+#| message: FALSE
+#| warning: FALSE
 # NOTE: This variables are pointing to example data.
 ## Adjusted P-value used for significance
 padj_co <- 0.05
@@ -124,7 +131,12 @@ sign_genes <- lapply(names(files), function(name) {
 
 # Make list of comparisons
 
-```{r, fig.height=8, fig.width=8, warning=FALSE, error=FALSE, message=FALSE}
+```{r}
+#| fig-height: 8
+#| fig-width: 8
+#| warning: FALSE
+#| error: FALSE
+#| message: FALSE
 de <- lapply(sign_genes, function(x) {
   x$gene_id
 })
@@ -135,7 +147,9 @@ names(de) <- comp_names
 
 Because we have done so many tests venn diagrams no longer work for our data. Instead we will use upset plots. *These plots are relatively intuitive for 2 or 3 categories, but can tend to get more complex for >3 categories. In all cases, you will find the categories being compared and their size listed below the bar plots on the left. As you look to the right (directly below each bar) there are dots with connecting lines that denote which categories the overlap is between, or if there is no overlap (just a dot). The numbers at the top of the bars denote the size of the overlap.*
 
-```{r, fig.height=8, fig.width=12}
+```{r}
+#| fig-height: 8
+#| fig-width: 12
 upset(fromList(de), order.by = "freq", nsets = N)
 ```
 
@@ -143,7 +157,10 @@ upset(fromList(de), order.by = "freq", nsets = N)
 
 After identifying intersect(s) of interest we can determine which genes are found in which intersections
 
-```{r, warning=FALSE, error=FALSE, message=FALSE}
+```{r}
+#| warning: FALSE
+#| error: FALSE
+#| message: FALSE
 ## Grab intersection
 gene_names <- data.frame(gene = unique(unlist(de)))
 
@@ -164,12 +181,16 @@ df_int <- lapply(gene_names$gene, function(x) {
 }) %>% bind_rows()
 ```
 
-```{r, eval=F}
+```{r}
+#| eval: FALSE
 ## Run this code to find the name of your intersect of interest. You will use this in the next code chunk
 table(df_int$int)
 ```
 
-```{r, warning=FALSE, error=FALSE, message=FALSE}
+```{r}
+#| warning: FALSE
+#| error: FALSE
+#| message: FALSE
 ## NOTE: subset interaction of interest replace the intersect name with the name of the intersect from above. You can copy and paste the below commands to grab multiple intersects.
 
 Intersect1 <- subset(df_int, df_int$int == "DMSO vs Group2|DMSO vs Group3")
@@ -177,7 +198,10 @@ Intersect1 <- subset(df_int, df_int$int == "DMSO vs Group2|DMSO vs Group3")
 
 ## Get annotation data
 
-```{r, warning=FALSE, error=FALSE, message=FALSE}
+```{r}
+#| warning: FALSE
+#| error: FALSE
+#| message: FALSE
 # NOTE: edit this to be the correct organism. One set of annotations per intersect.
 # rdata = AnnotationDbi::select(org.Hs.eg.db, Intersect1$gene, 'SYMBOL', 'ENSEMBL') %>%
 #   dplyr::select(gene_id = ENSEMBL, gene_name = SYMBOL) %>%  distinct(gene_id, .keep_all = T)
@@ -190,7 +214,11 @@ rdata <- data.frame(gene_id = row.names(norm_counts), gene_name = row.names(norm
 
 We generate a heatmap with all samples to see the patterns contained in this intersect. 
 
-```{r, fig.height=6, warning=FALSE, error=FALSE, message=FALSE}
+```{r}
+#| fig-height: 6
+#| warning: FALSE
+#| error: FALSE
+#| message: FALSE
 ## NOTE: Assign factors of interest. These need to correspond to columns in your metadata.
 factor1 <- "Treatment"
 factor2 <- "Cell_line"
@@ -201,7 +229,7 @@ sigGenes <- Intersect1$gene
 
 ### Extract normalized expression for significant genes
 norm_sig <- norm_counts[sigGenes, ]
-meta <- data.frame(metadata[, print(factor1)], metadata[, print(factor1)])
+meta <- data.frame(metadata[, print(factor1)], metadata[, print(factor2)])
 colnames(meta) <- c(print(factor1), print(factor2))
 rownames(meta) <- colnames(norm_sig)
 ### Set a color palette
@@ -228,7 +256,10 @@ pheatmap(norm_sig,
 
 ## Graph genes in intersect
 
-```{r, warning=FALSE, error=FALSE, message=FALSE}
+```{r}
+#| warning: FALSE
+#| error: FALSE
+#| message: FALSE
 Intersect1_annot <- Intersect1 %>% left_join(rdata, by = c("gene" = "gene_id"))
 # REMOVE to plot all
 Intersect1_annot <- Intersect1_annot[1:10, ]
