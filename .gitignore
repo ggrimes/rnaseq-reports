@@ -9,3 +9,5 @@
 # Ignore Results
 **/*.html
 **html
+**csv
+**rds
