@@ -2,20 +2,20 @@
 title: "Weighted Gene Co-Expression Network Analysis (WGCNA)"
 author: "Harvard Chan Bioinformatics Core"
 date: "`r Sys.Date()`"
-output:
-   html_document:
-      code_folding: hide
-      df_print: paged
-      highlights: pygments
-      number_sections: true
-      self_contained: true
-      theme: default
-      toc: true
-      toc_float:
-         collapsed: true
-         smooth_scroll: true
-editor_options: 
-  chunk_output_type: inline
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-overflow: wrap
+    df-print: paged
+    highlight-style: pygments
+    number-sections: true
+    self-contained: true
+    theme: default
+    toc: true
+    toc-location: right
+    toc-expand: false
+    lightbox: true
 params:
   minModuleSize: 30
   maxBlockSize: 4000
@@ -29,11 +29,12 @@ params:
   functions_file: ../00_libs 
 ---
 
-```{r, message=FALSE, warning=FALSE}
+```{r}
+#| message: FALSE
+#| warning: FALSE
 # This set up the working directory to this file so all files can be found
 library(rstudioapi)
 library(tidyverse)
-setwd(fs::path_dir(getSourceEditorContext()$path))
 # NOTE: This code will check version, this is our recommendation, it may work
 # .      other versions
 stopifnot(R.version$major >= 4) # requires R4
@@ -44,7 +45,10 @@ stopifnot(compareVersion(as.character(BiocManager::version()), "3.18") >= 0)
 This code is in this ![](https://img.shields.io/badge/status-alpha-yellow) revision.
 
 
-```{r load_params, cache = FALSE, message = FALSE, warning=FALSE}
+```{r load_params}
+#| cache: FALSE
+#| message: FALSE
+#| warning: FALSE
 source(params$project_file)
 source(params$params_file)
 map(list.files(params$functions_file, pattern = "*.R$", full.names = T), source) %>% invisible()
@@ -65,7 +69,10 @@ sanitize_datatable <- function(df, ...) {
 ```
 
 
-```{r load_libraries, cache = FALSE, message = FALSE, warning=FALSE}
+```{r load_libraries}
+#| cache: FALSE
+#| message: FALSE
+#| warning: FALSE
 library(WGCNA)
 library(tidyverse)
 library(DESeq2)
@@ -163,7 +170,10 @@ WGCNA creates a weighted network to define which genes are near each other. The 
 
 The choice of power parameter will affect the number of modules identified. WGCNA has a function called pickSoftThreshold() to help determine the soft power threshold.
 
-```{r, message=FALSE, warning=FALSE,fig.align='center'}
+```{r}
+#| message: FALSE
+#| warning: FALSE
+#| fig-align: 'center'
 # determine parameters for WGCNA
 sft <- pickSoftThreshold(normalized_counts,
   dataIsExpr = TRUE,
@@ -193,7 +203,9 @@ It is recommend to use a power that has an signed R2 above 0.80, otherwise the r
 
 We will use the blockwiseModules() with power threshold of 20 to find co-expressed genes. It will construct modules with group of genes that are highly correlated.
 
-```{r, message=FALSE, warning=FALSE}
+```{r}
+#| message: FALSE
+#| warning: FALSE
 # picking a soft threshold power near the curve of the plot
 picked_power <- 20 ## pick a power here based on the above plot and instruction
 temp_cor <- cor
@@ -234,14 +246,20 @@ readr::write_rds(bwnet,
 
 A module eigengene is the standardized gene expression profile for a given module. An eigengene is the gene whose expression is representative of the majority of the genes within a module.
 
-```{r, message=FALSE, warning=FALSE}
+```{r}
+#| message: FALSE
+#| warning: FALSE
 module_eigengens <- bwnet$MEs
 datatable(module_eigengens, options = list(pageLength = 10, scrollX = TRUE))
 ```
 
 ## Dendogram for the modules
 
-```{r, fig.align='center', fig.width=12, message=FALSE, warning=FALSE}
+```{r}
+#| fig-align: 'center'
+#| fig-width: 12
+#| message: FALSE
+#| warning: FALSE
 # Convert labels to colors for plotting
 mergedColors <- labels2colors(bwnet$colors)
 # Plot the dendrogram and the module colors underneath
@@ -258,7 +276,9 @@ plotDendroAndColors(bwnet$dendrograms[[1]],
 ### Relating modules (Clusters) to geneIds. 
 GeneIds with their module color and number are given on the table below.
 
-```{r, message=FALSE, warning=FALSE}
+```{r}
+#| message: FALSE
+#| warning: FALSE
 # Relating modules (Clusters) to genotypes
 module_df <- data.frame(
   gene_id = names(bwnet$colors),
@@ -274,7 +294,9 @@ write_delim(module_df, file = "List_of_genes_with_modules.txt", delim = "\t")
 
 WGCNA calcualtes and Eigengene (hypothetical central gene) for each module which makes it easier to associate sample groups with module cluster.
 
-```{r, message=FALSE, warning=FALSE}
+```{r}
+#| message: FALSE
+#| warning: FALSE
 # Get Module Eigengens per cluster
 MEs0 <- moduleEigengenes(normalized_counts, mergedColors)$eigengenes
 
@@ -294,7 +316,11 @@ mME <- MEs0 %>%
   )
 ```
 
-```{r, fig.align='center', fig.height=8, message=FALSE, warning=FALSE}
+```{r}
+#| fig-align: 'center'
+#| fig-height: 8
+#| message: FALSE
+#| warning: FALSE
 mME %>% ggplot(., aes(x = samples, y = name, fill = value)) +
   geom_tile() +
   theme_bw() +
@@ -317,7 +343,9 @@ We can also use another approach to extract only the modules with biggest differ
 ## Modules with biggest differences across treatments
 We will create a design matrix using `sample_type` in our metadata and run linear model on each module.
 
-```{r, message=FALSE, warning=FALSE}
+```{r}
+#| message: FALSE
+#| warning: FALSE
 # to confirm our eigengens relate to our metadata from deseq object run the line below
 # all.equal(colnames(dds), rownames(module_eigengens))
 
