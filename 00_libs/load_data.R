@@ -93,15 +93,12 @@ load_metrics <- function(se = se_object, multiqc = multiqc_data_dir,
     warning("No genome provided! Please add it at the top of this Rmd")
   } else {
     gtf <- rtracklayer::import(gtf)
-
     one <- grep("gene_type", colnames(as.data.frame(gtf)), value = TRUE)
     another <- grep("gene_biotype", colnames(as.data.frame(gtf)), value = TRUE)
     if (length(one) == 1) {
       biotype <- one
     } else if (length(another) == 1) {
       biotype <- another
-      metrics$sample <- make.names(metrics$sample)
-      metrics <- left_join(metrics, ratio, by = "sample")
     } else {
       warning("No gene biotype founded")
     }
