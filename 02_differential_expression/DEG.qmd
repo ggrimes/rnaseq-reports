@@ -678,6 +678,29 @@ for (contrast in names(de_list)) {
 ```
 :::
 
+## Differentially Expressed Genes
+
+
+```{r}
+#| results: asis
+
+dt_list <- list()
+for (contrast in names(de_list)) {
+  res_sig <- de_list[[contrast]][["sig"]]
+  dt_list <- c(
+    dt_list,
+    list(h3(contrast)),
+    list(DT::datatable(res_sig,
+      options = list(
+        scrollX = TRUE, autoWidth = TRUE
+      ),
+      class = "stripe hover"
+    ))
+  )
+}
+tagList(dt_list)
+```
+
 ## Volcano plot
 
 This volcano plot shows the genes that are significantly up- and down-regulated as a result of the analysis comparison. The points highlighted in purple are genes that are significantly differentially expressed with a large effect (padj < 0.05 and model coefficient > ±0.5). Points in pink are significant with a small effect (padj < 0.05 and model coefficient < ±0.5) and points in blue are not significant but have a large effect (padj > 0.05 and model coefficient > ±0.5). Grey points are non-significant. The dashed lines correspond to the cutoff values of padj and model coefficient that we have chosen.
@@ -745,29 +768,6 @@ for (contrast in names(de_list)) {
 }
 ```
 :::
-
-## Differentially Expressed Genes
-
-
-```{r}
-#| results: asis
-
-dt_list <- list()
-for (contrast in names(de_list)) {
-  res_sig <- de_list[[contrast]][["sig"]]
-  dt_list <- c(
-    dt_list,
-    list(h3(contrast)),
-    list(DT::datatable(res_sig,
-      options = list(
-        scrollX = TRUE, autoWidth = TRUE
-      ),
-      class = "stripe hover"
-    ))
-  )
-}
-tagList(dt_list)
-```
 
 
 ## Plot Top 16 Genes
