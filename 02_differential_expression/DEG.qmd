@@ -329,6 +329,8 @@ Groups in a univariate analysis can also differ with regard to their mean values
 
 Here we apply this test to our variance stabilized data. We calculate distances between samples and then use the `betadisper()` function from the popular vegan package. We get two overall p-values where significant means that the dispersions are different between groups. The first p-value comes from the `anova()` function and the second from the `permutest()` function. We also get pairwise p-values for every group-group comparison.
 
+**This analysis allows us to confirm that the variance is the same in all groups (non-significant p-value), so that the DE analysis will be accurate.** Dispersion estimates are a key part of the DESeq2 analysis. DESeq2 uses data from all samples and all genes to generate a relationship between level expression and variance and then shrinks per-gene dispersions to match this distribution. If one group has higher variance than all others, this will affect the dispersion estimates.
+
 ```{r PERMDISP}
 # Use vegdist() to compute pair-wise dissimilarity indices between samples from the normalized count matrix
 # Note, we need to transpose (use t())) the counts matrix for vegdist() to compute dissimilarity indices between the samples
