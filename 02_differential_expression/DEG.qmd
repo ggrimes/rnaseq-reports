@@ -101,7 +101,6 @@ run_rmv <- run_ruv | run_combatseq
 factor_of_interest <- column
 ```
 
-
 ```{r load-libraries, cache = FALSE, message = FALSE, warning=FALSE}
 # Load required libraries
 library(knitr)
@@ -277,7 +276,6 @@ We recommend avoiding manual filtering prior to running DESeq2, as the software 
 - A large number of samples, where pre-filtering low-expressed features can improve performance
 - Strongly unbalanced group sizes, where group-specific filtering strategies may help mitigate bias or improve sensitivity
 
-
 ```{r setup}
 # Establish a null DDS object for DESeq2
 dds_to_use <- DESeqDataSetFromMatrix(counts, coldata, design = ~1)
@@ -345,13 +343,11 @@ anova(mod)
 permutest(mod, pairwise = TRUE)
 ```
 
-
 # Covariate analysis
 
 Multiple factors related to the experimental design or quality of sequencing may influence the outcomes of a given RNA-seq experiment. To further determine whether any confounding covariate risks affecting the results of our differential expression analyses, it is useful to assess the correlation between covariates and principal component (PC) values.
 
 Here, we are using `DEGreport::degCovariates()` to explore potential correlations between variables provided in the metadata and all PCs that account for at least 5% of the variability in the data. If applicable, significant correlations (FDR < 0.1) are circled. **This diagnostic plot helps us determine which variables we may need to add to our DE model.**
-
 
 ```{r run-covariates, fig.height = 6, fig.width = 10}
 # Visualize covariates for the PCs
@@ -681,7 +677,6 @@ for (contrast in names(de_list)) {
 
 ## Differentially Expressed Genes
 
-
 ```{r}
 #| results: asis
 
@@ -769,7 +764,6 @@ for (contrast in names(de_list)) {
 }
 ```
 :::
-
 
 ## Plot Top 16 Genes
 
@@ -975,7 +969,6 @@ fa_list <- lapply(de_list, function(contrast) {
 
 ## All significant genes
 
-
 ```{r}
 #| results: asis
 #| eval: !expr run_FA
@@ -995,8 +988,6 @@ for (contrast in names(de_list)) {
 }
 tagList(dt_list)
 ```
-
-
 
 ## Down-regulated genes 
 
@@ -1026,7 +1017,6 @@ tagList(dt_list)
 
 ## Up-regulated genes
 
-
 ```{r print-ora-up}
 #| results: asis
 #| eval: !expr run_FA
@@ -1049,7 +1039,6 @@ for (contrast in names(de_list)) {
 # Render the dt_list into HTML for the significantly over-represented terms for genes with a positive lfc
 tagList(dt_list)
 ```
-
 
 # Save files
 
