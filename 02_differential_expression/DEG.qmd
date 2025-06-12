@@ -270,11 +270,11 @@ rdata$entrez <- purrr::map(rdata$entrez, 1) %>% unlist()
 
 # Set up
 
-We recommend not to filter before DESeq2 since it will be handling by it. There are cases where pre-filtering could be good:
+We recommend avoiding manual filtering prior to running DESeq2, as the software performs internal filtering as part of its pipeline. However, pre-filtering may be appropriate in certain contexts to improve computational efficiency or address data imbalances, such as:
 
-- large number of drop-outs, to reduce computation
-- large number of samples, to reduce computation
-- unbalanced groups, many less samples for one group than another, maybe filtering by group is an option.
+- A high proportion of dropouts (zero counts), where filtering can reduce computational burden
+- A large number of samples, where pre-filtering low-expressed features can improve performance
+- Strongly unbalanced group sizes, where group-specific filtering strategies may help mitigate bias or improve sensitivity
 
 
 ```{r setup}
@@ -289,7 +289,7 @@ norm_matrix <- assay(vsd_before)
 
 # PCA and group level variance.
 
-**Principal Component Analysis (PCA) is a statistical technique used to simplify high-dimensional data by identifying patterns and reducing the number of variables. In the context of gene expression, PCA helps analyze large datasets containing information about the expression levels of thousands of genes across different samples (e.g., tissues, cells).**
+**Principal Component Analysis (PCA)** is a dimensionality reduction technique that transforms high-dimensional data into a smaller set of uncorrelated variables called principal components. In gene expression analysis, PCA reduces thousands of gene expression measurements into a few components that capture the most variance across samples. This helps visualize overall patterns, identify outliers, and detect batch effects or biological groupings.
 
 Dispersion estimates are a key part of the DESEQ2 analysis. DESEQ2 uses data from all samples and all genes to generate a relationship between level expression and variance and then shrinks per gene dispersions to match this distribution. If one group has higher variance than all others this will affect the dispersion estimates. Here we visually check that the variance per group is similar using a PCA. The ellipses are minimal volume enclosing ellipses using the Khachiyan algorithm.
 
