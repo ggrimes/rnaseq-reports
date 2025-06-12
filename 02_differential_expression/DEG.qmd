@@ -830,6 +830,8 @@ Gene Set Enrichment Analysis (GSEA) is a computational method used to determine 
 - Incorporation of Prior Knowledge: Utilizes predefined gene sets, allowing integration of existing biological knowledge.
 - Contextual Relevance: Can reveal subtle but coordinated changes in biologically meaningful gene sets that might not be apparent when looking at individual genes.
 
+**In the GSEA results, NES (normalized enrichment score) refers to the direction of regulation of the pathway. NES < 0 means downregulated, while NES > 0 means upregulated.**
+
 ```{r run-gsea, warning=F, message=F, eval=run_FA}
 # Go through each contrast in the de_list list object and assign data frames of significantly enriched pathways to to different elements of the list
 fa_gsea_list <- lapply(de_list, function(contrast) {
