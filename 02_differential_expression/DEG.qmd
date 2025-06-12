@@ -13,9 +13,10 @@ format:
     self-contained: true
     theme: default
     toc: true
-    toc-location: right
+    toc-location: left
     toc-expand: false
     lightbox: true
+    page-layout: full
 params:
   ## Combatseq and ruv can both be false or ONLY ONE can be true
   # column is the factor of interest in your data that you are trying to evaluate
