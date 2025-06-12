@@ -862,7 +862,7 @@ fa_gsea_list <- lapply(de_list, function(contrast) {
     input = input_entrezid, # Query for the GSEA analysis
     all_in_life = all_in_life
   ) # Annotation databases to query against
-  tb %>% filter(padj < 0.05) # Filter the GSEA output for results with an adjust p-value less than 0.05 and return them
+  tb %>% filter(padj < 0.05) %>% arrange(padj) # Filter and sort the GSEA output for results with an adjust p-value less than 0.05 and return them
 })
 ```
 
@@ -876,7 +876,7 @@ dt_list <- list()
 for (contrast in names(de_list)) {
   # Assign the significantly enriched pathways to the object res_sig
   res_sig <- fa_gsea_list[[contrast]] %>% # Use the GSEA obect for a given contrast. NOTE: These have already been filter for adjusted p-value less than 0.05.
-    filter(padj < 0.05) # Filter the for adjusted p-values of less than 0.05
+    filter(padj < 0.05) %>% arrange(padj) # Filter and sort for adjusted p-values of less than 0.05
   # Populate the dt_list list
   dt_list <- c(
     dt_list, # With the contents of dt_list from the previous loop
@@ -984,7 +984,7 @@ fa_list <- lapply(de_list, function(contrast) {
 dt_list <- list()
 for (contrast in names(de_list)) {
   res_sig <- fa_list[[contrast]][["all"]] %>%
-    filter(padj < 0.05)
+    filter(padj < 0.05) %>% arrange(padj) # Filter and sort
   dt_list <- c(
     dt_list,
     list(h3(contrast)),
@@ -1008,7 +1008,7 @@ dt_list <- list()
 for (contrast in names(de_list)) {
   # Create a dataframe to hold the significantly over-represented terms for genes with a negative lfc
   res_sig <- fa_list[[contrast]][["down"]] %>% # Start with the complete list of terms used in the ORA evaluated for negative lfc
-    filter(padj < 0.05) # Retain only the results with adjusted p-values of 0.05
+    filter(padj < 0.05) %>% arrange(padj) # Filter and sort only the results with adjusted p-values of 0.05
 
   # Populate the dt_list list
   dt_list <- c(
@@ -1034,7 +1034,7 @@ dt_list <- list()
 for (contrast in names(de_list)) {
   # Create a dataframe to hold the significantly over-represented terms for genes with a positive lfc
   res_sig <- fa_list[[contrast]][["up"]] %>% # Start with the complete list of terms used in the ORA evaluated for positive lfc
-    filter(padj < 0.05) # Retain only the results with adjusted p-values of 0.05
+    filter(padj < 0.05) %>% arrange(padj) # Filter and sort only the results with adjusted p-values of 0.05
 
   # Populate the dt_list list
   dt_list <- c(
