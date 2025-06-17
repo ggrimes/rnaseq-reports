@@ -99,7 +99,7 @@ sanitize_datatable <- function(df, ...) {
     rownames = gsub("-", "_", rownames(df)),
     colnames = gsub("-", "_", colnames(df))
   ) %>%
-  formatRound(columns=colnames(df)[-1], digits=3)
+    formatRound(columns = colnames(df)[-1], digits = 3)
 }
 ```
 
@@ -117,7 +117,7 @@ metadata <- read.csv(metadata)
 # ensure sample names match between metadata and expression data
 # by removing the first two characters from the sample names in metadata
 if ("sample" %in% colnames(metadata)) {
-  sample_prefix <- substring(metadata$sample[1],1,3)
+  sample_prefix <- substring(metadata$sample[1], 1, 3)
 } else {
   warning("Column 'sample' not found in metadata. Skipping sample name adjustment.")
 }
@@ -133,7 +133,8 @@ if (is.null(factor_of_interest_1_levels) || !is.vector(factor_of_interest_1_leve
 
 # Apply factor transformation for factor_of_interest_1
 metadata[[factor_of_interest_1]] <- factor(metadata[[factor_of_interest_1]],
-                                           levels = factor_of_interest_1_levels)
+  levels = factor_of_interest_1_levels
+)
 
 # Validate and apply factor_of_interest_2 only if it's not null
 if (!is.null(factor_of_interest_2)) {
@@ -143,18 +144,23 @@ if (!is.null(factor_of_interest_2)) {
   if (is.null(factor_of_interest_2_levels) || !is.vector(factor_of_interest_2_levels)) {
     stop("Error: 'factor_of_interest_2_levels' must be a non-null vector if 'factor_of_interest_2' is set.")
   }
-  
+
   metadata[[factor_of_interest_2]] <- factor(metadata[[factor_of_interest_2]],
-                                             levels = factor_of_interest_2_levels)
+    levels = factor_of_interest_2_levels
+  )
 }
 ```
 
 ```{r load_gene_expression}
 # load gene expression matrix as data frame
-df_counts <- read.table(input_counts, sep = "\t", 
-                        row.names = 1, header = TRUE, check.names = FALSE)
-df_tpm <- read.table(input_tpm, sep = "\t", 
-                     row.names = 1, header = TRUE, check.names = FALSE)
+df_counts <- read.table(input_counts,
+  sep = "\t",
+  row.names = 1, header = TRUE, check.names = FALSE
+)
+df_tpm <- read.table(input_tpm,
+  sep = "\t",
+  row.names = 1, header = TRUE, check.names = FALSE
+)
 ```
 
 ```{r}
@@ -204,7 +210,6 @@ convert_gene_names_mouse_ensembl_to_MGI <- function(df) {
 # convert from mouse Ensembl ID to mouse MGI symbol
 df_counts_mouse <- convert_gene_names_mouse_ensembl_to_MGI(df_counts)
 df_tpm_mouse <- convert_gene_names_mouse_ensembl_to_MGI(df_tpm)
-
 ```
 
 
@@ -235,7 +240,7 @@ df_tpm_mouse <- df_tpm %>%
   summarize(across(starts_with(sample_prefix), sum)) %>%
   # make gene name new rownames
   column_to_rownames("mgi_symbol")
-  
+
 system("mkdir -p gene_expression_converted_symbols")
 write.table(df_counts_mouse, "gene_expression_converted_symbols/df_counts_mouse.tsv",
   quote = FALSE, sep = "\t", row.names = TRUE
@@ -288,7 +293,7 @@ graph_deconvolution_results <- function(res, method) {
   }
 
   # cat("\n\n### Graph summary\n\n")
-  # 
+  #
   cat("We can also summarize these graphs as a boxplot, while removing any cell types not present in this analysis:\n")
 
   # remove cell types that have 0 expression in this analysis
@@ -301,20 +306,20 @@ graph_deconvolution_results <- function(res, method) {
 
   # boxplot
   p <- res_long %>%
-      ggplot(aes(x = .data[[factor_of_interest_1]], y = score))
+    ggplot(aes(x = .data[[factor_of_interest_1]], y = score))
 
   # Conditionally add the second factor for color
   if (!is.null(factor_of_interest_2)) {
     p <- p + aes(color = .data[[factor_of_interest_2]])
   }
- 
+
   p <- p +
-      geom_boxplot() +
-      # geom_point(size = 4) +
-      ggtitle(paste0(method, ": Immune cell deconvolution")) +
-      facet_wrap(~cell_type, scales = "free", ncol = 3) +
-      # scale_color_discrete(guide = "none") +
-      theme_bw()
+    geom_boxplot() +
+    # geom_point(size = 4) +
+    ggtitle(paste0(method, ": Immune cell deconvolution")) +
+    facet_wrap(~cell_type, scales = "free", ncol = 3) +
+    # scale_color_discrete(guide = "none") +
+    theme_bw()
 
   print(p)
 }
