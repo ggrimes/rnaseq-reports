@@ -89,7 +89,7 @@ sanitize_datatable <- function(df, ...) {
     rownames = gsub("-", "_", rownames(df)),
     colnames = gsub("-", "_", colnames(df))
   ) %>%
-  formatRound(columns=colnames(df)[-1], digits=3)
+    formatRound(columns = colnames(df)[-1], digits = 3)
 }
 ```
 
@@ -117,7 +117,8 @@ if (is.null(factor_of_interest_1_levels) || !is.vector(factor_of_interest_1_leve
 
 # Apply factor transformation for factor_of_interest_1
 metadata[[factor_of_interest_1]] <- factor(metadata[[factor_of_interest_1]],
-                                           levels = factor_of_interest_1_levels)
+  levels = factor_of_interest_1_levels
+)
 
 # Validate and apply factor_of_interest_2 only if it's not null
 if (!is.null(factor_of_interest_2)) {
@@ -127,24 +128,29 @@ if (!is.null(factor_of_interest_2)) {
   if (is.null(factor_of_interest_2_levels) || !is.vector(factor_of_interest_2_levels)) {
     stop("Error: 'factor_of_interest_2_levels' must be a non-null vector if 'factor_of_interest_2' is set.")
   }
-  
+
   metadata[[factor_of_interest_2]] <- factor(metadata[[factor_of_interest_2]],
-                                             levels = factor_of_interest_2_levels)
+    levels = factor_of_interest_2_levels
+  )
 }
 ```
 
 ```{r load_gene_expression}
 # load gene expression matrix as data frame
-df_counts <- read.table(input_counts, sep = "\t", 
-                        row.names = 1, header = TRUE, check.names = FALSE)
-df_tpm <- read.table(input_tpm, sep = "\t", 
-                     row.names = 1, header = TRUE, check.names = FALSE)
+df_counts <- read.table(input_counts,
+  sep = "\t",
+  row.names = 1, header = TRUE, check.names = FALSE
+)
+df_tpm <- read.table(input_tpm,
+  sep = "\t",
+  row.names = 1, header = TRUE, check.names = FALSE
+)
 ```
 
 ```{r convert_gene_names_human}
 ensembl_human <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
 genenames_human <- getBM(
-  values = gsub("\\..*","",rownames(df_counts),perl = T), # vector of gene IDs (same for "counts" and "tpm")
+  values = gsub("\\..*", "", rownames(df_counts), perl = T), # vector of gene IDs (same for "counts" and "tpm")
   filters = "ensembl_gene_id", # type of gene ID we are using
   attributes = c(
     "ensembl_gene_id", # attributes we want to retrieve
@@ -156,9 +162,9 @@ genenames_human <- getBM(
 # convert from human Ensembl ID (ENSG) to HGNC ID (gene symbol)
 convert_gene_names_human_ensembl_to_HGNC <- function(df) {
   # convert gene names to HGNC
-  df_clean <- df %>% 
+  df_clean <- df %>%
     rownames_to_column(var = "ensembl_gene_id") %>%
-    mutate(ensembl_gene_id = gsub("\\..*","",ensembl_gene_id,perl = T)) %>% 
+    mutate(ensembl_gene_id = gsub("\\..*", "", ensembl_gene_id, perl = T)) %>%
     # remove existing rownames
     as_tibble() %>%
     # add HGNC gene symbols
@@ -230,7 +236,7 @@ graph_deconvolution_results <- function(res, method) {
   }
 
   # cat("\n\n### Graph summary\n\n")
-  # 
+  #
   cat("We can also summarize these graphs as a boxplot, while removing any cell types not present in this analysis:\n")
 
   # remove cell types that have 0 expression in this analysis
@@ -243,20 +249,20 @@ graph_deconvolution_results <- function(res, method) {
 
   # boxplot
   p <- res_long %>%
-      ggplot(aes(x = .data[[factor_of_interest_1]], y = score))
+    ggplot(aes(x = .data[[factor_of_interest_1]], y = score))
 
   # Conditionally add the second factor for color
   if (!is.null(factor_of_interest_2)) {
     p <- p + aes(color = .data[[factor_of_interest_2]])
   }
- 
+
   p <- p +
-      geom_boxplot() +
-      # geom_point(size = 4) +
-      ggtitle(paste0(method, ": Immune cell deconvolution")) +
-      facet_wrap(~cell_type, scales = "free", ncol = 3) +
-      # scale_color_discrete(guide = "none") +
-      theme_bw()
+    geom_boxplot() +
+    # geom_point(size = 4) +
+    ggtitle(paste0(method, ": Immune cell deconvolution")) +
+    facet_wrap(~cell_type, scales = "free", ncol = 3) +
+    # scale_color_discrete(guide = "none") +
+    theme_bw()
 
   print(p)
 }
