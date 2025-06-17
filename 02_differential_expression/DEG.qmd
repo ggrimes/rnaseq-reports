@@ -13,9 +13,10 @@ format:
     self-contained: true
     theme: default
     toc: true
-    toc-location: right
+    toc-location: left
     toc-expand: false
     lightbox: true
+    page-layout: full
 params:
   ## Combatseq and ruv can both be false or ONLY ONE can be true
   # column is the factor of interest in your data that you are trying to evaluate
@@ -99,7 +100,6 @@ run_rmv <- run_ruv | run_combatseq
 # Assign the value of column to factor_of_interest, this will allow you to change factor_of_interest throughout the Rmd if needed, while maintaining the value of column
 factor_of_interest <- column
 ```
-
 
 ```{r load-libraries, cache = FALSE, message = FALSE, warning=FALSE}
 # Load required libraries
@@ -270,12 +270,11 @@ rdata$entrez <- purrr::map(rdata$entrez, 1) %>% unlist()
 
 # Set up
 
-We recommend not to filter before DESeq2 since it will be handling by it. There are cases where pre-filtering could be good:
+We recommend avoiding manual filtering prior to running DESeq2, as the software performs internal filtering as part of its pipeline. However, pre-filtering may be appropriate in certain contexts to improve computational efficiency or address data imbalances, such as:
 
-- large number of drop-outs, to reduce computation
-- large number of samples, to reduce computation
-- unbalanced groups, many less samples for one group than another, maybe filtering by group is an option.
-
+- A high proportion of dropouts (zero counts), where filtering can reduce computational burden
+- A large number of samples, where pre-filtering low-expressed features can improve performance
+- Strongly unbalanced group sizes, where group-specific filtering strategies may help mitigate bias or improve sensitivity
 
 ```{r setup}
 # Establish a null DDS object for DESeq2
@@ -289,7 +288,7 @@ norm_matrix <- assay(vsd_before)
 
 # PCA and group level variance.
 
-**Principal Component Analysis (PCA) is a statistical technique used to simplify high-dimensional data by identifying patterns and reducing the number of variables. In the context of gene expression, PCA helps analyze large datasets containing information about the expression levels of thousands of genes across different samples (e.g., tissues, cells).**
+**Principal Component Analysis (PCA)** is a dimensionality reduction technique that transforms high-dimensional data into a smaller set of uncorrelated variables called principal components. In gene expression analysis, PCA reduces thousands of gene expression measurements into a few components that capture the most variance across samples. This helps visualize overall patterns, identify outliers, and detect batch effects or biological groupings.
 
 Dispersion estimates are a key part of the DESEQ2 analysis. DESEQ2 uses data from all samples and all genes to generate a relationship between level expression and variance and then shrinks per gene dispersions to match this distribution. If one group has higher variance than all others this will affect the dispersion estimates. Here we visually check that the variance per group is similar using a PCA. The ellipses are minimal volume enclosing ellipses using the Khachiyan algorithm.
 
@@ -344,13 +343,11 @@ anova(mod)
 permutest(mod, pairwise = TRUE)
 ```
 
-
 # Covariate analysis
 
 Multiple factors related to the experimental design or quality of sequencing may influence the outcomes of a given RNA-seq experiment. To further determine whether any confounding covariate risks affecting the results of our differential expression analyses, it is useful to assess the correlation between covariates and principal component (PC) values.
 
 Here, we are using `DEGreport::degCovariates()` to explore potential correlations between variables provided in the metadata and all PCs that account for at least 5% of the variability in the data. If applicable, significant correlations (FDR < 0.1) are circled. **This diagnostic plot helps us determine which variables we may need to add to our DE model.**
-
 
 ```{r run-covariates, fig.height = 6, fig.width = 10}
 # Visualize covariates for the PCs
@@ -678,9 +675,31 @@ for (contrast in names(de_list)) {
 ```
 :::
 
+## Differentially Expressed Genes
+
+```{r}
+#| results: asis
+
+dt_list <- list()
+for (contrast in names(de_list)) {
+  res_sig <- de_list[[contrast]][["sig"]]
+  dt_list <- c(
+    dt_list,
+    list(h3(contrast)),
+    list(DT::datatable(res_sig,
+      options = list(
+        scrollX = TRUE, autoWidth = TRUE
+      ),
+      class = "stripe hover"
+    ))
+  )
+}
+tagList(dt_list)
+```
+
 ## Volcano plot
 
-This volcano plot shows the genes that are significantly up- and down-regulated as a result of the analysis comparison. The points highlighted in purple are genes that have padj < 0.05 and a log2-fold change > 0.5. Points in pink have a padj < 0.05 and a log2-fold change < 0.5 and points in blue have a padj > 0.05 and a log2-fold change > 0.5. Grey points are non-significant. The dashed lines correspond to the cutoff values of log2 foldchange and padj that we have chosen.
+This volcano plot shows the genes that are significantly up- and down-regulated as a result of the analysis comparison. The points highlighted in purple are genes that are significantly differentially expressed with a large effect (padj < 0.05 and model coefficient > ±0.5). Points in pink are significant with a small effect (padj < 0.05 and model coefficient < ±0.5) and points in blue are not significant but have a large effect (padj > 0.05 and model coefficient > ±0.5). Grey points are non-significant. The dashed lines correspond to the cutoff values of padj and model coefficient that we have chosen.
 
 ::: {.panel-tabset}
 ```{r}
@@ -746,30 +765,6 @@ for (contrast in names(de_list)) {
 ```
 :::
 
-## Differentially Expressed Genes
-
-
-```{r}
-#| results: asis
-
-dt_list <- list()
-for (contrast in names(de_list)) {
-  res_sig <- de_list[[contrast]][["sig"]]
-  dt_list <- c(
-    dt_list,
-    list(h3(contrast)),
-    list(DT::datatable(res_sig,
-      options = list(
-        scrollX = TRUE, autoWidth = TRUE
-      ),
-      class = "stripe hover"
-    ))
-  )
-}
-tagList(dt_list)
-```
-
-
 ## Plot Top 16 Genes
 
 ::: {.panel-tabset}
@@ -829,6 +824,8 @@ Gene Set Enrichment Analysis (GSEA) is a computational method used to determine 
 - Incorporation of Prior Knowledge: Utilizes predefined gene sets, allowing integration of existing biological knowledge.
 - Contextual Relevance: Can reveal subtle but coordinated changes in biologically meaningful gene sets that might not be apparent when looking at individual genes.
 
+**In the GSEA results, NES (normalized enrichment score) refers to the direction of regulation of the pathway. NES < 0 means downregulated, while NES > 0 means upregulated.**
+
 ```{r run-gsea, warning=F, message=F, eval=run_FA}
 # Go through each contrast in the de_list list object and assign data frames of significantly enriched pathways to to different elements of the list
 fa_gsea_list <- lapply(de_list, function(contrast) {
@@ -861,7 +858,7 @@ fa_gsea_list <- lapply(de_list, function(contrast) {
     input = input_entrezid, # Query for the GSEA analysis
     all_in_life = all_in_life
   ) # Annotation databases to query against
-  tb %>% filter(padj < 0.05) # Filter the GSEA output for results with an adjust p-value less than 0.05 and return them
+  tb %>% filter(padj < 0.05) %>% arrange(padj) # Filter and sort the GSEA output for results with an adjust p-value less than 0.05 and return them
 })
 ```
 
@@ -875,7 +872,7 @@ dt_list <- list()
 for (contrast in names(de_list)) {
   # Assign the significantly enriched pathways to the object res_sig
   res_sig <- fa_gsea_list[[contrast]] %>% # Use the GSEA obect for a given contrast. NOTE: These have already been filter for adjusted p-value less than 0.05.
-    filter(padj < 0.05) # Filter the for adjusted p-values of less than 0.05
+    filter(padj < 0.05) %>% arrange(padj) # Filter and sort for adjusted p-values of less than 0.05
   # Populate the dt_list list
   dt_list <- c(
     dt_list, # With the contents of dt_list from the previous loop
@@ -972,7 +969,6 @@ fa_list <- lapply(de_list, function(contrast) {
 
 ## All significant genes
 
-
 ```{r}
 #| results: asis
 #| eval: !expr run_FA
@@ -983,7 +979,7 @@ fa_list <- lapply(de_list, function(contrast) {
 dt_list <- list()
 for (contrast in names(de_list)) {
   res_sig <- fa_list[[contrast]][["all"]] %>%
-    filter(padj < 0.05)
+    filter(padj < 0.05) %>% arrange(padj) # Filter and sort
   dt_list <- c(
     dt_list,
     list(h3(contrast)),
@@ -992,8 +988,6 @@ for (contrast in names(de_list)) {
 }
 tagList(dt_list)
 ```
-
-
 
 ## Down-regulated genes 
 
@@ -1007,7 +1001,7 @@ dt_list <- list()
 for (contrast in names(de_list)) {
   # Create a dataframe to hold the significantly over-represented terms for genes with a negative lfc
   res_sig <- fa_list[[contrast]][["down"]] %>% # Start with the complete list of terms used in the ORA evaluated for negative lfc
-    filter(padj < 0.05) # Retain only the results with adjusted p-values of 0.05
+    filter(padj < 0.05) %>% arrange(padj) # Filter and sort only the results with adjusted p-values of 0.05
 
   # Populate the dt_list list
   dt_list <- c(
@@ -1023,7 +1017,6 @@ tagList(dt_list)
 
 ## Up-regulated genes
 
-
 ```{r print-ora-up}
 #| results: asis
 #| eval: !expr run_FA
@@ -1033,7 +1026,7 @@ dt_list <- list()
 for (contrast in names(de_list)) {
   # Create a dataframe to hold the significantly over-represented terms for genes with a positive lfc
   res_sig <- fa_list[[contrast]][["up"]] %>% # Start with the complete list of terms used in the ORA evaluated for positive lfc
-    filter(padj < 0.05) # Retain only the results with adjusted p-values of 0.05
+    filter(padj < 0.05) %>% arrange(padj) # Filter and sort only the results with adjusted p-values of 0.05
 
   # Populate the dt_list list
   dt_list <- c(
@@ -1046,7 +1039,6 @@ for (contrast in names(de_list)) {
 # Render the dt_list into HTML for the significantly over-represented terms for genes with a positive lfc
 tagList(dt_list)
 ```
-
 
 # Save files
 
