@@ -860,7 +860,9 @@ fa_gsea_list <- lapply(de_list, function(contrast) {
     input = input_entrezid, # Query for the GSEA analysis
     all_in_life = all_in_life
   ) # Annotation databases to query against
-  tb %>% filter(padj < 0.05) %>% arrange(padj) # Filter and sort the GSEA output for results with an adjust p-value less than 0.05 and return them
+  tb %>%
+    filter(padj < 0.05) %>%
+    arrange(padj) # Filter and sort the GSEA output for results with an adjust p-value less than 0.05 and return them
 })
 ```
 
@@ -981,7 +983,8 @@ fa_list <- lapply(de_list, function(contrast) {
 dt_list <- list()
 for (contrast in names(de_list)) {
   res_sig <- fa_list[[contrast]][["all"]] %>%
-    filter(padj < 0.05) %>% arrange(padj) # Filter and sort
+    filter(padj < 0.05) %>%
+    arrange(padj) # Filter and sort
   dt_list <- c(
     dt_list,
     list(h3(contrast)),
