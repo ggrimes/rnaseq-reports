@@ -70,8 +70,10 @@ suppressPackageStartupMessages({
 
 ```{r load-data}
 # All combinations of column & contrast supplied by the user
-input_grid <- expand_grid(column = params$column,
-                                 contrast = params$contrasts)
+input_grid <- expand_grid(
+  column = params$column,
+  contrast = params$contrasts
+)
 
 # Read & combine pathway tables for all combinations
 pathway_gene_data <- map_dfr(
@@ -80,18 +82,21 @@ pathway_gene_data <- map_dfr(
     col_i <- input_grid$column[i]
     con_i <- input_grid$contrast[i]
     file_url <- glue(
-      "{params$deg_result_dir}/full_{col_i}_{con_i}_pathways.csv")
+      "{params$deg_result_dir}/full_{col_i}_{con_i}_pathways.csv"
+    )
     fread(file_url, showProgress = FALSE) %>%
-      mutate(column = col_i,
-             contrast = con_i)
+      mutate(
+        column = col_i,
+        contrast = con_i
+      )
   }
 ) %>%
-  filter(padj < 0.05) %>%              # FDR threshold
+  filter(padj < 0.05) %>% # FDR threshold
   separate_rows(genes, sep = ",") %>%
   rename(gene = genes, padj_pathway = padj) %>%
-  filter(gene != "" & !is.na(gene)) %>% 
-  unite("comb",c("column", "contrast"), remove = FALSE,sep=":")
-pathway_gene_data <- split(pathway_gene_data,pathway_gene_data$comb)
+  filter(gene != "" & !is.na(gene)) %>%
+  unite("comb", c("column", "contrast"), remove = FALSE, sep = ":")
+pathway_gene_data <- split(pathway_gene_data, pathway_gene_data$comb)
 msig_all <- msigdbr(species = "Homo sapiens") %>%
   distinct(gs_name, gs_exact_source, gs_collection, gs_subcollection)
 ```
@@ -99,29 +104,32 @@ msig_all <- msigdbr(species = "Homo sapiens") %>%
 ## Map pathways → GO IDs
 
 ```{r map-go}
-pathway_valid <- function(pathway_gene,msig){
-  valid_pathways_df <- pathway_gene%>%
+pathway_valid <- function(pathway_gene, msig) {
+  valid_pathways_df <- pathway_gene %>%
     distinct(pathway, gene) %>%
     count(pathway, name = "gene_count") %>%
     filter(gene_count >= 5)
-  
+
   cat("Retained", nrow(valid_pathways_df), "pathways after filtering\n")
   head(valid_pathways_df)
-  
+
   matched_sets <- msig %>%
     filter(gs_name %in% valid_pathways_df$pathway) %>%
     arrange(gs_collection, gs_name, gs_exact_source)
-  
+
   go_ids <- split(matched_sets$gs_exact_source, matched_sets$gs_subcollection)
-  
+
   # Sanity‑check for unmatched pathway names
   unmatched <- setdiff(valid_pathways_df$pathway, msig_all$gs_name)
   if (length(unmatched) > 0) {
-    message("Pathways not mapped to GO: ", 
-            paste(unmatched, collapse = ", "))}
+    message(
+      "Pathways not mapped to GO: ",
+      paste(unmatched, collapse = ", ")
+    )
+  }
   return(go_ids)
 }
-valid_pathway_gene <- map(pathway_gene_data,pathway_valid,msig=msig_all)
+valid_pathway_gene <- map(pathway_gene_data, pathway_valid, msig = msig_all)
 ```
 
 
@@ -155,7 +163,8 @@ for (comb in names(valid_pathway_gene)) {
     cat("\n\n")
   }
 
-  cat(":::\n\n")}
+  cat(":::\n\n")
+}
 ```
 
 ## Session Info
