@@ -11,7 +11,7 @@ on:
       - '01_quality_assessment/quality_assessment.qmd'
 
 jobs:
-  r-visum-qc:
+  r-qc:
     runs-on: ubuntu-22.04
 
     env:
