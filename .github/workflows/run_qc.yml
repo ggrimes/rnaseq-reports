@@ -9,6 +9,7 @@ on:
     branches: [main]
     paths:
       - '01_quality_assessment/quality_assessment.qmd'
+  workflow_dispatch:
 
 jobs:
   r-qc:
