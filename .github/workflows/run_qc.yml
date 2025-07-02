@@ -48,8 +48,8 @@ jobs:
           renv::restore(prompt = FALSE, lockfile = "01_quality_assessment/renv.lock")
         shell: Rscript {0}
 
-      - name: Get data
-        run: Rscript visium/download-test-data.R
+    #   - name: Get data
+    #     run: Rscript visium/download-test-data.R
      
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
