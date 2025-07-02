@@ -56,7 +56,9 @@ jobs:
      
       - name: Run quality assessment
         id: render_qmd
-        run: quarto render 01_quality_assessment/quality_assessment.qmd
+        run: |
+          cd 01_quality_assessment
+          quarto render quality_assessment.qmd
         shell: bash
 
       - name: Deploy HTML to gh-pages
