@@ -59,6 +59,8 @@ On the `YAML` header file of the `qmd` you can specify some parameters or just s
 - sample similarity analysis (PCA and hierarchical clustering)
 - covariates analysis
   
+See an example [here](https://bcbio.github.io/rnaseq-reports/01_quality_assessment/quality_assessment.html).
+
 ### Differential expression
 
 ![](https://img.shields.io/badge/status-stable-green) [02_differential_expression/DEG.Rmd](02_differential_expression/DEG.Rmd) is a report template for comparison between two groups. It supports multiple contrasts. Like [01_quality_assessment/QC.Rmd](01_quality_assessment/QC.Rmd), it uses as input the `nf-core/rnaseq` outputs specified in [00_params/params.R](00_params/params.R). It also uses helper functions defined in [00_libs/load_data.R](00_libs/load_data.R) and [00_libs/FA.R](00_libs/FA.R).
