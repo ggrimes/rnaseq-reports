@@ -1,4 +1,3 @@
-
 Templates with ![](https://img.shields.io/badge/status-stable-green) revision indicates that the components or processes have undergone comprehensive parameterization and testing.
 
 Templates with ![](https://img.shields.io/badge/status-alpha-yellow) revision indicates that the components or processes are currently being tested. There is some test data available, but there are parameters that need to be set up manually within the code.
@@ -47,7 +46,7 @@ On the `YAML` header file of the `qmd` you can specify some parameters or just s
 - covariates analysis
   
 
-### 2. ![](https://img.shields.io/badge/status-stable-green) [differential_expression](02_differential_expression/DEG.Rmd) 👀 [example](https://bcbio.github.io/rnaseq-reports/02_differential_expression/differential_expression.html)
+### 2. ![](https://img.shields.io/badge/status-stable-green) [differential_expression](02_differential_expression/differential_expression.qmd) 👀 [example](https://bcbio.github.io/rnaseq-reports/02_differential_expression/differential_expression.html)
 
 This is a report template for comparison between two groups. It supports multiple contrasts. Like above, it uses as input the `nf-core/rnaseq` outputs specified in [00_params/params.R](00_params/params.R). It also uses helper functions defined in [00_libs/load_data.R](00_libs/load_data.R) and [00_libs/FA.R](00_libs/FA.R).
 
@@ -64,19 +63,19 @@ This template has examples of:
 
 ### 3. Comparative analysis
 
-- ![](https://img.shields.io/badge/status-alpha-yellow) [Pair-wise-comparison-analysis](03_comparative/Pair-wise-comparison-analysis.Rmd) shows an example on how to compare two differential expression analyses generated using the [DEG.Rmd](02_differential_expression/DEG.Rmd) template.
-- ![](https://img.shields.io/badge/status-alpha-yellow)  [Intersections](03_comparative/Intersections.Rmd) shows an example on how to compare and find intersections between multiple differential expression analyses generated using the [DEG.Rmd](02_differential_expression/DEG.Rmd) template.
+- ![](https://img.shields.io/badge/status-alpha-yellow) [Pair-wise-comparison-analysis](03_comparative/Pair-wise-comparison-analysis.qmd) shows an example on how to compare two differential expression analyses generated using the [DEG](02_differential_expression/differential_expression.qmd) template.
+- ![](https://img.shields.io/badge/status-alpha-yellow)  [Intersections](03_comparative/Intersections.qmd) shows an example on how to compare and find intersections between multiple differential expression analyses generated using the [DEG](02_differential_expression/differential_expression.qmd) template.
 
 ### 4. Functional analysis
 
-- ![](https://img.shields.io/badge/status-draft-grey) [03_functional/GSVA.Rmd](03_functional/GSVA.Rmd) shows an example on how to use [GSVA package](https://bioconductor.org/packages/release/bioc/html/GSVA.html) for estimating variation of gene set enrichment through the samples of a expression data set
-- ![](https://img.shields.io/badge/status-draft-grey)  [03_functional/Nonmodel_Organism_Pathway_Analysis.Rmd](03_functional/Nonmodel_Organism_Pathway_Analysis.Rmd) shows an example of how to run Gene Ontology over-representation, KEGG over-representation, and KEGG gene set enrichment analysis (GSEA) for non-model organisms using data from Uniprot. Modify the paths in [params_nonmodel_org_pathways.R](params_nonmodel_org_pathways.R) to load the correct input files.
-- ![](https://img.shields.io/badge/status-draft-grey)  [03_functional/Immune-deconvolution.Rmd](03_functional/Immune-deconvolution.Rmd) shows an example of how to run immune cell type deconvolution. Modify the paths in [params_immune_deconv.R](params_immune_deconv.R) to load the correct input files.
+- ![](https://img.shields.io/badge/status-draft-grey) [GSVA](03_functional/GSVA.qmd) shows an example on how to use [GSVA package](https://bioconductor.org/packages/release/bioc/html/GSVA.html) for estimating variation of gene set enrichment through the samples of a expression data set
+- ![](https://img.shields.io/badge/status-draft-grey)  [Nonmodel_Organism_Pathway_Analysis](03_functional/Nonmodel_Organism_Pathway_Analysis.qmd) shows an example of how to run Gene Ontology over-representation, KEGG over-representation, and KEGG gene set enrichment analysis (GSEA) for non-model organisms using data from Uniprot. Modify the paths in [params_nonmodel_org_pathways.R](03_functional/params_nonmodel_org_pathways.R) to load the correct input files.
+- ![](https://img.shields.io/badge/status-draft-grey)  [Immune-deconvolution](03_functional/Immune-deconvolution.qmd) shows an example of how to run immune cell type deconvolution. Modify the paths in [params_immune_deconv.R](03_functional/params_immune_deconv.R) to load the correct input files.
 
-### 5. Gene pattern analysis [DEGpatterns](https://bcbio.github.io/rnaseq-reports/04_gene_patterns/DEGpattern.html) [WGCNA](https://bcbio.github.io/rnaseq-reports/04_gene_patterns/DEGpattern.html)
+### 5. Gene pattern analysis 👀[DEGpattern](https://bcbio.github.io/rnaseq-reports/04_gene_patterns/DEGpattern.html) 👀[WGCNA](https://bcbio.github.io/rnaseq-reports/04_gene_patterns/WGCNA.html)
 
-- ![](https://img.shields.io/badge/status-alpha-yellow) [WGCNA](04_gene_patterns/WGCNA.Rmd) shows an example on how to use the [WGCNA](https://cran.r-project.org/web/packages/WGCNA/index.html) package to find gene modules in gene expression data.
-- ![](https://img.shields.io/badge/status-alpha-yellow) [DEGpatterns](04_gene_patterns/DEGpatterns.Rmd) shows an example of how to cluster a set of genes across conditions and time points to identify specific profiles.
+- ![](https://img.shields.io/badge/status-alpha-yellow) [WGCNA](04_gene_patterns/WGCNA.qmd) shows an example on how to use the [WGCNA](https://cran.r-project.org/web/packages/WGCNA/index.html) package to find gene modules in gene expression data.
+- ![](https://img.shields.io/badge/status-alpha-yellow) [DEGpattern](04_gene_patterns/DEGpattern.qmd) shows an example of how to cluster a set of genes across conditions and time points to identify specific profiles.
 
 
 
