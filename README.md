@@ -73,10 +73,10 @@ This template has examples of:
 - ![](https://img.shields.io/badge/status-draft-grey)  [03_functional/Nonmodel_Organism_Pathway_Analysis.Rmd](03_functional/Nonmodel_Organism_Pathway_Analysis.Rmd) shows an example of how to run Gene Ontology over-representation, KEGG over-representation, and KEGG gene set enrichment analysis (GSEA) for non-model organisms using data from Uniprot. Modify the paths in [params_nonmodel_org_pathways.R](params_nonmodel_org_pathways.R) to load the correct input files.
 - ![](https://img.shields.io/badge/status-draft-grey)  [03_functional/Immune-deconvolution.Rmd](03_functional/Immune-deconvolution.Rmd) shows an example of how to run immune cell type deconvolution. Modify the paths in [params_immune_deconv.R](params_immune_deconv.R) to load the correct input files.
 
-### Gene pattern analysis
+### 5. Gene pattern analysis [DEGpatterns](https://bcbio.github.io/rnaseq-reports/04_gene_patterns/DEGpattern.html) [WGCNA](https://bcbio.github.io/rnaseq-reports/04_gene_patterns/DEGpattern.html)
 
-- ![](https://img.shields.io/badge/status-alpha-yellow) [04_gene_patterns/WGCNA.Rmd](04_gene_patterns/WGCNA.Rmd) shows an example on how to use the [WGCNA](https://cran.r-project.org/web/packages/WGCNA/index.html) package to find gene modules in gene expression data.
-- ![](https://img.shields.io/badge/status-alpha-yellow) [04_gene_patterns/DEGpatterns.Rmd](04_gene_patterns/DEGpatterns.Rmd) shows an example of how to cluster a set of genes across conditions and time points to identify specific profiles.
+- ![](https://img.shields.io/badge/status-alpha-yellow) [WGCNA](04_gene_patterns/WGCNA.Rmd) shows an example on how to use the [WGCNA](https://cran.r-project.org/web/packages/WGCNA/index.html) package to find gene modules in gene expression data.
+- ![](https://img.shields.io/badge/status-alpha-yellow) [DEGpatterns](04_gene_patterns/DEGpatterns.Rmd) shows an example of how to cluster a set of genes across conditions and time points to identify specific profiles.
 
 
 
