@@ -60,6 +60,8 @@ library(ggplot2)
 library(knitr)
 library(glue)
 library(R.utils)
+library(grafify)
+library(ggprism)
 ggplot2::theme_set(ggprism::theme_prism(base_size = 12))
 catCols <- as.vector(grafify:::graf_palettes[["kelly"]])
 scale_colour_discrete <- function(...) {

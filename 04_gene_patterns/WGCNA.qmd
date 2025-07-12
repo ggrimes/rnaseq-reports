@@ -82,14 +82,17 @@ library(flashClust)
 library(gridExtra)
 library(DT)
 library(AnnotationDbi)
-library(bcbioR)
-
 library(knitr)
 library(ggprism)
+library()
+library(grafify)
+library(ggprism)
+ggplot2::theme_set(ggprism::theme_prism(base_size = 12))
+catCols <- as.vector(grafify:::graf_palettes[["kelly"]])
+scale_colour_discrete <- function(...) {
+  scale_colour_manual(..., values = catCols)
+}
 
-
-colors <- cb_friendly_cols(1:15)
-ggplot2::theme_set(theme_prism(base_size = 14))
 opts_chunk[["set"]](
   cache = F,
   cache.lazy = FALSE,

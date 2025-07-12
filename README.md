@@ -22,20 +22,7 @@ The `nf-core/rnaseq` documentation describes a `samplesheet.csv`. We recommend u
 
 ```
 source(install_depedencies.R)
-rmarkdown::render("QC.Rmd", quiet = TRUE
-```
-
-### With Pixi
-
-Install [Pixi](https://pixi.sh/latest/):
-
-```
-curl -fsSL https://pixi.sh/install.sh | sh
-```
-
-And then run_qc report, an HTML report should be inside the `01_quality_assessment` folder.
-```
-pixi run test_qc
+quarto("quality_assessment.md", quiet = TRUE)
 ```
 
 ## Downstream analysis
@@ -49,9 +36,9 @@ Additional useful info:
 - `params*example.R` are files containing parameters pointing to a small, simple dataset that can be used to test the report code and see how the fully rendered report looks.
 - `render.R` is an example of code to render a report while specifying parameters at the time of rendering. This can be used to render a report multiple times using multiple sets of parameters without duplicating the report code. 
 
-### Quality assessment
+### 1. ![](https://img.shields.io/badge/status-stable-green) [quality_assessment](01_quality_assessment/QC.qmd) 👀 [example](https://bcbio.github.io/rnaseq-reports/01_quality_assessment/quality_assessment.html)
 
-![](https://img.shields.io/badge/status-stable-green) [01_quality_assessment/QC.qmd](01_quality_assessment/QC.qmd) is a report template that uses as input the `nf-core/rnaseq` outputs specified in  [00_params/params.R](00_params/params.R). It also uses helper functions defined in [00_libs/load_data.R](00_libs/load_data.R). This template examines:
+This is a report template that uses as input the `nf-core/rnaseq` outputs specified in  [00_params/params.R](00_params/params.R). It also uses helper functions defined in [00_libs/load_data.R](00_libs/load_data.R). This template examines:
 
 On the `YAML` header file of the `qmd` you can specify some parameters or just set them up in the second chunk of code of the template. 
 
@@ -59,11 +46,10 @@ On the `YAML` header file of the `qmd` you can specify some parameters or just s
 - sample similarity analysis (PCA and hierarchical clustering)
 - covariates analysis
   
-See an example [here](https://bcbio.github.io/rnaseq-reports/01_quality_assessment/quality_assessment.html).
 
-### Differential expression
+### 2. ![](https://img.shields.io/badge/status-stable-green) [differential_expression](02_differential_expression/DEG.Rmd) 👀 [example](https://bcbio.github.io/rnaseq-reports/02_differential_expression/differential_expression.html)
 
-![](https://img.shields.io/badge/status-stable-green) [02_differential_expression/DEG.Rmd](02_differential_expression/DEG.Rmd) is a report template for comparison between two groups. It supports multiple contrasts. Like [01_quality_assessment/QC.Rmd](01_quality_assessment/QC.Rmd), it uses as input the `nf-core/rnaseq` outputs specified in [00_params/params.R](00_params/params.R). It also uses helper functions defined in [00_libs/load_data.R](00_libs/load_data.R) and [00_libs/FA.R](00_libs/FA.R).
+This is a report template for comparison between two groups. It supports multiple contrasts. Like above, it uses as input the `nf-core/rnaseq` outputs specified in [00_params/params.R](00_params/params.R). It also uses helper functions defined in [00_libs/load_data.R](00_libs/load_data.R) and [00_libs/FA.R](00_libs/FA.R).
 
 On the `YAML` header file of the `Rmd` you can specify some parameters or just set them up in the second chunk of code of the template. 
 
@@ -76,12 +62,12 @@ This template has examples of:
 - Pathway analysis: Over-Representation Analysis and Gene-Set-Enrichment Analysis
 - Tables
 
-### Comparative analysis
+### 3. Comparative analysis
 
-- ![](https://img.shields.io/badge/status-alpha-yellow) [03_comparative/Pair-wise-comparison-analysis.Rmd](03_comparative/Pair-wise-comparison-analysis.Rmd) shows an example on how to compare two differential expression analyses generated using the [DEG.Rmd](02_differential_expression/DEG.Rmd) template.
-- ![](https://img.shields.io/badge/status-alpha-yellow)  [03_comparative/Intersections.Rmd](03_comparative/Intersections.Rmd) shows an example on how to compare and find intersections between multiple differential expression analyses generated using the [DEG.Rmd](02_differential_expression/DEG.Rmd) template.
+- ![](https://img.shields.io/badge/status-alpha-yellow) [Pair-wise-comparison-analysis](03_comparative/Pair-wise-comparison-analysis.Rmd) shows an example on how to compare two differential expression analyses generated using the [DEG.Rmd](02_differential_expression/DEG.Rmd) template.
+- ![](https://img.shields.io/badge/status-alpha-yellow)  [Intersections](03_comparative/Intersections.Rmd) shows an example on how to compare and find intersections between multiple differential expression analyses generated using the [DEG.Rmd](02_differential_expression/DEG.Rmd) template.
 
-### Functional analysis
+### 4. Functional analysis
 
 - ![](https://img.shields.io/badge/status-draft-grey) [03_functional/GSVA.Rmd](03_functional/GSVA.Rmd) shows an example on how to use [GSVA package](https://bioconductor.org/packages/release/bioc/html/GSVA.html) for estimating variation of gene set enrichment through the samples of a expression data set
 - ![](https://img.shields.io/badge/status-draft-grey)  [03_functional/Nonmodel_Organism_Pathway_Analysis.Rmd](03_functional/Nonmodel_Organism_Pathway_Analysis.Rmd) shows an example of how to run Gene Ontology over-representation, KEGG over-representation, and KEGG gene set enrichment analysis (GSEA) for non-model organisms using data from Uniprot. Modify the paths in [params_nonmodel_org_pathways.R](params_nonmodel_org_pathways.R) to load the correct input files.
