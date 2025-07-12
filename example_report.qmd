@@ -1,0 +1,137 @@
+---
+title: "Quality Control"
+author: "Harvard Chan Bioinformatics Core"
+date: "`r Sys.Date()`"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    df-print: paged
+    highlight-style: pygments
+    number-sections: true
+    self-contained: true
+    theme: default
+    toc: true
+    toc-location: right
+    toc-expand: false
+params:
+  # Fill this file with the right paths to nfcore output
+  # Put hg38, mm10, mm39, or other
+  # params_file: ../00_params/params.R 
+  params_file: ../00_params/params-example.R # example data
+  genome: hg38
+  single_end: false
+  factor_of_interest: sample_type
+  project_file: ../information.R
+  functions_file: ../00_libs/load_data.R
+---
+
+Template developed with materials from https://hbctraining.github.io/main/.
+
+```{r, cache = FALSE, message = FALSE, warning=FALSE, eval = interactive()}
+# This set up the working directory to this file so all files can be found
+library(rstudioapi)
+setwd(fs::path_dir(getSourceEditorContext()$path))
+# NOTE: This code will check version, this is our recommendation, it may work
+# .      other versions
+stopifnot(R.version$major >= 4) # requires R4
+if (compareVersion(R.version$minor, "3.1") < 0) warning("We recommend >= R4.3.1")
+stopifnot(compareVersion(as.character(BiocManager::version()), "3.18") >= 0)
+```
+
+This code is in this ![](https://img.shields.io/badge/status-stable-green) revision.
+
+```{r source_params, cache = FALSE, message = FALSE, warning=FALSE}
+# 1. set up factor_of_interest parameter from parameter above or manually
+#    this is used to color plots, it needs to be part of the metadata
+factor_of_interest <- params$factor_of_interest
+genome <- params$genome
+single_end <- params$single_end
+# 2. Set input files in this file
+source(params$params_file)
+# 3. If you set up this file, project information will be printed below and
+# .   it can be reused for other Rmd files.
+source(params$project_file)
+# 4. Load custom functions to load data from coldata/metrics/counts
+source(params$functions_file)
+```
+
+# Overview
+
+-   Project: `r project`
+-   PI: `r PI`
+-   Analyst: `r analyst`
+-   Experiment: `r experiment`
+
+
+```{r load_libraries, cache = FALSE, message = FALSE, warning=FALSE}
+library(tidyverse)
+library(janitor)
+library(knitr)
+library(rtracklayer)
+library(DESeq2)
+library(DEGreport)
+library(ggrepel)
+# library(RColorBrewer)
+library(DT)
+library(pheatmap)
+library(RColorBrewer)
+library(ggprism)
+library(grafify)
+ggplot2::theme_set(theme_prism(base_size = 12))
+# https://grafify-vignettes.netlify.app/colour_palettes.html
+# NOTE change colors here if you wish
+scale_colour_discrete <- function(...) {
+  scale_colour_manual(...,
+    values = as.vector(grafify:::graf_palettes[["kelly"]])
+  )
+}
+scale_fill_discrete <- function(...) {
+  scale_fill_manual(...,
+    values = as.vector(grafify:::graf_palettes[["kelly"]])
+  )
+}
+
+opts_chunk[["set"]](
+  cache = FALSE,
+  cache.lazy = FALSE,
+  dev = c("png", "pdf"),
+  error = TRUE,
+  highlight = TRUE,
+  message = FALSE,
+  prompt = FALSE,
+  tidy = FALSE,
+  warning = FALSE,
+  fig.height = 4)
+```
+
+
+```{r sanitize-datatable}
+sanitize_datatable <- function(df, ...) {
+  # remove dashes which cause wrapping
+  DT::datatable(df, ...,
+    rownames = gsub("-", "_", rownames(df)),
+    colnames = gsub("-", "_", colnames(df))
+  )
+}
+```
+
+# Conclusions
+
+# Methods
+
+Add methods.
+
+## R package references
+
+```{r citations, results='asis'}
+citation("ggplot2")
+```
+
+## R session
+
+List and version of tools used for the QC report generation.
+
+```{r}
+sessionInfo()
+```
