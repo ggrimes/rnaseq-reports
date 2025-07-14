@@ -79,7 +79,7 @@ run_fora_v2 <- function(input, uni, all_in_life) {
 
 run_fgsea_v2 <- function(input, all_in_life) {
   # browser()
-  input_gsea <- input$lfc
+  input_gsea <- input$gsea_rank_metric
   names(input_gsea) <- input$ENTREZID
   pathways_all <- lapply(names(all_in_life), function(database) {
     p <- all_in_life[[database]]

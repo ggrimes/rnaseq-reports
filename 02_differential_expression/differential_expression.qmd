@@ -39,6 +39,8 @@ params:
   ruv: false
   # If you would like to run ComBatseq, set to TRUE, otherwise FALSE
   combatseq: false
+  # choices for ranking gene for gsea:  lfc | abs_lfc | pi
+  gsea_rank_metric: abs_lfc
   params_file: ../00_params/params-example.R # example data
   # Path to the information.R file
   project_file: ../information.R
@@ -97,6 +99,8 @@ run_ruv <- params$ruv
 run_combatseq <- params$combatseq
 # If the run_ruv object and/or run_combatseq is TRUE, set the run_rmv boolean to TRUE, otherwise set run_rmv boolean to FALSE
 run_rmv <- run_ruv | run_combatseq
+# Parameter to rank genes for gsea
+gsea_rank_metric <- params$gsea_rank_metric
 # Assign the value of column to factor_of_interest, this will allow you to change factor_of_interest throughout the Rmd if needed, while maintaining the value of column
 factor_of_interest <- column
 ```
@@ -240,7 +244,7 @@ ah <- AnnotationHub::AnnotationHub()
 # Retrieve the annotations from Annotation Hub dependent on your reference genome
 if (grepl("hg|human", genome, ignore.case = TRUE)) { # If the reference genome is human
   ens <- AnnotationHub::query(ah, c("Homo sapiens", "EnsDb")) # Retrieve the recent human annotations
-  ens <- ens[["AH119325"]] # Assign a human annotation, may need to change
+  ens <- ens[["AH116860"]] # Assign a human annotation, may need to change
 } else if (grepl("mm|mouse", genome, ignore.case = TRUE)) { # If the reference genome is mouse
   ens <- AnnotationHub::query(ah, c("Mus musculus", "EnsDb")) # Retrieve the recent mouse annotations
   ens <- ens[["AH116340"]] # Assign a mouse annotation, may need to change
@@ -826,6 +830,10 @@ Gene Set Enrichment Analysis (GSEA) is a computational method used to determine 
 - Incorporation of Prior Knowledge: Utilizes predefined gene sets, allowing integration of existing biological knowledge.
 - Contextual Relevance: Can reveal subtle but coordinated changes in biologically meaningful gene sets that might not be apparent when looking at individual genes.
 
+Ranking genes by a differential expression metric is a crucial step in GSEA. This ranking allows the method to assess whether genes in predefined sets are enriched at the extremes of the ranked list, indicating coordinated changes in expression. The ranking can be based on various metrics, such as the shrunken log fold change `lfc`, and the "π-value" (`pi`) as a combined score of fold change and p-value for robust ranking.
+
+Here was have chosen to use the gsea ranking metric, `r gsea_rank_metric`, this can be changed in the params section of the YAML file.
+
 **In the GSEA results, NES (normalized enrichment score) refers to the direction of regulation of the pathway. NES < 0 means downregulated, while NES > 0 means upregulated.**
 
 ```{r run-gsea, warning=F, message=F, eval=run_FA}
@@ -834,9 +842,30 @@ fa_gsea_list <- lapply(de_list, function(contrast) {
   # For a given contrast pull out the full differential expression results
   res <- contrast[["all"]]
   # Creating the input for the GSEA analysis
-  gsea_input <- res %>% # Start with the full differential expression results (NOTE: these do exclude genes without any expression, p-value or adjusted p-value)
-    filter(!is.na(padj)) %>% # Remove any adjusted p-values that are NA, but there should be since they were filtered when making the de_list object
-    dplyr::select(gene_id, lfc) # Extract the columns "gene_id" and "lfc"
+  
+  # based on the input param gsea_rank_metric new data with gsea_rank_metric
+  # function to create ranked vector and remove NA values
+  make_rank_vector <- function(res, metric = c("lfc","abs_lfc","pi")) {
+    res <- res |>  filter(!is.na(padj)) # Remove any adjusted p-values that are NA, but there  should be since they were filtered when making the de_list object
+    
+    #select column  for gsea ranking
+    metric <- match.arg(metric)
+    v <- switch(metric,
+        lfc      =  res$lfc,
+        abs_lfc  =  abs(res$lfc),
+        pi       =  res$pi
+    )
+    # Creating the input for the GSEA analysis
+    rval<-data.frame(gene_id=res$gene_id,
+                     gsea_rank_metric=v,
+                     res$padj)
+    
+  
+   return(rval)
+  }
+  # call function to create ranked vector
+  gsea_input <- make_rank_vector(res, gsea_rank_metric)
+
   # Obtain the ENSEMBL ID and gene symbols for the genes in the gsea_input object
   # NOTE: Change to the correct species if not working in human or mouse
   input_entrezid <- AnnotationDbi::select(
@@ -847,13 +876,13 @@ fa_gsea_list <- lapply(de_list, function(contrast) {
   ) # Return the queried ENSEMBL ID, along with the ENTREZ ID and the gene symbol
   # Combine gene annotation with the lfc information
   input_entrezid <- inner_join(
-    x = gsea_input, # Combine the ENSEMBL ID and lfc input with
+    x = gsea_input, # Combine the ENSEMBL ID and gsea_rank_metric input with
     y = input_entrezid, # The ENTREZ ID and gene symbol information
     by = c("gene_id" = "ENSEMBL")
   ) %>% # Join these table together by common ENSEMBL IDs
     filter(!is.na(ENTREZID)) %>% # Remove the genes without an ENTREZ ID
     distinct(ENTREZID, .keep_all = TRUE) %>% # Retain the unique ENTREZ IDs and all columns of data
-    arrange(desc(lfc)) # Arrange the data frame by descending values of lfc
+    arrange(desc(gsea_rank_metric)) # Arrange the data frame by descending values of the selected gsea_rank_metric
 
   # Run the run_fgsea_v2 function found in FA.R within the 00_libs directory to run the GSEA analysis and assign the output to the object tb
   tb <- run_fgsea_v2(
